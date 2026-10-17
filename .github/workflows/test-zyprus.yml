@@ -1,0 +1,38 @@
+name: test-zyprus
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install curl_cffi
+      - name: Probe zyprus direct and via proxy
+        env:
+          HALO_PROXY: ${{ secrets.HALO_PROXY }}
+        run: |
+          python - <<'EOF'
+          import os, re
+          from curl_cffi import requests as cffi
+          PX = re.sub(r'__cr\.[a-z]{2}', '__cr.cy', os.environ.get('HALO_PROXY', ''))
+          url = 'https://www.zyprus.com/search/rent/grid?type%5B5%5D=5&type%5B17%5D=17&type%5B355%5D=355&page=0'
+          for label, proxies in (('direct', None), ('proxy', {'http': PX, 'https': PX} if PX else None)):
+              for imp in ('chrome124', 'chrome131', 'safari17_0'):
+                  try:
+                      r = cffi.get(url, impersonate=imp, timeout=40, allow_redirects=True, proxies=proxies,
+                                   headers={'Accept-Language': 'en-GB,en;q=0.9'})
+                      t = re.search(r'<title>([^<]{0,80})', r.text)
+                      cards = len(re.findall(r'<article[^>]*data-node-id', r.text))
+                      print(f'{label} {imp}: http={r.status_code} len={len(r.text)} cards={cards} '
+                            f'title={t.group(1) if t else "-"!r} cf={"Just a moment" in r.text[:3000]} '
+                            f'final={r.url[:70]}')
+                      print('   head:', r.text[:300].replace('\n', ' '))
+                  except Exception as e:
+                      print(f'{label} {imp}: {type(e).__name__} {str(e)[:120]}')
+          EOF
