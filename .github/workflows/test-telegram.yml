@@ -1,0 +1,20 @@
+name: test-telegram
+on:
+  workflow_dispatch: {}
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install telethon
+      - name: Send test message
+        run: echo "✅ cluj-monitor test from GitHub Actions — Telegram path works" | python send_text.py 135201285 -
+        env:
+          TG_SESSION: ${{ secrets.TG_SESSION }}
+          TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
+          TG_API_ID: ${{ secrets.TG_API_ID }}
+          TG_API_HASH: ${{ secrets.TG_API_HASH }}

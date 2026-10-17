@@ -1,0 +1,4 @@
+__pycache__/
+.cy-photos/
+data/state.json.lock
+*.pyc

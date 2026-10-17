@@ -1,0 +1,6 @@
+telethon>=1.43
+curl_cffi>=0.7
+google-api-python-client>=2.100
+google-auth>=2.30
+Pillow>=10
+requests>=2.31
