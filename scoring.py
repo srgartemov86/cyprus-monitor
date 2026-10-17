@@ -23,7 +23,7 @@ Graceful: при недоступности Overpass возвращает score=
 """
 import math, time, requests
 
-UA = "dodo-cluj-location-scout/1.0 (s.artemov@dodobrands.io)"
+UA = "dodo-cyprus-location-scout/1.0 (s.artemov@dodobrands.io)"
 MIRRORS = [
     "https://overpass-api.de/api/interpreter",
     "https://overpass.private.coffee/api/interpreter",
@@ -87,7 +87,7 @@ def _circ_intersect_area(R, r, d):
 
 # --- Kontur Population (H3 r8, census-grade) — census-якорь гибрида + фоллбэк ---
 _KONTUR = None
-_KONTUR_PATH = __import__("os").path.join(__import__("os").environ.get("CLUJ_DATA", "/Users/dodo/cluj-location-monitor"), "kontur_cluj.npz")
+_KONTUR_PATH = __import__("os").path.join(__import__("os").environ.get("CY_DATA", "/Users/dodo/cyprus-monitor-cloud/data"), "kontur_cyprus.npz")
 
 
 def _load_kontur():
@@ -155,7 +155,7 @@ def _centroid(el):
 
 def fetch_osm(lat, lon, timeout=180):
     """Один Overpass-запрос: здания + POI + транспорт в радиусе FETCH_RADIUS.
-    timeout 85→180 и 2 круга по зеркалам — паритет с belgrade-monitor 2026-07-16
+    timeout 180 и 2 круга по зеркалам
     (в плотной застройке запрос идёт >85с, разовый затык зеркала ронял score=None)."""
     q = (f"[out:json][timeout:170];("
          f'way["building"](around:{FETCH_RADIUS},{lat},{lon});'
@@ -168,8 +168,7 @@ def fetch_osm(lat, lon, timeout=180):
          f'nwr["railway"~"^(station|tram_stop|subway_entrance|halt)$"](around:{FETCH_RADIUS},{lat},{lon});'
          f");out tags geom;")
     # ОБЩИЙ дедлайн на лот: 3 зеркала × 2 круга × 180 с = до 18 минут при зависших
-    # зеркалах, а process-фаза здесь ограничена 900 с (в belgrade-monitor так упали
-    # два прогона 16.09.2026). Не уложились — score=None.
+    # зеркалах, а process-фаза здесь ограничена 900 с (иначе process-фаза упирается в свой лимит). Не уложились — score=None.
     deadline = time.time() + 240
     for round_n in range(2):
         for m in MIRRORS:

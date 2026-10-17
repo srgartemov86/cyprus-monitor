@@ -52,11 +52,19 @@ BRAND_META = {
     'dodopizza':  {'name': 'Dodo Pizza',   'logo': 'dodo-logo.png'},
 }
 
-# Manual overrides for brands with poor OSM coverage (source: official sites).
-# Dodo Pizza Cyprus: в OSM только 2 точки Лимассола (17.10.2026); Nicosia-1 и
-# Nicosia-2 (Aglantzia) в OSM нет — координаты уточнить по dodopizza.com.cy и
-# добавить сюда, тогда штраф каннибализации заработает и в Никосии.
-MANUAL_OVERRIDES = {}
+# Manual overrides for brands with poor OSM coverage.
+# Dodo Pizza Cyprus: адреса из publicapi.dodois.io/cy (unitinfo/all, 17.10.2026):
+# Limassol-1 «28 October Avenue, 327», Limassol-2 «Omonoias, 38» — координаты из OSM
+# (Nominatim по адресу Omonoias уводит в Писсури); Nicosia-1 «Nikis, 42» — Nominatim
+# точно (здание), Nicosia-2 «Ammochostou, 5» (Aglantzia) — центроид улицы.
+MANUAL_OVERRIDES = {
+    'dodopizza': [
+        {'lat': 34.6847147, 'lon': 33.0603467, 'name': 'Dodo Pizza Limassol-1', 'address': '28 October Avenue 327'},
+        {'lat': 34.6711888, 'lon': 33.0117607, 'name': 'Dodo Pizza Limassol-2', 'address': 'Omonoias 38'},
+        {'lat': 35.15666, 'lon': 33.35761, 'name': 'Dodo Pizza Nicosia-1', 'address': 'Nikis 42'},
+        {'lat': 35.15748, 'lon': 33.39724, 'name': 'Dodo Pizza Nicosia-2', 'address': 'Ammochostou 5, Aglantzia'},
+    ],
+}
 
 
 def classify(name):

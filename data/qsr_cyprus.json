@@ -628,20 +628,32 @@
     "dodopizza": {
       "name": "Dodo Pizza",
       "logo": "dodo-logo.png",
-      "source": "OSM/Overpass",
-      "count": 2,
+      "source": "official site (manual)",
+      "count": 4,
       "points": [
         {
           "lat": 34.6847147,
           "lon": 33.0603467,
-          "name": "Dodo Pizza",
-          "address": ""
+          "name": "Dodo Pizza Limassol-1",
+          "address": "28 October Avenue 327"
         },
         {
           "lat": 34.6711888,
           "lon": 33.0117607,
-          "name": "Dodo Pizza",
-          "address": ""
+          "name": "Dodo Pizza Limassol-2",
+          "address": "Omonoias 38"
+        },
+        {
+          "lat": 35.15666,
+          "lon": 33.35761,
+          "name": "Dodo Pizza Nicosia-1",
+          "address": "Nikis 42"
+        },
+        {
+          "lat": 35.15748,
+          "lon": 33.39724,
+          "name": "Dodo Pizza Nicosia-2",
+          "address": "Ammochostou 5, Aglantzia"
         }
       ]
     }

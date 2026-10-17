@@ -42,7 +42,7 @@ STATUS_TO_REVIEW = {
     'to review', 'review', 'discuss', 'for discussion',
 }
 
-TRG_REPUBLIKE = (34.6750, 33.0443)  # Limassol centre (legacy name)
+LIMASSOL_CENTRE = (34.6750, 33.0443)  # Limassol centre (legacy name)
 
 # В Клуже пиццерий Dodo нет.
 def _dodo_locations():
@@ -257,7 +257,7 @@ def _haversine(la1, lo1, la2, lo2):
 
 def regeo_nominatim(state, max_shift_threshold_m=200, district_radius_m=6000):
     """Перегеокодит лоты с geo_source='nominatim' используя disambiguation по району.
-    Используется в основном для nekretnine.rs (там нет detail-coords) и старых nominatim-центроидов.
+    Нужен лотам без координат из источника (геокод по адресу/подсказке).
     Возвращает кол-во обновлений."""
     listings = state['listings']
     todo = []
@@ -292,10 +292,6 @@ def regeo_nominatim(state, max_shift_threshold_m=200, district_radius_m=6000):
             add_q(f"{addr}, Cyprus")
         if street and street != addr:
             add_q(f"{street}, {district_base}, Cyprus" if district_base else f"{street}, Cyprus")
-        # Landmarks из title
-        if title:
-            m = re.search(r'(Karađorđev park|Vukov spomenik|Hram Sv\.? Save|Hram Svetog Save|Slavija|Zeleni venac|Terazije|Đeram pijaca|Knez Mihailova|Bulevar [A-Za-zčćžšđ]+ [A-Za-zčćžšđ]+)', title)
-            if m: add_q(f"{m.group(1)}, Cyprus")
 
         if not queries:
             continue
@@ -1138,12 +1134,11 @@ def main():
     state = load_state()
     print(f"  state listings: {len(state['listings'])}")
 
-    # 1a. Backfill detail-координат (белградские источники) на Кипре не нужен:
-    #     bazaraki/zyprus отдают гео сразу. Модуль удалён из клона.
-    bf_updated, bf_failed = 0, 0
+    # 1a. Backfill detail-координат не нужен: bazaraki/zyprus отдают гео сразу.
+    bf_updated = 0
 
     # 1b. Re-Nominatim для лотов с geo_source='nominatim' — используем disambiguation по району.
-    #     Нужно для nekretnine.rs (нет detail-coords) и старых nominatim-центроидов.
+    #     Нужно лотам, которые геокодились только по району.
     regeo_updated = regeo_nominatim(state)
     if regeo_updated:
         print(f"  regeo_nominatim: {regeo_updated} updated")

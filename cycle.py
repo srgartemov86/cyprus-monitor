@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-cycle.py — Cyprus location-monitor cycle (Limassol, Nicosia, Paphos, Larnaca);
-клон клужского cycle.py (17.10.2026), источник bazaraki.com.
-Источники: bazaraki.com (zyprus.com — см. curl_sweep). Reduces ~30 agent tool-calls/cycle to 2.
+cycle.py — Cyprus location-monitor cycle (Limassol, Nicosia, Paphos, Larnaca).
+Источники: bazaraki.com, zyprus.com.
+Один процесс на цикл: sweep → detail → фильтры → скоринг → JSON для driver.py.
 
 Usage:
   python3 cycle.py                          # phase 1: sweep + filter + state-updates-for-rejects
@@ -109,7 +109,7 @@ PHOTO_WORKERS = 5
 # Лимассола/Пафоса/Ларнаки) — тихий реджект по слагу URL или метке локации.
 # Ayia Napa здесь НЕТ: курорт лежит в district Famagusta (режется по городу), а
 # «Agia Napa» в Лимассоле — центральный район у церкви (ложный suburb 17.10).
-ZEMUN_SLUGS = ('protaras', 'paralimni', 'pissouri', 'platres', 'polis', 'troodos',
+RESORT_SLUGS = ('protaras', 'paralimni', 'pissouri', 'platres', 'polis', 'troodos',
                'lefkara', 'kakopetria')
 
 # Districts вне задачи (Famagusta) и те же курорты — для метки location.
@@ -395,8 +395,7 @@ def _district_by_coords(lat, lon):
 def _district_from_text(text):
     """Картье из текста (название района или топоним-улица)."""
     norm = _norm_sub(text)
-    # только целым словом: 'central' внутри 'semicentral' давал Centru
-    # лоту на Bulevardul Muncii (imobiliare 256317967, 14.09.2026)
+    # только целым словом: иначе 'central' матчится внутри 'semicentral'
     def _word(t):
         return re.search(r'(?<![a-z])' + re.escape(t) + r'(?![a-z])', norm)
     for slug, (name, _la, _lo) in CARTIERE.items():
@@ -465,9 +464,9 @@ def apply_filters(cand, detail, skip_price=False):
     """Returns (passed_bool, flags_list, reject_reason).
 
     skip_price=True пропускает area/price/€m² гейты и проверяет только структуру
-    (этаж/zemun/назначение/офис/молл/двор/квартира). Нужно price-only пути, чтобы
+    (этаж/курорт/назначение/офис/молл/двор/квартира). Нужно price-only пути, чтобы
     перед публикацией price-реджекта в дайджест отсеять структурный брак
-    (1.+ sprat, стан, офис) — иначе в дайджест попадают квартиры на верхних этажах."""
+    (верхний этаж, квартира, офис) — иначе в дайджест попадают квартиры на верхних этажах."""
     flags = []
     a = cand.get('area')
     p = cand.get('price')
@@ -489,10 +488,10 @@ def apply_filters(cand, detail, skip_price=False):
         return False, flags, f'floor={floor}'
 
     url = (cand.get('url') or '').lower()
-    if any(s in url for s in ZEMUN_SLUGS):
+    if any(s in url for s in RESORT_SLUGS):
         return False, flags, 'suburb'
     muni_norm = _norm_sub(cand.get('district_label') or cand.get('municipality') or '').replace(' ', '-')
-    if muni_norm and any(s in muni_norm for s in ZEMUN_SLUGS + FAR_MUNI_SLUGS):
+    if muni_norm and any(s in muni_norm for s in RESORT_SLUGS + FAR_MUNI_SLUGS):
         return False, flags, 'suburb'
 
     type_ = (detail.get('type') or cand.get('type') or '').lower()
@@ -503,7 +502,7 @@ def apply_filters(cand, detail, skip_price=False):
                 (detail.get('title', '') or '')).lower()
 
     # Офис-паттерн в контексте СОСЕДСТВА («next to office buildings») — это
-    # описание окружения, не назначения помещения (клужский урок 30.07.2026).
+    # описание окружения, не назначения помещения.
     _PROX = re.compile(
         r'(?:next\s+to|near|close\s+to|opposite|surrounded\s+by|area\s+with|among|'
         r'walking\s+distance\s+(?:to|from)|minutes?\s+(?:from|to)|plenty\s+of|lots\s+of|many)'
@@ -556,7 +555,7 @@ def download_photo(url, listing_key):
     ext = (ext_m.group(1).lower() if ext_m else 'jpg').replace('jpeg', 'jpg')
     raw_path = PHOTO_DIR / f"{listing_key}.{ext}"
     # 2 попытки: единичный сбой curl (таймаут/сброс) иначе роняет фото из альбома,
-    # а лот с одним фото — в текст (паритет с belgrade-monitor, 2026-07-14).
+    # а лот с одним фото уходит текстом без альбома.
     ok = False
     for _attempt in range(2):
         try:
@@ -589,7 +588,7 @@ def download_photo(url, listing_key):
 
 def yandex_pano_url(lat, lon):
     """Google Street View в точке (в Румынии покрытие хорошее; Яндекс-панорам нет).
-    Имя функции сохранено ради вызовов, унаследованных от белградского кода."""
+    Имя функции историческое, оставлено ради существующих вызовов."""
     return (f"https://www.google.com/maps/@?api=1&map_action=pano"
             f"&viewpoint={lat}%2C{lon}")
 
@@ -833,10 +832,10 @@ def _price_similar(p1, p2):
 def dedupe_passes_same_cycle(s, passes, duplicates):
     """Кросс-посты, пришедшие ОДНИМ прогоном, обходят find_active_duplicate
     (он сверяет только с in_sheet-лотами, а внутрицикловые ещё не отправлены) —
-    кейс Andrei Mureșanu 14.07: olx+storia одного помещения = 2 карточки в чате.
+    иначе кросс-пост одного помещения на двух сайтах даёт 2 карточки в чате.
     Матчинг пар внутри passes: площадь ±3 м² + цена похожа + (гео <250 м ИЛИ
     одинаковое начало описания — кросс-посты копируют текст дословно).
-    Оставляем лот с адресом (обычно storia), второй клеим как alt_url."""
+    Оставляем лот с адресом, второй клеим как alt_url."""
     def desc_prefix(k):
         d = (s['listings'].get(k, {}).get('description') or '').lower()
         return re.sub(r'\s+', '', d)[:120]
@@ -1026,8 +1025,8 @@ def run_process():
         t0 = time.time()
         all_l, sources_down, sweep_errors = [], [], []
 
-        # Кулдаун источника: сайт под долгой блокировкой (imobiliare/DataDome
-        # с 19.08) не должен каждый цикл жечь минуты на заведомо мёртвые ретраи.
+        # Кулдаун источника: сайт под долгой блокировкой (Cloudflare) не должен
+        # каждый цикл жечь минуты на заведомо мёртвые ретраи.
         # 3 провала подряд → пауза 6 ч, затем одна разведочная попытка.
         _cool = s.setdefault('source_cooldown', {})
         _now_ts = time.time()
@@ -1073,10 +1072,10 @@ def run_process():
             if l['price'] < PRICE_MIN or l['price'] > PRICE_MAX: continue
             if l['price'] / l['area'] < PRICE_PER_M2_MIN: continue
             url = (l.get('url') or '').lower()
-            if any(slug in url for slug in ZEMUN_SLUGS): continue
+            if any(slug in url for slug in RESORT_SLUGS): continue
             type_ = (l.get('type', '') or '').lower()
             if any(b in type_ for b in ['office', 'storage', 'warehouse', 'industrial']): continue
-            # storia отдаёт весь жудец — города/коммуны вне Клужа режем по
+            # Курорты и населённые пункты вне четырёх городов режем по
             # municipality (city.name) и по url-слагу.
             mun = _norm_sub(l.get('municipality') or '')
             mun_slug = mun.replace(' ', '-')
@@ -1334,10 +1333,10 @@ def run_process():
 
         # --- Реджекты по цене / цене за м² ---
         # Метраж в норме (100–220), но цена вне 1300–6000 или €/м² ниже минимума.
-        # В дайджест идут только настоящие price-near-miss: валидный prizemlje-локал,
+        # В дайджест идут только настоящие price-near-miss: валидный локал на первом этаже,
         # не прошедший ТОЛЬКО по цене. Поэтому перед публикацией фетчим detail и гоняем
         # структурные фильтры (skip_price=True): этаж, назначение, офис/молл/двор/квартира.
-        # Структурный брак (квартира на 1.+ spratu, стан, офис) → молча в state как
+        # Структурный брак (квартира на верхнем этаже, офис) → молча в state как
         # rejected, в дайджест НЕ публикуем — это не «почти подошло», это просто не то.
         # Дедуп через state. Кэп публикаций = ≤8 строк суммарно с detail-реджектами;
         # отдельный бюджет фетчей, чтобы просканить мимо квартир и найти реальные near-miss.
@@ -1366,10 +1365,10 @@ def run_process():
                 continue
             pr_seen.add(key)
             url = (l.get('url') or '').lower()
-            if any(slug in url for slug in ZEMUN_SLUGS):
+            if any(slug in url for slug in RESORT_SLUGS):
                 continue
             if any(s in _norm_sub(l.get('municipality') or '').replace(' ', '-')
-                   for s in ZEMUN_SLUGS):
+                   for s in RESORT_SLUGS):
                 continue
             type_ = (l.get('type', '') or '').lower()
             if any(b in type_ for b in ['office', 'storage', 'warehouse', 'industrial']):
@@ -1426,7 +1425,7 @@ def run_process():
                 # Пригород мог проявиться только в районе из detail.
                 dl = _norm_sub(district).replace(' ', '-')
                 if any(m in dl for m in FAR_MUNI_SLUGS) or \
-                   any(m in dl for m in ZEMUN_SLUGS):
+                   any(m in dl for m in RESORT_SLUGS):
                     _silent_reject('far_muni')
                     continue
 
@@ -1586,8 +1585,8 @@ def run_process():
 
 def cmd_mark_sent(listing_key, message_id, desc_ru=None):
     """Called by agent after Telegram send_file succeeds.
-    desc_ru — русское «Кратко» от агента; идёт в Sheets кол. F (карта показывает её).
-    Без него падаем на сырое сербское описание (хуже — карта будет на сербском)."""
+    desc_ru — английская выжимка от driver (Gemini); идёт в Sheets кол. F (карта показывает её).
+    Без неё падаем на сырое описание объявления."""
     with StateLock():
         s = load_state()
         rec = s.get('listings', {}).get(listing_key)
@@ -1690,9 +1689,6 @@ def run_canary(s):
     # detail-каналы: свежие живые in_sheet лоты каждого источника.
     # Пробуем до 3: свежеудалённый лот может отдавать 200-заглушку/редирект —
     # один мёртвый подопытный не должен давать ложную тревогу. FAIL — если все.
-    # imobiliare detail здесь нет: с 11.09.2026 данные берутся из карточек листинга
-    # (Camoufox), detail-страницы под DataDome не открываются намеренно. Проверка
-    # давала ложный FAIL x3 каждое утро (12–14.09), sweep-канал источник покрывает.
     for prefix, src_name, label in (('bazaraki_', 'bazaraki.com', 'bazaraki_detail'),
                                     ('zyprus_', 'zyprus.com', 'zyprus_detail')):
         recs = []
@@ -1757,8 +1753,8 @@ def cmd_finalize():
         out['last_scan_stamp'] = f'fail: {e}'
 
     # Проверка живости объявлений — вспомогательный шаг: её таймаут НЕ должен
-    # ронять цикл (19.08: imobiliare начал отдавать 403 везде, ретраи растянули
-    # check_status за 300 с → падал весь прогон, карта и surge не обновлялись).
+    # ронять цикл (массовые 403 растягивают check_status, а карта и surge
+    # должны обновляться в любом случае).
     try:
         cr = subprocess.run(['python3', str(SCRIPT_DIR / 'check_status.py')],
                             capture_output=True, text=True, timeout=600)
@@ -1899,7 +1895,7 @@ def cmd_finalize():
     return 0
 
 
-GEOCODE_MAX_KM = 9.0  # результат Nominatim дальше от Piața Unirii — это не Клуж
+GEOCODE_MAX_KM = 9.0  # результат Nominatim дальше от ближайшего города задачи — мимо
 _STREET_TYPE_RE = re.compile(
     r'^(?:strada|str|bulevardul|bd|b-dul|bulevard|calea|aleea|piata|piața|splaiul)\.?\s+',
     re.IGNORECASE)
@@ -2009,7 +2005,7 @@ def main():
     ap.add_argument('--geocode-hint', nargs=2, metavar=('KEY', 'HINT'),
                     help='Геокодировать адресную зацепку из текста, записать geo+score в state')
     ap.add_argument('--desc-ru', default=None,
-                    help='Русское «Кратко» для Sheets кол. F (вместо сырого сербского описания)')
+                    help='Английская выжимка для Sheets кол. F (вместо сырого описания)')
     ap.add_argument('--finalize', action='store_true',
                     help='Run check_status + gen_map + runs.log')
     ap.add_argument('--dry-run', action='store_true',

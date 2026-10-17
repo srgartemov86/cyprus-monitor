@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Insert/manage rows in Cyprus Sheets — напрямую через Sheets API v4
-(OAuth-токен drive), без Apps Script webhook (в отличие от белградского).
+(OAuth-токен drive), без Apps Script webhook.
 
 Spreadsheet: 1NZNlx2G24Ea-zGNurKx7fTAmHgLK4tOSjtB7ScYx-7c
   Лист «Лоты» (первый, gid 498788918):
@@ -9,8 +9,7 @@ Spreadsheet: 1NZNlx2G24Ea-zGNurKx7fTAmHgLK4tOSjtB7ScYx-7c
     J=Комментарий (user-only) | K=Статус | L=Точное место (user-only)
   Лист «не прошли фильтр» (gid 133442332): A..H как в Белграде.
 
-Interface — идентичен белградскому sheets_append (cycle.py/check_status/gen_map
-импортируют те же имена): insert_lots, update_cells, append_reject_rows,
+Interface (cycle.py/check_status/gen_map импортируют эти имена): insert_lots, update_cells, append_reject_rows,
 _sheets_service, SPREADSHEET_ID. WEBHOOK_URL/SECRET оставлены пустыми для
 совместимости импортов (кнопок статуса на карте v1 нет).
 """
@@ -30,7 +29,7 @@ def _retry(fn, tries=3, base_delay=2.0):
     raise last
 from datetime import datetime, timezone
 
-SPREADSHEET_ID = '1PNXJg4aT5jeWYz9sqlQmE6yoz-Lvf6D8PgJFusPZCYE'  # копия клужской таблицы, 17.10.2026
+SPREADSHEET_ID = '1PNXJg4aT5jeWYz9sqlQmE6yoz-Lvf6D8PgJFusPZCYE'  # таблица Cyprus locations (Dodo monitor), 17.10.2026
 MAIN_SHEET_NAME = 'Locations'
 MAIN_SHEET_GID = 498788918
 REJECT_SHEET_NAME = 'Rejected'

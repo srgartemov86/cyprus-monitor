@@ -4,8 +4,7 @@
 Делает то, что на Mac делал Claude-агент по SKILL.md:
   1. cycle.py (process phase) → JSON
   2. passes → альбом фото + caption в Telegram → --mark-sent
-     Вместо LLM-перевода румынского Summary — глоссарий-замена терминов
-     (команда партнёра читает остальное через built-in Translate в Telegram).
+     Summary — английская выжимка Gemini (описания бывают по-гречески).
   3. price_changes → текстовое сообщение (reply на исходный лот, если есть id)
   4. cycle.py --finalize (check_status + gen_map + surge deploy)
 
@@ -19,31 +18,12 @@ from pathlib import Path
 HERE = Path(__file__).parent
 CHAT_ID = os.environ.get('CY_CHAT_ID', '')  # супергруппа Cyprus-lokal-monitor (workflow)
 # Служебные уведомления (health-алерты) — лично Сергею в личку с ботом
-# @clujmonitorbot (135201285), не в рабочий чат лотов.
+# @clujmonitorbot (общий бот мониторов локаций, user id 135201285), не в рабочий чат лотов.
 ALERT_CHAT_ID = os.environ.get('CY_ALERT_CHAT_ID', '135201285')
 MANY_PASSES = 15  # SKILL: при ≥15 лотов — одна сводка вместо N сообщений
 
-# Глоссарий ro→en (SKILL.md): термины недвижимости, по которым принимается решение.
-# Остальной текст остаётся румынским — Telegram Translate в один тап.
-GLOSSARY = [
-    (r'\bspa[țt]iu comercial\b', 'commercial space'),
-    (r'\bvad comercial\b', 'foot traffic'),
-    (r'\bvad pietonal\b', 'foot traffic'),
-    (r'\bparter\b', 'ground floor'),
-    (r'\bvitrin[ăa]\b', 'display window'),
-    (r'\bla strad[ăa]\b', 'street-facing'),
-    (r'\bstradal[ăa]?\b', 'street-facing'),
-    (r'\bchirie\b', 'rent'),
-    (r'\bgaran[țt]ie\b', 'deposit'),
-    (r'\b[îi]ntre[țt]inere\b', 'maintenance'),
-    (r'\brenovat[ăa]?\b', 'renovated'),
-    (r'\bfinisat[ăa]?\b', 'fitted out'),
-    (r'\bautoriza[țt]ie de func[țt]ionare\b', 'operating permit'),
-    (r'\balimenta[țt]ie public[ăa]\b', 'food service'),
-    (r'\bteras[ăa]\b', 'terrace'),
-    (r'\bcentral[ăa] termic[ăa]\b', 'own heating unit'),
-    (r'\bgeamuri? termopan\b', 'double glazing'),
-]
+# Фолбэк без Gemini: текст объявления как есть (на Кипре он и так английский).
+GLOSSARY = []  # пар замен нет: описания на английском
 
 
 def glossary_en(text):
@@ -203,8 +183,6 @@ def main():
                         break
             # Ни адреса, ни пина (🗺 = текстовый поиск по заглушке), но зацепка есть:
             # геокодим её, чтобы дать пин, расстояние, район и score
-            # (кейс imobiliare 256317967 14.09: пин по 'Str. Muncii 209' вместо поиска
-            # по строке 'no address or map pin in the listing').
             if loc_hint and 'google.com/maps/search/?api=1' in caption:
                 try:
                     g = run_json(['cycle.py', '--geocode-hint', p['listing_key'], loc_hint], 240)
@@ -224,7 +202,7 @@ def main():
                                          caption, count=1)
                     if g.get('score_line') and 'Location score' not in caption:
                         caption = caption.rstrip('\n') + '\n\n\n' + g['score_line']
-            # Переклеиваем блок Summary на английский (cycle.py кладёт румынский snippet).
+            # Переклеиваем блок Summary на выжимку Gemini (cycle.py кладёт сырой snippet).
             # ВАЖНО: cycle приклеивает строку скоринга ПОСЛЕ Summary — сохранить её
             # (баг 2026-07-11: тупой срез до конца снёс "Location score" из карточек).
             if '📝 Summary:' in caption:
@@ -318,13 +296,13 @@ def main():
     try:
         from datetime import datetime
         import zoneinfo
-        now_cluj = datetime.now(zoneinfo.ZoneInfo('Asia/Nicosia'))
+        now_local = datetime.now(zoneinfo.ZoneInfo('Asia/Nicosia'))
         state_path = os.path.join(os.environ.get('CY_DATA', '.'), 'state.json')
         with open(state_path, encoding='utf-8') as f:
             st = json.load(f)
         ds = st.get('daily_stats') or {}
-        today = now_cluj.strftime('%Y-%m-%d')
-        if (now_cluj.hour >= 21 and ds.get('date') == today
+        today = now_local.strftime('%Y-%m-%d')
+        if (now_local.hour >= 21 and ds.get('date') == today
                 and st.get('daily_digest_sent') != today):
             _sheet = 'https://docs.google.com/spreadsheets/d/1PNXJg4aT5jeWYz9sqlQmE6yoz-Lvf6D8PgJFusPZCYE/edit'
             # прошедшие лоты дня — буллетами: район · м² · цена, ссылкой на объявление
@@ -338,7 +316,7 @@ def main():
                           f"{v.get('price_eur')} €/mo")
                 _passed_lines += (f"\n   • <a href=\"{v.get('url')}\">{_label}</a>"
                                   if v.get('url') else f"\n   • {_label}")
-            msg = (f"📊 Daily summary · {now_cluj.strftime('%b %d')}\n"
+            msg = (f"📊 Daily summary · {now_local.strftime('%b %d')}\n"
                    f"· {ds['runs']} feed scans, ~{ds['sweep_last']} live listings watched\n"
                    f"· {ds['new']} new listings analyzed in detail\n"
                    f"· {ds['rejects']} rejected → <a href=\"{_sheet}#gid=133442332\">Rejected tab</a>\n"

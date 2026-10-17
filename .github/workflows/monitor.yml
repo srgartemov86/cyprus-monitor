@@ -4,7 +4,7 @@ on:
   schedule:
     # Ежечасно: 05–16 UTC = 07:40–18:40 зимой (EET) / 08:40–19:40 летом (EEST) по Кипру.
     # Часы перечислены явно: диапазон с шагом GitHub может молча игнорировать.
-    # GitHub дропает часть слотов — добор делает dispatch из cluj-monitor (порог 50 мин).
+    # GitHub дропает часть слотов — добор делает dispatch из соседнего монитора cluj-monitor (порог 50 мин).
     - cron: '40 5,6,7,8,9,10,11,12,13,14,15,16 * * *'
   workflow_dispatch: {}
 
@@ -74,7 +74,7 @@ jobs:
           git diff --cached --quiet && exit 0
           git commit -m "cycle $(date -u +%Y-%m-%dT%H:%MZ)"
           # При параллельном пуше состояние раннера новее нашего data/ — при
-          # конфликте берём своё (урок клужского монитора).
+          # конфликте берём своё.
           for i in 1 2 3; do
             git fetch -q origin main || true
             git merge -q -X ours origin/main -m "merge origin (keep runner state)" || git merge --abort || true
