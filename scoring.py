@@ -166,6 +166,7 @@ def fetch_osm(lat, lon, timeout=180):
          f'nwr["public_transport"="platform"](around:{FETCH_RADIUS},{lat},{lon});'
          f'node["highway"="bus_stop"](around:{FETCH_RADIUS},{lat},{lon});'
          f'nwr["railway"~"^(station|tram_stop|subway_entrance|halt)$"](around:{FETCH_RADIUS},{lat},{lon});'
+         f'way["natural"="coastline"](around:{SEA_RADIUS},{lat},{lon});'
          f");out tags geom;")
     # ОБЩИЙ дедлайн на лот: 3 зеркала × 2 круга × 180 с = до 18 минут при зависших
     # зеркалах, а process-фаза здесь ограничена 900 с (иначе process-фаза упирается в свой лимит). Не уложились — score=None.
@@ -191,38 +192,73 @@ def _sat(x):
     return max(0.0, min(1.0, x))
 
 
+# Версия формулы: кэш скоров в state помечается ею, при смене весов старые лоты
+# пересчитываются из сохранённых сырых сигналов (rescore_from_cache) без Overpass.
+# cy-v1 (17.10.2026, решение Сергея «пока первый вариант»): кипрская поправка
+# белградских весов. Автомобильные города — транспорт почти ничего не значит;
+# пороги жителей ниже (малоэтажная застройка); конкуренты в 200 м на набережных
+# и в центре это норма, порог поднят 8→20 и штраф снижен; бонус за побережье
+# (туристические зоны Лимассола, Ларнаки, Пафоса).
+SCORE_FORMULA = "cy-v1"
+SEA_RADIUS = 500
+
+
 def compose_score(res_500, res_1000, transit_300, shops_300, food_400,
-                  offices_500, edu_500, competitors_200, nearest_dodo_km):
+                  offices_500, edu_500, competitors_200, nearest_dodo_km, sea_500=False):
     """Композиция итогового скора из сигналов. Вынесено отдельно, чтобы пересчёт
-    из кэша (смена источника населения) использовал ту же формулу, что и score_location."""
-    s_catchment = _sat(res_500 / 10000.0)
-    s_secondary = _sat(res_1000 / 40000.0)
+    из кэша использовал ту же формулу, что и score_location."""
+    s_catchment = _sat(res_500 / 8000.0)
+    s_secondary = _sat(res_1000 / 30000.0)
     s_transit   = _sat(transit_300 / 6.0)
-    s_retail    = _sat(shops_300 / 40.0)
+    s_retail    = _sat(shops_300 / 30.0)
     s_food      = _sat(food_400 / 20.0)
     s_daytime   = _sat((offices_500 + 4 * edu_500) / 40.0)
-    s_comp_pen  = _sat(competitors_200 / 8.0)
+    s_sea       = 1.0 if sea_500 else 0.0
+    s_comp_pen  = _sat(competitors_200 / 20.0)
     s_cannib_pen = 0.0 if nearest_dodo_km is None else max(0.0, 1.0 - nearest_dodo_km / 0.6)
     score = 100.0 * (
-        0.28 * s_catchment + 0.10 * s_secondary + 0.16 * s_transit +
-        0.12 * s_retail + 0.12 * s_food + 0.14 * s_daytime -
-        0.10 * s_comp_pen - 0.08 * s_cannib_pen
+        0.32 * s_catchment + 0.10 * s_secondary + 0.04 * s_transit +
+        0.18 * s_retail + 0.16 * s_food + 0.14 * s_daytime + 0.06 * s_sea -
+        0.06 * s_comp_pen - 0.08 * s_cannib_pen
     )
     score = max(0, min(100, round(score)))
     return {
-        "score": score,
+        "score": score, "formula": SCORE_FORMULA,
         "residents_500": res_500, "residents_1000": res_1000,
         "transit_300": transit_300, "shops_300": shops_300, "food_400": food_400,
         "offices_500": offices_500, "edu_500": edu_500,
-        "competitors_200": competitors_200,
+        "competitors_200": competitors_200, "sea_500": bool(sea_500),
         "nearest_dodo_km": round(nearest_dodo_km, 2) if nearest_dodo_km is not None else None,
         "breakdown": {
             "catchment": round(s_catchment, 2), "secondary": round(s_secondary, 2),
             "transit": round(s_transit, 2), "retail": round(s_retail, 2),
-            "food": round(s_food, 2), "daytime": round(s_daytime, 2),
+            "food": round(s_food, 2), "daytime": round(s_daytime, 2), "sea": s_sea,
             "comp_penalty": round(s_comp_pen, 2), "cannib_penalty": round(s_cannib_pen, 2),
         },
     }
+
+
+def score_is_stale(sc):
+    return bool(sc) and sc.get("score") is not None and sc.get("formula") != SCORE_FORMULA
+
+
+def rescore_from_cache(sc):
+    """Пересчёт по текущей формуле из сырых сигналов старого score_data (без сети).
+    Сигналы, которых в старом кэше нет (sea_500), считаются нулевыми."""
+    new = compose_score(sc.get("residents_500") or 0, sc.get("residents_1000") or 0,
+                        sc.get("transit_300") or 0, sc.get("shops_300") or 0,
+                        sc.get("food_400") or 0, sc.get("offices_500") or 0,
+                        sc.get("edu_500") or 0, sc.get("competitors_200") or 0,
+                        sc.get("nearest_dodo_km"), sc.get("sea_500", False))
+    for k in ("pop_source", "residents_500_kontur", "residents_500_osm_raw", "low_rise_flag", "geo_source"):
+        if k in sc:
+            new[k] = sc[k]
+    return new
+
+
+def _min_dist_to_geom(lat, lon, e):
+    g = e.get("geometry") or []
+    return min((_hav(lat, lon, p["lat"], p["lon"]) for p in g), default=None)
 
 
 def score_location(lat, lon, dodo_points=None, elements=None):
@@ -236,9 +272,15 @@ def score_location(lat, lon, dodo_points=None, elements=None):
     res_500_osm = res_1000_osm = 0.0
     transit_300 = shops_300 = food_400 = offices_500 = 0
     edu_500 = direct_comp_200 = 0
+    sea_500 = False
 
     for e in elements:
         t = e.get("tags", {}) or {}
+        if t.get("natural") == "coastline":
+            dm = _min_dist_to_geom(lat, lon, e)
+            if dm is not None and dm <= SEA_RADIUS:
+                sea_500 = True
+            continue
         c = _centroid(e)
         if not c:
             continue
@@ -303,7 +345,7 @@ def score_location(lat, lon, dodo_points=None, elements=None):
         nearest_dodo_km = min(_hav(lat, lon, p[0], p[1]) for p in dodo_points) / 1000.0
 
     out = compose_score(res_500, res_1000, transit_300, shops_300, food_400,
-                        offices_500, edu_500, direct_comp_200, nearest_dodo_km)
+                        offices_500, edu_500, direct_comp_200, nearest_dodo_km, sea_500)
     out["pop_source"] = pop_source
     out["residents_500_kontur"] = round(k500) if k500 is not None else None
     out["residents_500_osm_raw"] = round(res_500_osm)
@@ -338,6 +380,8 @@ def score_line(sc):
         extra.append(f"🏢 {sc['offices_500']} offices/{sc['edu_500']} edu")
     if sc["competitors_200"]:
         extra.append(f"⚔️ {sc['competitors_200']} competitors in 200 m")
+    if sc.get("sea_500"):
+        extra.append("🌊 seafront")
     # Ближайшая Dodo дальше 10 км — это другой город (Кипр: точки известны не для
     # всех городов), строка «Dodo 58 km» только путает.
     if sc.get("nearest_dodo_km") is not None and sc["nearest_dodo_km"] <= 10:

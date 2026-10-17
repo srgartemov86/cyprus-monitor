@@ -1812,6 +1812,32 @@ def cmd_finalize():
     with StateLock():
         s = load_state()
         listings = s.get('listings', {})
+
+        # Смена формулы скоринга (scoring.SCORE_FORMULA): старые скоры пересчитываем
+        # из кэша сырых сигналов без Overpass, иначе карта и колонка M таблицы
+        # продолжают показывать числа по прошлой формуле.
+        rescored, _m_cells = 0, []
+        for k, r in listings.items():
+            sc = r.get('score_data') if isinstance(r, dict) else None
+            if scoring.score_is_stale(sc):
+                new = scoring.rescore_from_cache(sc)
+                r['score_data'], r['score'] = new, new['score']
+                rescored += 1
+        if rescored:
+            try:
+                urls = _sheets_service().spreadsheets().values().get(
+                    spreadsheetId=SPREADSHEET_ID, range='E2:E1000').execute().get('values', [])
+                row_by_url = {row[0].strip(): i for i, row in enumerate(urls, start=2) if row and row[0]}
+                for k, r in listings.items():
+                    if r.get('in_sheet') and r.get('score') is not None and r.get('url') in row_by_url:
+                        _m_cells.append({'row': row_by_url[r['url']], 'col': 13, 'value': r['score']})
+                if _m_cells and not DRY_RUN:
+                    update_cells(_m_cells)
+            except Exception as e:
+                out['rescore_sheet_error'] = str(e)[:160]
+        out['rescored'] = rescored
+        out['rescored_sheet_rows'] = len(_m_cells)
+
         if feedback:
             s['feedback_aggregates'] = feedback
             out['feedback_districts'] = len(feedback['by_district'])
