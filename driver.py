@@ -167,7 +167,7 @@ def send_text(text, reply_to=None, chat_id=None, html=False):
 
 
 def main():
-    out = run_json(['cycle.py'], 900)
+    out = run_json(['cycle.py'], 1500)  # bazaraki detail через прокси + Overpass: до ~15 мин
     if out.get('concurrent_cycle_running'):
         print('concurrent cycle running — exit')
         return 0

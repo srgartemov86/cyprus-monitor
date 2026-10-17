@@ -80,9 +80,11 @@ CITIES = {
 }
 TRG_LAT, TRG_LON = CITIES['Limassol']  # legacy-ссылки (карта); расстояние считаем до ближайшего города
 RADIUS_KM = 6.0
-# Один источник: лимит на цикл шире, чем в Клуже с тремя (очередь не должна висеть сутки)
-MAX_DETAILS_PER_CYCLE = 40
-MAX_DETAILS_PER_SOURCE = 40
+# ≤12 лотов за цикл: при ≥15 проходных driver шлёт одну сводку вместо карточек,
+# а скоринг каждого лота — отдельный запрос в Overpass (dry-run 17.10 с 30 лотами
+# шёл 25 мин). Очередь первого запуска рассасывается за 3–4 часовых цикла.
+MAX_DETAILS_PER_CYCLE = 12
+MAX_DETAILS_PER_SOURCE = 12
 
 
 def nearest_city(lat, lon):
@@ -105,13 +107,14 @@ MAX_PHOTOS_PER_LOT = 6
 PHOTO_WORKERS = 5
 # Курортные/дальние места вне четырёх городов (bazaraki относит их к районам
 # Лимассола/Пафоса/Ларнаки) — тихий реджект по слагу URL или метке локации.
-ZEMUN_SLUGS = ('ayia-napa', 'agia-napa', 'protaras', 'paralimni', 'pissouri', 'platres',
-               'polis', 'troodos', 'lefkara', 'kakopetria')
+# Ayia Napa здесь НЕТ: курорт лежит в district Famagusta (режется по городу), а
+# «Agia Napa» в Лимассоле — центральный район у церкви (ложный suburb 17.10).
+ZEMUN_SLUGS = ('protaras', 'paralimni', 'pissouri', 'platres', 'polis', 'troodos',
+               'lefkara', 'kakopetria')
 
 # Districts вне задачи (Famagusta) и те же курорты — для метки location.
-FAR_MUNI_SLUGS = ('famagusta', 'ayia-napa', 'agia-napa', 'protaras', 'paralimni', 'deryneia',
-                  'sotira', 'pissouri', 'platres', 'polis', 'troodos', 'lefkara', 'kakopetria',
-                  'athienou', 'pyla')
+FAR_MUNI_SLUGS = ('famagusta', 'protaras', 'paralimni', 'deryneia', 'sotira', 'pissouri',
+                  'platres', 'polis', 'troodos', 'lefkara', 'kakopetria', 'athienou', 'pyla')
 # «Near-miss» коридор цены для листа реджектов: рядом с целевым 1200–5000.
 PRICE_NEAR_LOW, PRICE_NEAR_HIGH = 900, 8000
 
@@ -504,7 +507,10 @@ def apply_filters(cand, detail, skip_price=False):
         r'(?:next\s+to|near|close\s+to|opposite|surrounded\s+by|area\s+with|among|'
         r'walking\s+distance\s+(?:to|from)|minutes?\s+(?:from|to)|plenty\s+of|lots\s+of|many)'
         r'[a-z,\s]{0,30}$')
-    for pat in OFFICE_PATS:
+    # Тип bazaraki «Shops, showrooms» / «Restaurants, bars» явный: «shop/office
+    # space» в тексте такого лота — не офис, а универсальное помещение.
+    _explicit_retail = any(w in type_ for w in ('shop', 'showroom', 'restaurant', 'bar'))
+    for pat in ([] if _explicit_retail else OFFICE_PATS):
         hard_hit = False
         for m_ in re.finditer(pat, haystack):
             ctx = haystack[max(0, m_.start() - 45):m_.start()]
