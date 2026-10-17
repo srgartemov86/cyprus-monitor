@@ -1565,7 +1565,7 @@ def run_process():
         for c in price_changes[:5]:
             print(f"  PRICE {c['key'][:40]}: {c['old']}€ → {c['new']}€", file=sys.stderr)
         if sources_down:
-            print(f'  sources_down={sources_down}', file=sys.stderr)
+            print(f'  sources_down={sources_down} errors={sweep_errors[:5]}', file=sys.stderr)
 
         # Реджекты теперь не в Telegram, а в лист «не прошли фильтр».
         reject_sheet = write_rejects_to_sheet(rejects)
