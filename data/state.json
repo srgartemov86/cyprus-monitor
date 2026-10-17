@@ -2049,7 +2049,35 @@
         "https://cdn1.bazaraki.com/media/cache1/99/fd/99fdf065fc22d90819f6c7c9c9eaa5db.webp",
         "https://cdn1.bazaraki.com/media/cache1/1b/ae/1bae65ed060683b995646fb9a95e2b19.webp"
       ],
-      "rejected": false
+      "rejected": false,
+      "score": 71,
+      "score_data": {
+        "score": 71,
+        "residents_500": 7183,
+        "residents_1000": 26643,
+        "transit_300": 6,
+        "shops_300": 41,
+        "food_400": 56,
+        "offices_500": 22,
+        "edu_500": 10,
+        "competitors_200": 15,
+        "nearest_dodo_km": 1.75,
+        "breakdown": {
+          "catchment": 0.72,
+          "secondary": 0.67,
+          "transit": 1.0,
+          "retail": 1.0,
+          "food": 1.0,
+          "daytime": 1.0,
+          "comp_penalty": 1.0,
+          "cannib_penalty": 0.0
+        },
+        "pop_source": "hybrid",
+        "residents_500_kontur": null,
+        "residents_500_osm_raw": 7183,
+        "geo_source": "detail"
+      },
+      "scored_at": "2026-10-17T17:43:53.335035Z"
     },
     "bazaraki_6540919": {
       "source": "bazaraki.com",
@@ -3145,5 +3173,6 @@
       "bazaraki_detail": "ok",
       "zyprus_detail": "skip: no live listing"
     }
-  }
+  },
+  "version": 1
 }

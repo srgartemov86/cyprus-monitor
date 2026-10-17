@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Cyprus locations — Dodo monitor</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+  body, html, #map { margin:0; padding:0; height:100%; font-family:-apple-system,BlinkMacSystemFont,sans-serif; }
+  #map { width:100%; height:100vh; }
+  .leaflet-popup-content { font-size:13px; line-height:1.45; max-width:320px; }
+  .lok-popup h3 { margin:0 0 6px 0; font-size:14px; }
+  .lok-popup .meta { color:#374151; margin-bottom:8px; }
+  .lok-popup .meta strong { color:#111; }
+  .lok-popup .desc { color:#1f2937; margin:8px 0; white-space:pre-wrap; }
+  .lok-popup .score-box { background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:7px 9px; margin:8px 0; }
+  .lok-popup .score-hd { font-size:13px; color:#0f172a; margin-bottom:3px; }
+  .lok-popup .score-rows { font-size:11.5px; color:#334155; line-height:1.5; }
+  .lok-popup .score-warn { font-size:11px; color:#b45309; margin-top:4px; }
+  .lok-popup .actions a { display:inline-block; padding:5px 10px; border-radius:6px; background:#2563eb; color:#fff; text-decoration:none; font-size:12px; margin-right:6px; }
+  .lok-popup .actions a.secondary { background:#e5e7eb; color:#111; }
+  .lok-popup .flags { font-size:11px; color:#b45309; margin-top:4px; }
+  .lok-popup .photo-wrap { position:relative; margin:2px 0 8px; user-select:none; }
+  .lok-popup .photo-wrap img { width:100%; height:175px; object-fit:cover; border-radius:8px;
+                                display:block; background:#e5e7eb; cursor:pointer; }
+  .lok-popup .photo-nav { position:absolute; top:50%; transform:translateY(-50%); width:40px; height:56px;
+                           display:flex; align-items:center; justify-content:center; cursor:pointer;
+                           background:rgba(0,0,0,0.6); color:#fff; font-size:30px; font-weight:700; border:none;
+                           border-radius:8px; box-shadow:0 1px 6px rgba(0,0,0,0.4); line-height:1; padding-bottom:4px; }
+  .lok-popup .photo-nav:hover { background:rgba(0,0,0,0.85); }
+  .lok-popup .photo-nav.prev { left:6px; }
+  .lok-popup .photo-nav.next { right:6px; }
+  .lok-popup .photo-count { position:absolute; right:8px; bottom:8px; background:rgba(0,0,0,0.55);
+                             color:#fff; font-size:11px; padding:2px 7px; border-radius:10px; }
+  .lok-popup .status-btns { display:flex; flex-wrap:wrap; gap:6px; margin:8px 0 2px; }
+  .lok-popup .status-btns button { border:1px solid #d1d5db; background:#f9fafb; color:#111;
+                                    border-radius:6px; padding:4px 9px; font-size:12px; cursor:pointer; }
+  .lok-popup .status-btns button:disabled { opacity:0.45; cursor:wait; }
+  .lok-popup .status-btns button.active.st-review { background:#2563eb; border-color:#2563eb; color:#fff; }
+  .lok-popup .status-btns button.active.st-progress { background:#dc2626; border-color:#dc2626; color:#fff; }
+  .lok-popup .status-btns button.active.st-no { background:#6b7280; border-color:#6b7280; color:#fff; }
+  #toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%); z-index:2000;
+            background:#111827; color:#fff; padding:9px 16px; border-radius:8px; font-size:13px;
+            box-shadow:0 4px 12px rgba(0,0,0,0.3); opacity:0; transition:opacity .25s; pointer-events:none; }
+  #toast.show { opacity:1; }
+  .lok-popup .footer { font-size:11px; color:#6b7280; margin-top:6px; }
+  .legend { position:absolute; bottom:18px; left:18px; z-index:1000; background:white; padding:10px 14px; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.15); font-size:12px; }
+  .legend .row { display:flex; align-items:center; margin:3px 0; }
+  .legend .dot { width:12px; height:12px; border-radius:50%; margin-right:8px; border:2px solid #fff; box-shadow:0 0 0 1px #9ca3af; }
+  .legend .dodo { width:18px; height:18px; margin-right:6px; margin-left:-3px; }
+  .dodo-marker { width:34px; height:34px; border-radius:50%; background:white; box-shadow:0 0 0 2px #ff6900, 0 2px 6px rgba(0,0,0,0.3); padding:2px; box-sizing:border-box; }
+  .dodo-marker img { width:100%; height:100%; border-radius:50%; }
+  .qsr-marker { width:18px; height:18px; border-radius:50%; background:white; box-shadow:0 0 0 1.5px rgba(0,0,0,0.35), 0 1px 3px rgba(0,0,0,0.25); padding:1px; box-sizing:border-box; }
+  .qsr-marker img { width:100%; height:100%; border-radius:50%; object-fit:cover; }
+  .qsr-letter { width:20px; height:20px; border-radius:50%; background:white; box-shadow:0 0 0 1.5px #111, 0 1px 3px rgba(0,0,0,0.3); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:12px; color:#111; font-family:-apple-system,BlinkMacSystemFont,sans-serif; }
+  .star-marker { font-size:28px; line-height:1; color:#dc2626; -webkit-text-stroke:1px #fff;
+                  text-shadow: -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff, 2px 2px 0 #fff,
+                               -2px 0 0 #fff, 2px 0 0 #fff, 0 -2px 0 #fff, 0 2px 0 #fff,
+                               0 2px 4px rgba(0,0,0,0.45); }
+  .star-marker.blue { color:#2563eb; }
+  .legend .star { display:inline-block; width:14px; font-size:15px; line-height:1; color:#dc2626;
+                   -webkit-text-stroke:0.5px #fff;
+                   text-shadow:-1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;
+                   margin-right:8px; }
+  .legend .star.blue { color:#2563eb; }
+  .stats { position:absolute; top:12px; right:12px; z-index:1000; background:white; padding:8px 12px; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.15); font-size:12px; }
+</style>
+</head>
+<body>
+<div id="map"></div>
+<div class="legend">
+  <div class="row"><img class="dodo" src="dodo-logo.png" alt="">Dodo Pizza</div>
+  <div class="row"><input type="checkbox" id="t-to_review" checked style="margin-right:6px"><span class="star blue">★</span>to review (<span id="c-to_review">0</span>)</div>
+  <div class="row"><input type="checkbox" id="t-in_progress" checked style="margin-right:6px"><span class="star">★</span>in progress (<span id="c-in_progress">0</span>)</div>
+  <div class="row"><input type="checkbox" id="t-fresh"  checked style="margin-right:6px"><span class="dot" style="background:#22c55e"></span>listed ≤ 2 days ago (<span id="c-fresh">0</span>)</div>
+  <div class="row"><input type="checkbox" id="t-recent" checked style="margin-right:6px"><span class="dot" style="background:#f59e0b"></span>3–15 days (<span id="c-recent">0</span>)</div>
+  <div class="row"><input type="checkbox" id="t-old"    checked style="margin-right:6px"><span class="dot" style="background:#9ca3af"></span>16+ days (<span id="c-old">0</span>)</div>
+  <div class="row"><input type="checkbox" id="t-not_suitable" style="margin-right:6px"><span class="dot" style="background:#dc2626"></span>not suitable (<span id="c-not_suitable">0</span>)</div>
+  <div class="row" style="border-top:1px solid #e5e7eb; margin-top:6px; padding-top:6px;"><input type="checkbox" id="t-top20" style="margin-right:6px"><span class="dot" style="background:transparent;border:3px solid #a855f7;width:11px;height:11px;box-sizing:border-box"></span>🏆 top 20% by score (<span id="c-top20">0</span>)</div>
+  <div id="qsr-legend" style="border-top:1px solid #e5e7eb; margin-top:6px; padding-top:6px;"></div>
+  <div class="row" style="border-top:1px solid #e5e7eb; margin-top:6px; padding-top:6px;"><input type="checkbox" id="t-clear-all" style="margin-right:6px"><span style="color:#6b7280;cursor:pointer">Clear selection</span></div>
+  <div class="row" style="border-top:1px solid #e5e7eb; margin-top:6px; padding-top:6px;"><a href="naselje_score.html" style="color:#2563eb; text-decoration:none;">🔥 Scoring heatmap →</a></div>
+</div>
+<div class="stats">Listings: <strong>25</strong> · updated 2026-10-17 19:43</div>
+<div id="toast"></div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const FEATURES = [{"id": "bazaraki_6727241", "lat": 34.91769214007071, "lon": 33.63190636834304, "district": "Larnaca (Larnaka - Finikoudes)", "address": "Shop in larnaca center", "area": 170.0, "price": 2700, "floor": "", "ceiling": null, "uncertain_ceiling": false, "url": "https://www.bazaraki.com/adv/6727241_shop-in-larnaca-center/", "source": "bazaraki.com", "title": "Shop in larnaca center", "description": "160 sq.m ground floor retail shop plus 85 sq.m mezzanine with dual commercial street frontage.\nFitted with a kitchenette, storage space, and 3 WCs; commercial kitchen extraction, HVAC, and power capacity not specified.\nRent price, deposit, availability, and VAT terms not disclosed.", "date_posted": "2026-10-17", "date_updated": "", "days_since": 0, "color": "#22c55e", "bucket": "fresh", "fresh_bucket": "fresh", "fresh_color": "#22c55e", "status": "", "score": 69, "score_data": {"score": 69, "residents_500": 7409, "residents_1000": 17655, "transit_300": 7, "shops_300": 78, "food_400": 30, "offices_500": 29, "edu_500": 7, "competitors_200": 15, "nearest_dodo_km": 58.26, "breakdown": {"catchment": 0.74, "secondary": 0.44, "transit": 1.0, "retail": 1.0, "food": 1.0, "daytime": 1.0, "comp_penalty": 1.0, "cannib_penalty": 0.0}, "pop_source": "hybrid", "residents_500_kontur": null, "residents_500_osm_raw": 7409, "geo_source": "detail"}, "removal_date": "", "sheet_row": null, "sheet_url": "", "gmaps": "https://www.google.com/maps/?q=34.91769214007071,33.63190636834304", "yandex": "https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=34.91769214007071%2C33.63190636834304", "manual_coord": false, "photos": ["https://cdn1.bazaraki.com/media/cache1/ca/ab/caab89d25617e65a409103c69ba9e4be.webp", "https://cdn1.bazaraki.com/media/cache1/a7/7b/a77bbbda1547cfcf2609a68a23f269c2.webp", "https://cdn1.bazaraki.com/media/cache1/1f/18/1f18b7e09cb6f699a41a8016643022c3.webp", "https://cdn1.bazaraki.com/media/cache1/1c/d1/1cd172491ac4933e43bba84259129dc0.webp", "https://cdn1.bazaraki.com/media/cache1/1a/cd/1acdcf8705f96e9c8325c59c690b9c0d.webp", "https://cdn1.bazaraki.com/media/cache1/ff/3b/ff3b0333669e356ded5db9e7e300e909.webp", "https://cdn1.bazaraki.com/media/cache1/bb/5f/bb5f5f0bec1ebb416e577075b1eba171.webp", "https://cdn1.bazaraki.com/media/cache1/67/ed/67ed7378ba713dfd1d2b8cf705a012fa.webp", "https://cdn1.bazaraki.com/media/cache1/d7/2d/d72d3daa51e38b2c568a91964f4a205c.webp", "https://cdn1.bazaraki.com/media/cache1/c1/f0/c1f0dc7189d480296580e87273d38dd3.webp"]}, {"id": "bazaraki_6788696", "lat": 34.68952120606528, "lon": 33.008370574117436, "district": "Limassol (Kato Polemidia)", "address": "Κατάστημα", "area": 100.0, "price": 1200, "floor": "", "ceiling": null, "uncertain_ceiling": false, "url": "https://www.bazaraki.com/adv/6788696_katastema/", "source": "bazaraki.com", "title": "Κατάστημα", "description": "Retail shop totaling 190 sqm: 100 sqm ground floor, 25 sqm mezzanine, and 65 sqm basement.\nCondition, street frontage, restaurant utilities (extraction, 3-phase power), and lease terms not specified.", "date_posted": "2026-10-17", "date_updated": "", "days_since": 0, "color": "#22c55e", "bucket": "fresh", "fresh_bucket": "fresh", "fresh_color": "#22c55e", "status": "", "score": 25, "score_data": {"score": 25, "residents_500": 390, "residents_1000": 3882, "transit_300": 6, "shops_300": 11, "food_400": 5, "offices_500": 1, "edu_500": 1, "competitors_200": 1, "nearest_dodo_km": 2.06, "breakdown": {"catchment": 0.04, "secondary": 0.1, "transit": 1.0, "retail": 0.28, "food": 0.25, "daytime": 0.12, "comp_penalty": 0.12, "cannib_penalty": 0.0}, "pop_source": "hybrid", "residents_500_kontur": null, "residents_500_osm_raw": 390, "geo_source": "detail"}, "removal_date": "", "sheet_row": null, "sheet_url": "", "gmaps": "https://www.google.com/maps/?q=34.68952120606528,33.008370574117436", "yandex": "https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=34.68952120606528%2C33.008370574117436", "manual_coord": false, "photos": ["https://cdn1.bazaraki.com/media/cache1/93/31/93312f33f67b49788573025bc841accf.webp", "https://cdn1.bazaraki.com/media/cache1/8c/4e/8c4ee9e94281f8c8d6d5d9cf0601df91.webp", "https://cdn1.bazaraki.com/media/cache1/8b/fd/8bfd04849e9940eb99435caf97f52354.webp", "https://cdn1.bazaraki.com/media/cache1/d1/9f/d19f674eafec0228cab61e80cb431592.webp", "https://cdn1.bazaraki.com/media/cache1/aa/a0/aaa0481e8fb4af0ff1a8bd454ed63e89.webp"]}, {"id": "bazaraki_6706354", "lat": 34.92708830293954, "lon": 33.63642112603378, "district": "Larnaca (Larnaka - Skala)", "address": "Renovated shop in central larnaca", "area": 120.0, "price": 1800, "floor": "ground floor", "ceiling": null, "uncertain_ceiling": false, "url": "https://www.bazaraki.com/adv/6706354_renovated-shop-in-central-larnaca/", "source": "bazaraki.com", "title": "Renovated shop in central larnaca", "description": "Renovated 120 sqm commercial space with 90 sqm ground floor and 30 sqm mezzanine.\nBright interior with modern finishes and mezzanine WC; no restaurant ventilation, kitchen, or power specs provided.\nRent price negotiable; deposit, VAT, and availability not specified.", "date_posted": "2026-10-17", "date_updated": "", "days_since": 0, "color": "#22c55e", "bucket": "fresh", "fresh_bucket": "fresh", "fresh_color": "#22c55e", "status": "", "score": 55, "score_data": {"score": 55, "residents_500": 6383, "residents_1000": 12899, "transit_300": 4, "shops_300": 48, "food_400": 22, "offices_500": 25, "edu_500": 0, "competitors_200": 8, "nearest_dodo_km": 59.1, "breakdown": {"catchment": 0.64, "secondary": 0.32, "transit": 0.67, "retail": 1.0, "food": 1.0, "daytime": 0.62, "comp_penalty": 1.0, "cannib_penalty": 0.0}, "pop_source": "hybrid", "residents_500_kontur": null, "residents_500_osm_raw": 6383, "geo_source": "detail"}, "removal_date": "", "sheet_row": null, "sheet_url": "", "gmaps": "https://www.google.com/maps/?q=34.92708830293954,33.63642112603378", "yandex": "https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=34.92708830293954%2C33.63642112603378", "manual_coord": false, "photos": ["https://cdn1.bazaraki.com/media/cache1/93/35/93353e509f0b1ddf7775c7b59003e59f.webp", "https://cdn1.bazaraki.com/media/cache1/c7/a3/c7a3413d6792728bae5312a01d15bc2a.webp", "https://cdn1.bazaraki.com/media/cache1/7a/89/7a8975c5eb74a2fb0901ce2280223c58.webp", "https://cdn1.bazaraki.com/media/cache1/fe/4c/fe4c3815013a2e88e0d47dbae9297fda.webp", "https://cdn1.bazaraki.com/media/cache1/12/82/1282b9fdd6a58d921764cf5371d3ad21.webp", "https://cdn1.bazaraki.com/media/cache1/17/2d/172dd1f7194a45f4e5b5810c714a428c.webp"]}, {"id": "bazaraki_6787652", "lat": 34.787694165194566, "lon": 32.430449989212285, "district": "Paphos (Agios Pavlos)", "address": "Shop office for rent", "area": 154.0, "price": 2500, "floor": "ground floor", "ceiling": null, "uncertain_ceiling": false, "url": "https://www.bazaraki.com/adv/6787652_shop-office-for-rent/", "source": "bazaraki.com", "title": "Shop office for rent", "description": "Ground-floor commercial space of 147 sqm internal area with 7 sqm covered veranda, partitioned into multiple rooms with dedicated parking.\nFeatures an existing kitchen and two bathrooms; ventilation extraction, 3-phase electricity, and HVAC are not mentioned.\nGround-level street presence; lease terms, rent, deposit, VAT, and availability date not specified.", "date_posted": "2026-10-17", "date_updated": "", "days_since": 0, "color": "#22c55e", "bucket": "fresh", "fresh_bucket": "fresh", "fresh_color": "#22c55e", "status": "", "score": 32, "score_data": {"score": 32, "residents_500": 2877, "residents_1000": 8853, "transit_300": 4, "shops_300": 23, "food_400": 4, "offices_500": 1, "edu_500": 1, "competitors_200": 0, "nearest_dodo_km": 54.68, "breakdown": {"catchment": 0.29, "secondary": 0.22, "transit": 0.67, "retail": 0.57, "food": 0.2, "daytime": 0.12, "comp_penalty": 0.0, "cannib_penalty": 0.0}, "pop_source": "hybrid", "residents_500_kontur": null, "residents_500_osm_raw": 2877, "geo_source": "detail"}, "removal_date": "", "sheet_row": null, "sheet_url": "", "gmaps": "https://www.google.com/maps/?q=34.787694165194566,32.430449989212285", "yandex": "https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=34.787694165194566%2C32.430449989212285", "manual_coord": false, "photos": ["https://cdn1.bazaraki.com/media/cache1/cb/e2/cbe2b72398129d408a2f6ee139231e42.webp", "https://cdn1.bazaraki.com/media/cache1/59/d9/59d95bccda8574674aa1f96eac0649d2.webp", "https://cdn1.bazaraki.com/media/cache1/34/8a/348abe93dd4f90e7f20a38808d7e689c.webp", "https://cdn1.bazaraki.com/media/cache1/9a/98/9a987b1b0dd9abd240bea997a7af74f3.webp", "https://cdn1.bazaraki.com/media/cache1/d0/ec/d0ecac828035d6507b83ce31662b4224.webp", "https://cdn1.bazaraki.com/media/cache1/85/88/858826da12cfc500f1a508a331d400fd.webp", "https://cdn1.bazaraki.com/media/cache1/e1/cb/e1cb48bab5bef7002788704e6c94e3ee.webp", "https://cdn1.bazaraki.com/media/cache1/84/55/84557715c928ff5ac702d8e559d21a53.webp", "https://cdn1.bazaraki.com/media/cache1/09/7a/097af080943c1db339312cabd78726a1.webp", "https://cdn1.bazaraki.com/media/cache1/ab/b4/abb42ab71d6e5c150adf8d9ba8552c5b.webp"]}, {"id": "bazaraki_6784933", "lat": 34.67163030800678, "lon": 33.02840815140303, "district": "Limassol (Agios Ioannis Lemesou)", "address": "Shop/office/storage 120 sqm", "area": 120.0, "price": 1350, "floor": "ground floor", "ceiling": null, "uncertain_ceiling": false, "url": "https://www.bazaraki.com/adv/6784933_shop-office-storage-120-sqm/", "source": "bazaraki.com", "title": "Shop/office/storage 120 sqm", "description": "120 sqm ground floor commercial space with parking, partitioned into 4 rooms and a reception area.\nNo details provided on kitchen provisions, ventilation, extraction, 3-phase power, HVAC, or street frontage.\nRestaurant use subject to permits; rent, deposit, VAT, and availability terms not specified.", "date_posted": "2026-10-17", "date_updated": "", "days_since": 0, "color": "#22c55e", "bucket": "fresh", "fresh_bucket": "fresh", "fresh_color": "#22c55e", "status": "", "score": 24, "score_data": {"score": 24, "residents_500": 2765, "residents_1000": 10494, "transit_300": 2, "shops_300": 4, "food_400": 0, "offices_500": 3, "edu_500": 4, "competitors_200": 0, "nearest_dodo_km": 1.52, "breakdown": {"catchment": 0.28, "secondary": 0.26, "transit": 0.33, "retail": 0.1, "food": 0.0, "daytime": 0.47, "comp_penalty": 0.0, "cannib_penalty": 0.0}, "pop_source": "hybrid", "residents_500_kontur": null, "residents_500_osm_raw": 2765, "geo_source": "detail"}, "removal_date": "", "sheet_row": null, "sheet_url": "", "gmaps": "https://www.google.com/maps/?q=34.67163030800678,33.02840815140303", "yandex": "https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=34.67163030800678%2C33.02840815140303", "manual_coord": false, "photos": ["https://cdn1.bazaraki.com/media/cache1/55/d3/55d3f88a1ad74d11fc48420c62d21bba.webp", "https://cdn1.bazaraki.com/media/cache1/8e/69/8e693506fbedb8493e7b502771fc78f9.webp", "https://cdn1.bazaraki.com/media/cache1/b2/65/b2659b77f0c7093f11038d19d613719f.webp", "https://cdn1.bazaraki.com/media/cache1/67/fd/67fdd0ba688f7f0b1c0f0d02d2c46b08.webp", "https://cdn1.bazaraki.com/media/cache1/ba/96/ba964a5940bb86e21546d43b85eccb5b.webp", "https://cdn1.bazaraki.com/media/cache1/fb/11/fb11d6ab6d08ae34935196373a37bb2d.webp", "https://cdn1.bazaraki.com/media/cache1/36/3c/363c6aed05a8e21b10bbb7810964dcb7.webp", "https://cdn1.bazaraki.com/media/cache1/d7/62/d7627708303a4dbf80cc46c24208ee2d.webp", "https://cdn1.bazaraki.com/media/cache1/4b/5f/4b5f5362fb2b7225b6bd606ed333572b.webp", "https://cdn1.bazaraki.com/media/cache1/4c/75/4c75ee383eeb1f3a01005bbe97b9add0.webp"]}, {"id": "bazaraki_6783214", "lat": 34.6853976198807, "lon": 33.02771137195728, "district": "Limassol (Katholiki)", "address": "Shop/ office - 103 sqm - prime central location in katholiki area", "area": 103.0, "price": 2000, "floor": "ground floor", "ceiling": null, "uncertain_ceiling": false, "url": "https://www.bazaraki.com/adv/6783214_shop-office-103-sqm-prime-central-location-in-katholiki-area/", "source": "bazaraki.com", "title": "Shop/ office - 103 sqm - prime central location in katholiki area", "description": "103 sqm ground-floor open-plan commercial space with bright layout and ample surrounding parking.\nUnequipped kitchenette, 1 WC, and 1 AC unit installed; restaurant ventilation, extraction, and power specs not stated.\nDeposit, VAT, and availability terms not specified.", "date_posted": "2026-10-17", "date_updated": "", "days_since": 0, "color": "#22c55e", "bucket": "fresh", "fresh_bucket": "fresh", "fresh_color": "#22c55e", "status": "", "score": 50, "score_data": {"score": 50, "residents_500": 6999, "residents_1000": 23781, "transit_300": 2, "shops_300": 15, "food_400": 5, "offices_500": 7, "edu_500": 10, "competitors_200": 2, "nearest_dodo_km": 2.15, "breakdown": {"catchment": 0.7, "secondary": 0.59, "transit": 0.33, "retail": 0.38, "food": 0.25, "daytime": 1.0, "comp_penalty": 0.25, "cannib_penalty": 0.0}, "pop_source": "hybrid", "residents_500_kontur": null, "residents_500_osm_raw": 6999, "geo_source": "detail_approx"}, "removal_date": "", "sheet_row": null, "sheet_url": "", "gmaps": "https://www.google.com/maps/?q=34.6853976198807,33.02771137195728", "yandex": "https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=34.6853976198807%2C33.02771137195728", "manual_coord": false, "photos": ["https://cdn1.bazaraki.com/media/cache1/06/96/06962462545ad83af2660d298efd3c46.webp", "https://cdn1.bazaraki.com/media/cache1/93/6b/936bc354033ba461c581b6c92cc9ad15.webp", "https://cdn1.bazaraki.com/media/cache1/fe/c6/fec6ba179f13221f517c3c10d53b0835.webp", "https://cdn1.bazaraki.com/media/cache1/c0/61/c061851ccd5270b456d52b6cc36c4067.webp", "https://cdn1.bazaraki.com/media/cache1/c2/57/c257ed30ccde201e40dca65776390c85.webp"]}, {"id": "bazaraki_6474918", "lat": 34.68973928310783, "lon": 33.03653284721599, "district": "Limassol (Katholiki)", "address": "Shop or office central town", "area": 130.0, "price": 2500, "floor": "ground floor", "ceiling": null, "uncertain_ceiling": false, "url": "https://www.bazaraki.com/adv/6474918_shop-or-office-central-town/", "source": "bazaraki.com", "title": "Shop or office central town", "description": "130 sqm ground-floor shop/office in good condition, built in 2009.\nIncludes one A/C unit and one parking space; no ventilation, commercial kitchen, or power specs noted.\nFinancial terms, deposit, VAT, and availability not disclosed.", "date_posted": "2026-10-17", "date_updated": "", "days_since": 0, "color": "#22c55e", "bucket": "fresh", "fresh_bucket": "fresh", "fresh_color": "#22c55e", "status": "", "score": 72, "score_data": {"score": 72, "residents_500": 7287, "residents_1000": 29302, "transit_300": 7, "shops_300": 37, "food_400": 15, "offices_500": 14, "edu_500": 10, "competitors_200": 5, "nearest_dodo_km": 2.25, "breakdown": {"catchment": 0.73, "secondary": 0.73, "transit": 1.0, "retail": 0.93, "food": 0.75, "daytime": 1.0, "comp_penalty": 0.62, "cannib_penalty": 0.0}, "pop_source": "hybrid", "residents_500_kontur": null, "residents_500_osm_raw": 7287, "geo_source": "detail"}, "removal_date": "", "sheet_row": null, "sheet_url": "", "gmaps": "https://www.google.com/maps/?q=34.68973928310783,33.03653284721599", "yandex": "https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=34.68973928310783%2C33.03653284721599", "manual_coord": false, "photos": ["https://cdn1.bazaraki.com/media/cache1/92/8e/928e4e31cfa8bbd1ebe4fb474aa6ab0b.webp", "https://cdn1.bazaraki.com/media/cache1/f2/19/f2198891eb4a1113619eed83e14b308d.webp", "https://cdn1.bazaraki.com/media/cache1/84/6c/846c6835605e1942ed82c3263be981db.webp", "https://cdn1.bazaraki.com/media/cache1/1b/bf/1bbf2cced4e0046909ca55adb0afebac.webp", "https://cdn1.bazaraki.com/media/cache1/ec/9c/ec9cb704695498ad8d45f4ccaee9c5d8.webp", "https://cdn1.bazaraki.com/media/cache1/54/7f/547f5ad928cf1e179a0c5992011c80a6.webp", "https://cdn1.bazaraki.com/media/cache1/7e/24/7e24e5006f46b2477339846db27e9c3d.webp"]}, {"id": "bazaraki_6702345", "lat": 34.91668937584582, "lon": 33.63316931870418, "district": "Larnaca (Larnaka - Skala)", "address": "Prime corner commercial space to let central larnaca", "area": 92.0, "price": 1200, "floor": "ground floor", "ceiling": null, "uncertain_ceiling": false, "url": "https://www.bazaraki.com/adv/6702345_prime-corner-commercial-space-to-let-central-larnaca/", "source": "bazaraki.com", "title": "Prime corner commercial space to let central larnaca", "description": "92 sqm fully refurbished two-level corner space (62 sqm ground floor plus 30 sqm mezzanine) with prominent glass street frontage and high footfall.\nFeatures open plan layout, partitioned room/storage, technical area, two toilets, and kitchenette; commercial kitchen extraction and power specs not specified.\nAvailable at the end of the month with service charges of €140/month; rent, deposit, and VAT not specified.", "date_posted": "2026-10-17", "date_updated": "", "days_since": 0, "color": "#22c55e", "bucket": "fresh", "fresh_bucket": "fresh", "fresh_color": "#22c55e", "status": "", "score": 70, "score_data": {"score": 70, "residents_500": 7836, "residents_1000": 17066, "transit_300": 7, "shops_300": 118, "food_400": 48, "offices_500": 33, "edu_500": 7, "competitors_200": 14, "nearest_dodo_km": 58.32, "breakdown": {"catchment": 0.78, "secondary": 0.43, "transit": 1.0, "retail": 1.0, "food": 1.0, "daytime": 1.0, "comp_penalty": 1.0, "cannib_penalty": 0.0}, "pop_source": "hybrid", "residents_500_kontur": null, "residents_500_osm_raw": 7836, "geo_source": "detail"}, "removal_date": "", "sheet_row": null, "sheet_url": "", "gmaps": "https://www.google.com/maps/?q=34.91668937584582,33.63316931870418", "yandex": "https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=34.91668937584582%2C33.63316931870418", "manual_coord": false, "photos": ["https://cdn1.bazaraki.com/media/cache1/30/c1/30c1010f5b9d601142236eecc4326c8b.webp", "https://cdn1.bazaraki.com/media/cache1/8e/ff/8eff308695843f884120fb20ae95dc30.webp", "https://cdn1.bazaraki.com/media/cache1/80/63/8063182bdc21f5300a2f61f5953825b0.webp", "https://cdn1.bazaraki.com/media/cache1/bf/d5/bfd528b4e06b41f6907cf194df827198.webp", "https://cdn1.bazaraki.com/media/cache1/58/81/5881a5f0d7037d35e4adbf7b8427c109.webp", "https://cdn1.bazaraki.com/media/cache1/a6/3b/a63b104096c570a8c02f21c9c19799bd.webp", "https://cdn1.bazaraki.com/media/cache1/4e/89/4e89d731c3c7ac22ced080772f0f4242.webp"]}, {"id": "bazaraki_6722300", "lat": 34.68584778, "lon": 33.02498148, "district": "Limassol (Agios Georgios Lemesou)", "address": "Shop in agios georgios", "area": 135.0, "price": 2950, "floor": "ground floor", "ceiling": null, "uncertain_ceiling": false, "url": "https://www.bazaraki.com/adv/6722300_shop-in-agios-georgios/", "source": "bazaraki.com", "title": "Shop in agios georgios", "description": "Ground-floor commercial space, unfurnished, versatile layout with two private bathrooms.\nUnspecified utilities, ventilation, and HVAC details; highway proximity ensures high accessibility.\nLease terms, deposit, availability, and VAT status not specified in the listing.", "date_posted": "2026-10-17", "date_updated": "", "days_since": 0, "color": "#22c55e", "bucket": "fresh", "fresh_bucket": "fresh", "fresh_color": "#22c55e", "status": "", "score": 46, "score_data": {"score": 46, "residents_500": 6755, "residents_1000": 20424, "transit_300": 2, "shops_300": 14, "food_400": 5, "offices_500": 2, "edu_500": 9, "competitors_200": 3, "nearest_dodo_km": 2.03, "breakdown": {"catchment": 0.68, "secondary": 0.51, "transit": 0.33, "retail": 0.35, "food": 0.25, "daytime": 0.95, "comp_penalty": 0.38, "cannib_penalty": 0.0}, "pop_source": "hybrid", "residents_500_kontur": null, "residents_500_osm_raw": 6755, "geo_source": "detail"}, "removal_date": "", "sheet_row": null, "sheet_url": "", "gmaps": "https://www.google.com/maps/?q=34.68584778,33.02498148", "yandex": "https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=34.68584778%2C33.02498148", "manual_coord": false, "photos": ["https://cdn1.bazaraki.com/media/cache1/40/7e/407eb72d40bbc2a056e59531f7455d7e.webp", "https://cdn1.bazaraki.com/media/cache1/92/bf/92bfac7136d4abb6f4bbdeb70b6e2700.webp", "https://cdn1.bazaraki.com/media/cache1/15/1b/151bf5c8f9ce93e4f570e621f708bc25.webp", "https://cdn1.bazaraki.com/media/cache1/5b/b3/5bb3b331ff5010122ebb24425ec6a36f.webp", "https://cdn1.bazaraki.com/media/cache1/83/37/83370b719256722f3fb5be57db62e694.webp", "https://cdn1.bazaraki.com/media/cache1/29/49/29490515f354754384e6ab370b1e313f.webp", "https://cdn1.bazaraki.com/media/cache1/a1/45/a145c9431c5683f6940a02f04af003a7.webp"]}, {"id": "bazaraki_6219145", "lat": 34.686173, "lon": 33.037377, "district": "Limassol (Katholiki)", "address": "Office with mezzanine in katholiki, limassol", "area": 113.0, "price": 2500, "floor": "", "ceiling": null, "uncertain_ceiling": false, "url": "https://www.bazaraki.com/adv/6219145_shop-mezzanine-in-katholiki-limassol/", "source": "bazaraki.com", "title": "Office with mezzanine in katholiki, limassol", "description": "Office space with mezzanine; condition, frontage, and floor level unspecified.\nVentilation, extraction, power capacity, and kitchen provisions unspecified.\nRent listed at 25 (likely per sqm); deposit, VAT, and availability unspecified.", "date_posted": "2026-10-17", "date_updated": "", "days_since": 0, "color": "#22c55e", "bucket": "fresh", "fresh_bucket": "fresh", "fresh_color": "#22c55e", "status": "", "score": 71, "score_data": {"score": 71, "residents_500": 7203, "residents_1000": 31182, "transit_300": 11, "shops_300": 43, "food_400": 19, "offices_500": 16, "edu_500": 12, "competitors_200": 8, "nearest_dodo_km": 2.11, "breakdown": {"catchment": 0.72, "secondary": 0.78, "transit": 1.0, "retail": 1.0, "food": 0.95, "daytime": 1.0, "comp_penalty": 1.0, "cannib_penalty": 0.0}, "pop_source": "hybrid", "residents_500_kontur": null, "residents_500_osm_raw": 7203, "geo_source": "detail"}, "removal_date": "", "sheet_row": null, "sheet_url": "", "gmaps": "https://www.google.com/maps/?q=34.686173,33.037377", "yandex": "https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=34.686173%2C33.037377", "manual_coord": false, "photos": ["https://cdn1.bazaraki.com/media/cache1/22/ff/22ffcddd0aa39c81ca7c1b84b6b32dfb.webp", "https://cdn1.bazaraki.com/media/cache1/ba/0e/ba0ec89024273dccf81f90055c0d09ef.webp", "https://cdn1.bazaraki.com/media/cache1/ea/4d/ea4d955dc643b3f0cc954f604e5e1468.webp", "https://cdn1.bazaraki.com/media/cache1/a4/40/a440198c3d75f16d427fa65814f5bdcf.webp", "https://cdn1.bazaraki.com/media/cache1/cb/75/cb757b0db3071f8c32440a9c8f6b4de0.webp", "https://cdn1.bazaraki.com/media/cache1/b8/c9/b8c9f4eaec0592ac73fcaa7b417ad9b6.webp", "https://cdn1.bazaraki.com/media/cache1/eb/74/eb7448008de87694c14cc6ae848463f4.webp", "https://cdn1.bazaraki.com/media/cache1/0d/51/0d513c34d497df50adfafb1014433b2a.webp"]}, {"id": "bazaraki_6508359", "lat": 34.91729094, "lon": 33.63550173, "district": "Larnaca (Larnaka - Skala)", "address": "Prime retail shop in a brand-new building in the finikoudes area", "area": 89.0, "price": 2000, "floor": "", "ceiling": null, "uncertain_ceiling": false, "url": "https://www.bazaraki.com/adv/6508359_prime-retail-shop-in-a-brand-new-building-in-the-finikoudes-area/", "source": "bazaraki.com", "title": "Prime retail shop in a brand-new building in the finikoudes area", "description": "Ground floor retail shop in brand-new condition.\nMain road street frontage with strong visibility and high pedestrian flow.\nUtilities, extraction, power capacity, and lease terms not specified.", "date_posted": "2026-10-17", "date_updated": "", "days_since": 0, "color": "#22c55e", "bucket": "fresh", "fresh_bucket": "fresh", "fresh_color": "#22c55e", "status": "", "score": 65, "score_data": {"score": 65, "residents_500": 6046, "residents_1000": 15465, "transit_300": 7, "shops_300": 138, "food_400": 72, "offices_500": 28, "edu_500": 4, "competitors_200": 22, "nearest_dodo_km": 58.54, "breakdown": {"catchment": 0.6, "secondary": 0.39, "transit": 1.0, "retail": 1.0, "food": 1.0, "daytime": 1.0, "comp_penalty": 1.0, "cannib_penalty": 0.0}, "pop_source": "hybrid", "residents_500_kontur": null, "residents_500_osm_raw": 6046, "geo_source": "detail"}, "removal_date": "", "sheet_row": null, "sheet_url": "", "gmaps": "https://www.google.com/maps/?q=34.91729094,33.63550173", "yandex": "https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=34.91729094%2C33.63550173", "manual_coord": false, "photos": ["https://cdn1.bazaraki.com/media/cache1/8b/db/8bdba1a10311ab4f2848877a7b7e5196.webp", "https://cdn1.bazaraki.com/media/cache1/2b/7f/2b7f6bb216005ba2438cd18a23f9209e.webp", "https://cdn1.bazaraki.com/media/cache1/74/99/7499c2f19e20dcddcdc52d0c30823fa5.webp", "https://cdn1.bazaraki.com/media/cache1/63/29/6329e40d15bd189573c15218e905b76e.webp", "https://cdn1.bazaraki.com/media/cache1/fa/a0/faa01776de3d64b2b976f7341a31d325.webp", "https://cdn1.bazaraki.com/media/cache1/f7/32/f732660f7d25c5b243438045b7b2ba1e.webp"]}, {"id": "bazaraki_6779312", "lat": 35.15551103221544, "lon": 33.314096940670964, "district": "Nicosia (Egkomi)", "address": "Spacious shop in egkomi", "area": 150.0, "price": 2000, "floor": "", "ceiling": null, "uncertain_ceiling": false, "url": "https://www.bazaraki.com/adv/6779312_spacious-shop-in-egkomi/", "source": "bazaraki.com", "title": "Spacious shop in egkomi", "description": "Spacious open-plan commercial unit previously fitted and operated as a restaurant.\nIncludes a dedicated kitchen, two WCs, and a large covered veranda/patio that can be enclosed in winter.\nFrontage, floor level, utilities specs, and lease terms not specified.", "date_posted": "2026-10-17", "date_updated": "", "days_since": 0, "color": "#22c55e", "bucket": "fresh", "fresh_bucket": "fresh", "fresh_color": "#22c55e", "status": "", "score": 34, "score_data": {"score": 34, "residents_500": 4709, "residents_1000": 14920, "transit_300": 4, "shops_300": 10, "food_400": 3, "offices_500": 4, "edu_500": 2, "competitors_200": 2, "nearest_dodo_km": 57.23, "breakdown": {"catchment": 0.47, "secondary": 0.37, "transit": 0.67, "retail": 0.25, "food": 0.15, "daytime": 0.3, "comp_penalty": 0.25, "cannib_penalty": 0.0}, "pop_source": "hybrid", "residents_500_kontur": null, "residents_500_osm_raw": 4709, "geo_source": "detail"}, "removal_date": "", "sheet_row": null, "sheet_url": "", "gmaps": "https://www.google.com/maps/?q=35.15551103221544,33.314096940670964", "yandex": "https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=35.15551103221544%2C33.314096940670964", "manual_coord": false, "photos": ["https://cdn1.bazaraki.com/media/cache1/2c/2a/2c2ad01c6b56014129dda0dae13d59a5.webp", "https://cdn1.bazaraki.com/media/cache1/6b/95/6b956747714b2b659ec05da784b4eb26.webp", "https://cdn1.bazaraki.com/media/cache1/6e/50/6e50f77af4514691a5f2ec136e7dea41.webp", "https://cdn1.bazaraki.com/media/cache1/02/24/02243dbc474af8d3b6ea20054e9e7d67.webp", "https://cdn1.bazaraki.com/media/cache1/27/ff/27ff7429a9e75949a307ecea7ee7838f.webp", "https://cdn1.bazaraki.com/media/cache1/db/fd/dbfd6c24fade7a6c2e98566872e055b6.webp", "https://cdn1.bazaraki.com/media/cache1/28/f3/28f36b9272256419c357aaadc29aef06.webp", "https://cdn1.bazaraki.com/media/cache1/a5/41/a54166663ce6fdd653f48238674b6a33.webp", "https://cdn1.bazaraki.com/media/cache1/9f/d3/9fd3560e445df80a157613437ecb265f.webp", "https://cdn1.bazaraki.com/media/cache1/fa/ff/faffd3beceb14161b36f0c47bc11f252.webp"]}, {"id": "bazaraki_6659610", "lat": 34.67418342351888, "lon": 33.01594605870179, "district": "Limassol (Polemidia - Makarios III)", "address": "Shop/showroom 210 m | prime location on pafou street", "area": 210.0, "price": 6000, "floor": "", "ceiling": null, "uncertain_ceiling": false, "url": "https://www.bazaraki.com/adv/6659610_shop-showroom-for-rent-210-m-prime-location-on-pafou-street/", "source": "bazaraki.com", "title": "Shop/showroom 210 m | prime location on pafou street", "description": "210 sqm open showroom, ground floor level, excellent street frontage with high visibility\nEquipped with kitchenette, 1 toilet, fully air-conditioned, modern lighting, 2 private parking spaces\nReady for immediate occupancy, terms upon inquiry", "date_posted": "2026-10-17", "date_updated": "", "days_since": 0, "color": "#22c55e", "bucket": "fresh", "fresh_bucket": "fresh", "fresh_color": "#22c55e", "status": "", "score": 32, "score_data": {"score": 32, "residents_500": 3902, "residents_1000": 9374, "transit_300": 7, "shops_300": 6, "food_400": 0, "offices_500": 1, "edu_500": 1, "competitors_200": 0, "nearest_dodo_km": 0.51, "breakdown": {"catchment": 0.39, "secondary": 0.23, "transit": 1.0, "retail": 0.15, "food": 0.0, "daytime": 0.12, "comp_penalty": 0.0, "cannib_penalty": 0.15}, "pop_source": "hybrid", "residents_500_kontur": null, "residents_500_osm_raw": 3902, "geo_source": "detail"}, "removal_date": "", "sheet_row": null, "sheet_url": "", "gmaps": "https://www.google.com/maps/?q=34.67418342351888,33.01594605870179", "yandex": "https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=34.67418342351888%2C33.01594605870179", "manual_coord": false, "photos": ["https://cdn1.bazaraki.com/media/cache1/fc/da/fcda74d8c640d47a1f9b85525965aafb.webp", "https://cdn1.bazaraki.com/media/cache1/c4/dc/c4dcac40bb2afb5df6bbb9e2a4c1a62d.webp", "https://cdn1.bazaraki.com/media/cache1/d4/bc/d4bcd89e4c9b696dbca443b633f8747a.webp", "https://cdn1.bazaraki.com/media/cache1/50/c9/50c985dea7d274d5e118b872e8bd6cf2.webp"]}, {"id": "bazaraki_6607303", "lat": 34.693779537418, "lon": 33.018872737885, "district": "Limassol (Agios Georgios)", "address": "Retail, shop, limassol, agios georgios", "area": 190.0, "price": 3200, "floor": "ground floor", "ceiling": null, "uncertain_ceiling": false, "url": "https://www.bazaraki.com/adv/6607303_retail-shop-limassol-agios-georgios/", "source": "bazaraki.com", "title": "Retail, shop, limassol, agios georgios", "description": "Ground floor retail shop with mezzanine, private office, and storage space.\nLarge prime street frontage with high visibility.\nFitted with kitchenette and bathroom; extraction, power capacity, HVAC, and lease terms not specified.", "date_posted": "2026-10-17", "date_updated": "", "days_since": 0, "color": "#22c55e", "bucket": "fresh", "fresh_bucket": "fresh", "fresh_color": "#22c55e", "status": "", "score": 26, "score_data": {"score": 26, "residents_500": 1250, "residents_1000": 8732, "transit_300": 4, "shops_300": 1, "food_400": 6, "offices_500": 1, "edu_500": 4, "competitors_200": 0, "nearest_dodo_km": 2.59, "breakdown": {"catchment": 0.12, "secondary": 0.22, "transit": 0.67, "retail": 0.03, "food": 0.3, "daytime": 0.42, "comp_penalty": 0.0, "cannib_penalty": 0.0}, "pop_source": "hybrid", "residents_500_kontur": null, "residents_500_osm_raw": 1250, "geo_source": "detail"}, "removal_date": "", "sheet_row": null, "sheet_url": "", "gmaps": "https://www.google.com/maps/?q=34.693779537418,33.018872737885", "yandex": "https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=34.693779537418%2C33.018872737885", "manual_coord": false, "photos": ["https://cdn1.bazaraki.com/media/cache1/63/49/634951572ea2fd629c622e384945988c.webp", "https://cdn1.bazaraki.com/media/cache1/98/16/98164e285adc0bf4a4e051d0d6d66dbc.webp", "https://cdn1.bazaraki.com/media/cache1/a4/b7/a4b71b453db928e7742afb6cd1dc4cad.webp", "https://cdn1.bazaraki.com/media/cache1/27/a7/27a7524b2fe99a003ac0eec697927acb.webp", "https://cdn1.bazaraki.com/media/cache1/ca/ae/caaee3b29bd890f2dc9be508df5af406.webp", "https://cdn1.bazaraki.com/media/cache1/4f/03/4f0390f8c706071734f87719c2ca7b71.webp", "https://cdn1.bazaraki.com/media/cache1/84/81/8481318b5ee0681cb2ea2a63831f2f04.webp", "https://cdn1.bazaraki.com/media/cache1/0f/dc/0fdc30f43f50fa9cf708a1c85e3b794f.webp", "https://cdn1.bazaraki.com/media/cache1/90/fb/90fbd2761d889e2acd97be477d6fa21f.webp"]}, {"id": "bazaraki_6773071", "lat": 35.15310642296305, "lon": 33.343721195621924, "district": "Nicosia (Strovolos - Chryseleousa)", "address": "Showroom 175 sq.m + 85 mezzanine", "area": 175.0, "price": 2000, "floor": "ground floor", "ceiling": null, "uncertain_ceiling": false, "url": "https://www.bazaraki.com/adv/6773071_showroom-175-sq-m-85-mezzanine/", "source": "bazaraki.com", "title": "Showroom 175 sq.m + 85 mezzanine", "description": "Excellent condition corner showroom with 175 sqm ground floor open space, 86 sqm mezzanine, and 6 parking spaces.\nHigh-traffic main street corner frontage, fitted with A/C units, 2 kitchenettes, and 2 WCs; commercial kitchen extraction and power specs not specified.\nImmediate availability; rent, deposit, and VAT terms not specified.", "date_posted": "2026-10-17", "date_updated": "", "days_since": 0, "color": "#22c55e", "bucket": "fresh", "fresh_bucket": "fresh", "fresh_color": "#22c55e", "status": "", "score": 55, "score_data": {"score": 55, "residents_500": 6618, "residents_1000": 21498, "transit_300": 5, "shops_300": 15, "food_400": 4, "offices_500": 16, "edu_500": 5, "competitors_200": 1, "nearest_dodo_km": 58.14, "breakdown": {"catchment": 0.66, "secondary": 0.54, "transit": 0.83, "retail": 0.38, "food": 0.2, "daytime": 0.9, "comp_penalty": 0.12, "cannib_penalty": 0.0}, "pop_source": "hybrid", "residents_500_kontur": null, "residents_500_osm_raw": 6618, "geo_source": "detail"}, "removal_date": "", "sheet_row": null, "sheet_url": "", "gmaps": "https://www.google.com/maps/?q=35.15310642296305,33.343721195621924", "yandex": "https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=35.15310642296305%2C33.343721195621924", "manual_coord": false, "photos": ["https://cdn1.bazaraki.com/media/cache1/8e/a2/8ea2fd02d7e20a41a43cd862728c9ffd.webp", "https://cdn1.bazaraki.com/media/cache1/30/50/3050fdbe05d4986dc72fa039a1539fb1.webp", "https://cdn1.bazaraki.com/media/cache1/11/4c/114c4c42fca3c3f9c4e558d774078271.webp", "https://cdn1.bazaraki.com/media/cache1/d4/44/d4445c8dd7b82351f08562c5c6ad3f06.webp", "https://cdn1.bazaraki.com/media/cache1/b9/00/b900e12aac31a90876d5a4ad5ed16334.webp", "https://cdn1.bazaraki.com/media/cache1/d5/d9/d5d964965148b3c2da3929c10adf52cf.webp", "https://cdn1.bazaraki.com/media/cache1/96/68/9668f6c7c7fe941a163e31501add8fcd.webp", "https://cdn1.bazaraki.com/media/cache1/1b/69/1b696ef729dc406142321bff95ffca1b.webp", "https://cdn1.bazaraki.com/media/cache1/8a/2c/8a2c1325878f6b344e628fc471aca89f.webp", "https://cdn1.bazaraki.com/media/cache1/3c/5e/3c5ebdf749053c4cd7e12d14148353f3.webp"]}, {"id": "bazaraki_6643299", "lat": 34.69076395330379, "lon": 33.0750068926794, "district": "Limassol (Germasogeia Tourist Area)", "address": "Shop in tourist area", "area": 150.0, "price": 5500, "floor": "", "ceiling": null, "uncertain_ceiling": false, "url": "https://www.bazaraki.com/adv/6643299_shop-for-rent-in-tourist-area/", "source": "bazaraki.com", "title": "Shop in tourist area", "description": "Shop or showroom commercial space with sea front exposure.\nCondition, floor, frontage, and restaurant utilities not specified; includes 3 rear parking spaces.\nLease terms, deposit, and VAT not stated.", "date_posted": "2026-10-17", "date_updated": "", "days_since": 0, "color": "#22c55e", "bucket": "fresh", "fresh_bucket": "fresh", "fresh_color": "#22c55e", "status": "", "score": 28, "score_data": {"score": 28, "residents_500": 3096, "residents_1000": 15057, "transit_300": 3, "shops_300": 10, "food_400": 7, "offices_500": 7, "edu_500": 0, "competitors_200": 2, "nearest_dodo_km": 1.5, "breakdown": {"catchment": 0.31, "secondary": 0.38, "transit": 0.5, "retail": 0.25, "food": 0.35, "daytime": 0.17, "comp_penalty": 0.25, "cannib_penalty": 0.0}, "pop_source": "hybrid", "residents_500_kontur": null, "residents_500_osm_raw": 3096, "geo_source": "detail"}, "removal_date": "", "sheet_row": null, "sheet_url": "", "gmaps": "https://www.google.com/maps/?q=34.69076395330379,33.0750068926794", "yandex": "https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=34.69076395330379%2C33.0750068926794", "manual_coord": false, "photos": ["https://cdn1.bazaraki.com/media/cache1/e5/bb/e5bb588e608e619eb62dbf68b3089fb5.webp", "https://cdn1.bazaraki.com/media/cache1/35/cd/35cdbff6a064f0afe8d87216155da9b0.webp", "https://cdn1.bazaraki.com/media/cache1/e2/21/e221a8e10350d99cb4670a87f03421b7.webp", "https://cdn1.bazaraki.com/media/cache1/0f/6b/0f6ba15faadb30ee1763117a6eeee720.webp"]}, {"id": "bazaraki_6768365", "lat": 34.66524580586206, "lon": 33.016148527796446, "district": "Limassol (Omonia)", "address": "Commercial space / shop", "area": 90.0, "price": 1200, "floor": "", "ceiling": null, "uncertain_ceiling": false, "url": "https://www.bazaraki.com/adv/6768365_commercial-space-shop-for-rent/", "source": "bazaraki.com", "title": "Commercial space / shop", "description": "Commercial space or shop unit with unspecified size, floor, and condition.\nRent listed at $25; utilities, kitchen ventilation, frontage, and deposit terms not provided.", "date_posted": "2026-10-17", "date_updated": "", "days_since": 0, "color": "#22c55e", "bucket": "fresh", "fresh_bucket": "fresh", "fresh_color": "#22c55e", "status": "", "score": 35, "score_data": {"score": 35, "residents_500": 2202, "residents_1000": 8156, "transit_300": 6, "shops_300": 15, "food_400": 3, "offices_500": 5, "edu_500": 2, "competitors_200": 0, "nearest_dodo_km": 0.77, "breakdown": {"catchment": 0.22, "secondary": 0.2, "transit": 1.0, "retail": 0.38, "food": 0.15, "daytime": 0.33, "comp_penalty": 0.0, "cannib_penalty": 0.0}, "pop_source": "hybrid", "residents_500_kontur": null, "residents_500_osm_raw": 2202, "geo_source": "detail"}, "removal_date": "", "sheet_row": null, "sheet_url": "", "gmaps": "https://www.google.com/maps/?q=34.66524580586206,33.016148527796446", "yandex": "https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=34.66524580586206%2C33.016148527796446", "manual_coord": false, "photos": ["https://cdn1.bazaraki.com/media/cache1/b6/61/b6610b372c4f2671513c6c723d87d2c6.webp", "https://cdn1.bazaraki.com/media/cache1/78/e1/78e10264132b6e763a99d5303d4d73d2.webp", "https://cdn1.bazaraki.com/media/cache1/7e/98/7e98660c3a41705ea2b4b90ea2d01b13.webp", "https://cdn1.bazaraki.com/media/cache1/1f/39/1f39f978668c6eacbb59e4475fd2ae36.webp"]}, {"id": "bazaraki_6053966", "lat": 35.168754, "lon": 33.357933, "district": "Nicosia (Ag. Antonios)", "address": "Shop in nicosia center", "area": 150.0, "price": 2500, "floor": "ground floor", "ceiling": null, "uncertain_ceiling": false, "url": "https://www.bazaraki.com/adv/6053966_shop-in-nicosia-center/", "source": "bazaraki.com", "title": "Shop in nicosia center", "description": "Ground floor 150m² shop plus 80m² mezzanine, divided into 3 rooms with 2 WCs.\nDirect main road frontage; kitchen, ventilation, HVAC, and power capacity unstated.\nLease terms, deposit, availability, and VAT status not provided.", "date_posted": "2026-10-17", "date_updated": "", "days_since": 0, "color": "#22c55e", "bucket": "fresh", "fresh_bucket": "fresh", "fresh_color": "#22c55e", "status": "", "score": 70, "score_data": {"score": 70, "residents_500": 6990, "residents_1000": 24143, "transit_300": 12, "shops_300": 86, "food_400": 90, "offices_500": 27, "edu_500": 5, "competitors_200": 36, "nearest_dodo_km": 60.27, "breakdown": {"catchment": 0.7, "secondary": 0.6, "transit": 1.0, "retail": 1.0, "food": 1.0, "daytime": 1.0, "comp_penalty": 1.0, "cannib_penalty": 0.0}, "pop_source": "hybrid", "residents_500_kontur": null, "residents_500_osm_raw": 6990, "geo_source": "detail"}, "removal_date": "", "sheet_row": null, "sheet_url": "", "gmaps": "https://www.google.com/maps/?q=35.168754,33.357933", "yandex": "https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=35.168754%2C33.357933", "manual_coord": false, "photos": ["https://cdn1.bazaraki.com/media/cache1/9b/0a/9b0aa025e739249f45f9d5b75f6c17b2.webp", "https://cdn1.bazaraki.com/media/cache1/5e/ab/5eab2f4084b97f5d66389a261de4f88b.webp", "https://cdn1.bazaraki.com/media/cache1/df/dd/dfdda21ebdd5a408a8a03a696d161e08.webp", "https://cdn1.bazaraki.com/media/cache1/6b/96/6b96a1dde1d114557c225f8579ed847f.webp"]}, {"id": "bazaraki_6764699", "lat": 35.15391286904956, "lon": 33.31768877738218, "district": "Nicosia (Egkomi)", "address": "Modern ground-floor shop in egkomi, 175 m2", "area": 175.0, "price": 4000, "floor": "ground floor", "ceiling": null, "uncertain_ceiling": false, "url": "https://www.bazaraki.com/adv/6764699_modern-ground-floor-shop-in-egkomi-175-m2/", "source": "bazaraki.com", "title": "Modern ground-floor shop in egkomi, 175 m2", "description": "Modern ground-floor shop, 175 sqm.\nVentilation, three-phase power, kitchen provisions, and frontage not specified.\nRent stated as 25; deposit, VAT, and availability unstated.", "date_posted": "2026-10-17", "date_updated": "", "days_since": 0, "color": "#22c55e", "bucket": "fresh", "fresh_bucket": "fresh", "fresh_color": "#22c55e", "status": "", "score": 37, "score_data": {"score": 37, "residents_500": 4665, "residents_1000": 15312, "transit_300": 6, "shops_300": 1, "food_400": 1, "offices_500": 4, "edu_500": 1, "competitors_200": 0, "nearest_dodo_km": 57.21, "breakdown": {"catchment": 0.47, "secondary": 0.38, "transit": 1.0, "retail": 0.03, "food": 0.05, "daytime": 0.2, "comp_penalty": 0.0, "cannib_penalty": 0.0}, "pop_source": "hybrid", "residents_500_kontur": null, "residents_500_osm_raw": 4665, "geo_source": "detail_approx"}, "removal_date": "", "sheet_row": null, "sheet_url": "", "gmaps": "https://www.google.com/maps/?q=35.15391286904956,33.31768877738218", "yandex": "https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=35.15391286904956%2C33.31768877738218", "manual_coord": false, "photos": ["https://cdn1.bazaraki.com/media/cache1/ff/5f/ff5fab22f8980e78a838edda626218fc.webp", "https://cdn1.bazaraki.com/media/cache1/ed/1a/ed1a148d8e3c4db55c4f4698fc71407f.webp", "https://cdn1.bazaraki.com/media/cache1/e3/9e/e39ef01d3b262ab06e28136a3b14532e.webp", "https://cdn1.bazaraki.com/media/cache1/f4/fa/f4fa44e7139d378aed249c97ef26ca10.webp"]}, {"id": "bazaraki_6760977", "lat": 34.67730519133406, "lon": 33.01640420609322, "district": "Limassol (Omonia)", "address": "Fully renovated commercial space - 140 sqm - omonias", "area": 140.0, "price": 2000, "floor": "ground floor", "ceiling": null, "uncertain_ceiling": false, "url": "https://www.bazaraki.com/adv/6760977_fully-renovated-commercial-space-140-sqm-omonias/", "source": "bazaraki.com", "title": "Fully renovated commercial space - 140 sqm - omonias", "description": "Ground floor 140 sqm fully renovated open-plan retail/office space with bright layout and 3 parking spaces.\nUtilities include a basic kitchenette, 2 WCs, 2 storerooms, and 1 A/C unit with owner open to adding more; no commercial kitchen ventilation or heavy power specified.\nRestrictions strictly prohibit food and drink establishments; deposit, VAT, and immediate availability terms are not specified.", "date_posted": "2026-10-17", "date_updated": "", "days_since": 0, "color": "#22c55e", "bucket": "fresh", "fresh_bucket": "fresh", "fresh_color": "#22c55e", "status": "", "score": 22, "score_data": {"score": 22, "residents_500": 3184, "residents_1000": 11221, "transit_300": 2, "shops_300": 1, "food_400": 0, "offices_500": 0, "edu_500": 3, "competitors_200": 0, "nearest_dodo_km": 0.8, "breakdown": {"catchment": 0.32, "secondary": 0.28, "transit": 0.33, "retail": 0.03, "food": 0.0, "daytime": 0.3, "comp_penalty": 0.0, "cannib_penalty": 0.0}, "pop_source": "hybrid", "residents_500_kontur": null, "residents_500_osm_raw": 3184, "geo_source": "detail_approx"}, "removal_date": "", "sheet_row": null, "sheet_url": "", "gmaps": "https://www.google.com/maps/?q=34.67730519133406,33.01640420609322", "yandex": "https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=34.67730519133406%2C33.01640420609322", "manual_coord": false, "photos": ["https://cdn1.bazaraki.com/media/cache1/45/fe/45fe497d3147c83d61acbb6c13927459.webp", "https://cdn1.bazaraki.com/media/cache1/c2/32/c23209c0eb3b48fb7e9e4a19e70943f9.webp", "https://cdn1.bazaraki.com/media/cache1/8e/e3/8ee34fa8e6aa523fa5d06eead21f44d1.webp", "https://cdn1.bazaraki.com/media/cache1/15/8e/158e56cf52291045c25f1b0cbf89e901.webp", "https://cdn1.bazaraki.com/media/cache1/1f/fe/1ffe365b7022062a284f5a4d23158ae0.webp", "https://cdn1.bazaraki.com/media/cache1/3f/b1/3fb15f7a6239c4ef5a192b109c045bf7.webp", "https://cdn1.bazaraki.com/media/cache1/d6/b6/d6b6ede919a32af3a0f19e7d624a026d.webp", "https://cdn1.bazaraki.com/media/cache1/2e/04/2e04905d87861bf82aed338ecb64a220.webp", "https://cdn1.bazaraki.com/media/cache1/87/42/8742bd51c1ef33ed54f15fcd2129dad6.webp", "https://cdn1.bazaraki.com/media/cache1/48/da/48dad807ff896d7abb41d70e97db8e47.webp"]}, {"id": "bazaraki_6639913", "lat": 34.90829387295057, "lon": 33.6288951999995, "district": "Larnaca", "address": "Shop in fanromeni", "area": 140.0, "price": 1500, "floor": "", "ceiling": null, "uncertain_ceiling": false, "url": "https://www.bazaraki.com/adv/6639913_shop-in-fanromeni/", "source": "bazaraki.com", "title": "Shop in fanromeni", "description": "Commercial shop unit in good condition.\nEquipped with air conditioning, 3 toilets, and 2 showers; kitchen, ventilation, and lease terms not specified.", "date_posted": "2026-10-17", "date_updated": "", "days_since": 0, "color": "#22c55e", "bucket": "fresh", "fresh_bucket": "fresh", "fresh_color": "#22c55e", "status": "", "score": 31, "score_data": {"score": 31, "residents_500": 3937, "residents_1000": 14404, "transit_300": 3, "shops_300": 9, "food_400": 0, "offices_500": 4, "edu_500": 3, "competitors_200": 0, "nearest_dodo_km": 57.56, "breakdown": {"catchment": 0.39, "secondary": 0.36, "transit": 0.5, "retail": 0.23, "food": 0.0, "daytime": 0.4, "comp_penalty": 0.0, "cannib_penalty": 0.0}, "pop_source": "hybrid", "residents_500_kontur": null, "residents_500_osm_raw": 3937, "geo_source": "detail"}, "removal_date": "", "sheet_row": null, "sheet_url": "", "gmaps": "https://www.google.com/maps/?q=34.90829387295057,33.6288951999995", "yandex": "https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=34.90829387295057%2C33.6288951999995", "manual_coord": false, "photos": ["https://cdn1.bazaraki.com/media/cache1/f5/6b/f56bc5aeef58409ae5a88b742754d87e.webp", "https://cdn1.bazaraki.com/media/cache1/97/e9/97e9155022a2281a082b3b4284da8f36.webp", "https://cdn1.bazaraki.com/media/cache1/58/cf/58cf2efc2aeec04cbca62256f62670f2.webp", "https://cdn1.bazaraki.com/media/cache1/93/03/93035c778bf09e802aff99fa34cddba9.webp", "https://cdn1.bazaraki.com/media/cache1/70/c8/70c854ff86a88265a0d8256663e9d0e8.webp", "https://cdn1.bazaraki.com/media/cache1/8c/ff/8cff11e189a95e1aa9b65f3254c5dcf9.webp", "https://cdn1.bazaraki.com/media/cache1/27/c5/27c57c7a79b824c5bcf62716ac311b49.webp", "https://cdn1.bazaraki.com/media/cache1/04/9c/049cb381bfd5bce6e7006010b52800b0.webp", "https://cdn1.bazaraki.com/media/cache1/50/4e/504e1804e49110acdf13067303b648d1.webp", "https://cdn1.bazaraki.com/media/cache1/e2/2b/e22b6162e79bce78c92c5553acca68ac.webp"]}, {"id": "bazaraki_6705775", "lat": 34.68146588367891, "lon": 33.0392885363183, "district": "Limassol (Katholiki)", "address": "Commercial shop, katholikis area, limassol", "area": 197.0, "price": 2250, "floor": "ground floor", "ceiling": null, "uncertain_ceiling": false, "url": "https://www.bazaraki.com/adv/6705775_commercial-shop-katholikis-area-limassol/", "source": "bazaraki.com", "title": "Commercial shop, katholikis area, limassol", "description": "Ground-floor shop with mezzanine, total 197 sqm, good visibility.\nNo utilities, ventilation, power, HVAC, or kitchen details mentioned.\nRent 2,250 EUR/month plus VAT; deposit and availability not specified.", "date_posted": "2026-10-17", "date_updated": "", "days_since": 0, "color": "#22c55e", "bucket": "fresh", "fresh_bucket": "fresh", "fresh_color": "#22c55e", "status": "", "score": 72, "score_data": {"score": 72, "residents_500": 7742, "residents_1000": 28305, "transit_300": 4, "shops_300": 28, "food_400": 19, "offices_500": 18, "edu_500": 7, "competitors_200": 1, "nearest_dodo_km": 1.96, "breakdown": {"catchment": 0.77, "secondary": 0.71, "transit": 0.67, "retail": 0.7, "food": 0.95, "daytime": 1.0, "comp_penalty": 0.12, "cannib_penalty": 0.0}, "pop_source": "hybrid", "residents_500_kontur": null, "residents_500_osm_raw": 7742, "geo_source": "detail_approx"}, "removal_date": "", "sheet_row": null, "sheet_url": "", "gmaps": "https://www.google.com/maps/?q=34.68146588367891,33.0392885363183", "yandex": "https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=34.68146588367891%2C33.0392885363183", "manual_coord": false, "photos": ["https://cdn1.bazaraki.com/media/cache1/11/6d/116daa9cbd460d68ed2c100cda81e38a.webp", "https://cdn1.bazaraki.com/media/cache1/a3/0a/a30adba6f8240588eb5498be9baac685.webp", "https://cdn1.bazaraki.com/media/cache1/74/ce/74ce348d53ab56c82c6c4657433c761a.webp", "https://cdn1.bazaraki.com/media/cache1/45/a9/45a97bb6cb7ed6527a49e570ae324fb2.webp", "https://cdn1.bazaraki.com/media/cache1/5e/90/5e909f59360894a3f9ad96540ba94165.webp", "https://cdn1.bazaraki.com/media/cache1/78/a6/78a6e606313be989b63a4ebdaba2ea9d.webp"]}, {"id": "bazaraki_6705769", "lat": 34.68402624401497, "lon": 33.03604123711205, "district": "Limassol (Katholiki)", "address": "Commercial shop, katholikis area, limassol", "area": 102.0, "price": 1500, "floor": "ground floor", "ceiling": null, "uncertain_ceiling": false, "url": "https://www.bazaraki.com/adv/6705769_commercial-shop-katholikis-area-limassol/", "source": "bazaraki.com", "title": "Commercial shop, katholikis area, limassol", "description": "Ground-floor commercial shop of 102 sqm including 37 sqm mezzanine, high foot traffic and visibility.\nUtilities, kitchen provisions, ventilation, and HVAC not specified.\nRent 1,500 EUR per month plus VAT; deposit and availability unstated.", "date_posted": "2026-10-17", "date_updated": "", "days_since": 0, "color": "#22c55e", "bucket": "fresh", "fresh_bucket": "fresh", "fresh_color": "#22c55e", "status": "", "score": 73, "score_data": {"score": 73, "residents_500": 7342, "residents_1000": 28521, "transit_300": 8, "shops_300": 37, "food_400": 16, "offices_500": 17, "edu_500": 8, "competitors_200": 4, "nearest_dodo_km": 2.22, "breakdown": {"catchment": 0.73, "secondary": 0.71, "transit": 1.0, "retail": 0.93, "food": 0.8, "daytime": 1.0, "comp_penalty": 0.5, "cannib_penalty": 0.0}, "pop_source": "hybrid", "residents_500_kontur": null, "residents_500_osm_raw": 7342, "geo_source": "detail_approx"}, "removal_date": "", "sheet_row": null, "sheet_url": "", "gmaps": "https://www.google.com/maps/?q=34.68402624401497,33.03604123711205", "yandex": "https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=34.68402624401497%2C33.03604123711205", "manual_coord": false, "photos": ["https://cdn1.bazaraki.com/media/cache1/69/27/6927d7742a5f87cd0cafebdc3db2d989.webp", "https://cdn1.bazaraki.com/media/cache1/6d/97/6d9714b6582662ce9d039ed11a9c04f9.webp", "https://cdn1.bazaraki.com/media/cache1/2a/83/2a8326c5e48a49dafecd2c8c8b2baad8.webp", "https://cdn1.bazaraki.com/media/cache1/71/79/7179412c76b5583f17dfd379fff52a18.webp"]}, {"id": "bazaraki_6540919", "lat": 35.1687734981506, "lon": 33.32631754934201, "district": "Nicosia (Agios Dometios - Agios Georgios)", "address": "Shop in agios dometios", "area": 95.0, "price": 1200, "floor": "", "ceiling": null, "uncertain_ceiling": false, "url": "https://www.bazaraki.com/adv/6540919_shop-in-agios-dometios/", "source": "bazaraki.com", "title": "Shop in agios dometios", "description": "Ground floor corner retail space in fully renovated, brand-new condition with over 4-meter ceiling height.\nCorner frontage with ample outdoor parking and a wide pavement suitable for outdoor seating.\nProvision for two additional toilets; ventilation, power capacity, and lease terms not specified.\nAvailable mid-June 2026.", "date_posted": "2026-10-17", "date_updated": "", "days_since": 0, "color": "#22c55e", "bucket": "fresh", "fresh_bucket": "fresh", "fresh_color": "#22c55e", "status": "", "score": 39, "score_data": {"score": 39, "residents_500": 6191, "residents_1000": 21499, "transit_300": 3, "shops_300": 17, "food_400": 5, "offices_500": 3, "edu_500": 1, "competitors_200": 2, "nearest_dodo_km": 59.03, "breakdown": {"catchment": 0.62, "secondary": 0.54, "transit": 0.5, "retail": 0.42, "food": 0.25, "daytime": 0.17, "comp_penalty": 0.25, "cannib_penalty": 0.0}, "pop_source": "hybrid", "residents_500_kontur": null, "residents_500_osm_raw": 6191, "geo_source": "detail"}, "removal_date": "", "sheet_row": null, "sheet_url": "", "gmaps": "https://www.google.com/maps/?q=35.1687734981506,33.32631754934201", "yandex": "https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=35.1687734981506%2C33.32631754934201", "manual_coord": false, "photos": ["https://cdn1.bazaraki.com/media/cache1/61/a9/61a97288b5fb5c29a26afcbcdd4ef464.webp", "https://cdn1.bazaraki.com/media/cache1/81/0c/810cc8dfef1942c9ee787e8ce8c0f790.webp", "https://cdn1.bazaraki.com/media/cache1/c2/3d/c23d7dda06ed3a001a323216086354aa.webp", "https://cdn1.bazaraki.com/media/cache1/6f/93/6f939216291d0f9ecd8921a466533ee8.webp", "https://cdn1.bazaraki.com/media/cache1/fc/e8/fce8438ad465946afbf706eacd20f539.webp", "https://cdn1.bazaraki.com/media/cache1/77/fb/77fb7cc39423540c25c15e32d8a33863.webp", "https://cdn1.bazaraki.com/media/cache1/6b/0f/6b0f068c79bcb568d122e6943bcbbb46.webp", "https://cdn1.bazaraki.com/media/cache1/e6/38/e638beeea40b4ea07a799101a17ab232.webp", "https://cdn1.bazaraki.com/media/cache1/8b/16/8b1678d97671487248641d533cd79881.webp", "https://cdn1.bazaraki.com/media/cache1/20/18/20181014e3c597614d97e269810aa95c.webp"]}, {"id": "bazaraki_6457012", "lat": 34.69573785, "lon": 33.05034042, "district": "Limassol (Chalkoutsa)", "address": "Shop with mezzanine in chalkoutsa, limassol", "area": 182.0, "price": 5940, "floor": "", "ceiling": null, "uncertain_ceiling": false, "url": "https://www.bazaraki.com/adv/6457012_shop-with-mezzanine-in-chalkoutsa-limassol/", "source": "bazaraki.com", "title": "Shop with mezzanine in chalkoutsa, limassol", "description": "Commercial shop with mezzanine layout.\nCondition, street frontage, ventilation, power, and kitchen provisions unstated.\nRent listed at 25; deposit terms, VAT status, and availability unstated.", "date_posted": "2026-10-17", "date_updated": "", "days_since": 0, "color": "#22c55e", "bucket": "fresh", "fresh_bucket": "fresh", "fresh_color": "#22c55e", "status": "", "score": 47, "score_data": {"score": 47, "residents_500": 6844, "residents_1000": 26488, "transit_300": 5, "shops_300": 1, "food_400": 1, "offices_500": 5, "edu_500": 4, "competitors_200": 0, "nearest_dodo_km": 1.53, "breakdown": {"catchment": 0.68, "secondary": 0.66, "transit": 0.83, "retail": 0.03, "food": 0.05, "daytime": 0.53, "comp_penalty": 0.0, "cannib_penalty": 0.0}, "pop_source": "hybrid", "residents_500_kontur": null, "residents_500_osm_raw": 6844, "geo_source": "detail"}, "removal_date": "", "sheet_row": null, "sheet_url": "", "gmaps": "https://www.google.com/maps/?q=34.69573785,33.05034042", "yandex": "https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=34.69573785%2C33.05034042", "manual_coord": false, "photos": ["https://cdn1.bazaraki.com/media/cache1/0d/8f/0d8feafd4226b41b9b6bcb6fd36ac01d.webp", "https://cdn1.bazaraki.com/media/cache1/6a/b9/6ab92a1668a503cca43caf82fb83bba9.webp", "https://cdn1.bazaraki.com/media/cache1/c4/89/c489285d63580d84594022b26f617c32.webp", "https://cdn1.bazaraki.com/media/cache1/bd/3b/bd3b268133e42643131ed9aff6f1a3ad.webp", "https://cdn1.bazaraki.com/media/cache1/60/dc/60dcd41dd0f4177292f21eb7602119ac.webp", "https://cdn1.bazaraki.com/media/cache1/6a/fc/6afc7562caf9ff73443b683e807fc5b1.webp"]}];
+const DODO = [{"lat": 34.6847147, "lon": 33.0603467, "name": "Dodo Pizza"}, {"lat": 34.6711888, "lon": 33.0117607, "name": "Dodo Pizza"}];
+const QSR = {"mcdonalds": {"name": "McDonald's", "logo": "brands/mcdonalds.svg", "source": "OSM/Overpass", "count": 24, "points": [{"lat": 34.7002911, "lon": 33.1015143, "name": "Vasileos Georgiou A´ - McDonald´s", "address": ""}, {"lat": 34.6529583, "lon": 32.9970506, "name": "McDonald's", "address": "Fragklinou Rousvelt 285"}, {"lat": 34.6711005, "lon": 33.0423745, "name": "McDonald's", "address": ""}, {"lat": 34.6874386, "lon": 33.0404633, "name": "McDonald's", "address": "Makariou III 161"}, {"lat": 34.7001412, "lon": 33.1006387, "name": "McDonald's", "address": "Vasileos Georgiou I 107"}, {"lat": 34.6883382, "lon": 33.009122, "name": "McDonald's", "address": ""}, {"lat": 34.6565116, "lon": 32.9978569, "name": "McDonald's", "address": ""}, {"lat": 34.776729, "lon": 32.4439677, "name": "McDonald's", "address": ""}, {"lat": 34.7698382, "lon": 32.4101723, "name": "McDonald's", "address": ""}, {"lat": 34.9135516, "lon": 33.6377123, "name": "McDonald's", "address": ""}, {"lat": 34.9277926, "lon": 33.6161053, "name": "McDonald's", "address": ""}, {"lat": 34.9176407, "lon": 33.6122232, "name": "McDonald's Cervice Center", "address": "Konstantinou Palaiologou Avenue"}, {"lat": 34.9493896, "lon": 33.6467151, "name": "McDonald's", "address": ""}, {"lat": 34.9135343, "lon": 33.6375247, "name": "McDonald's Cyprus Headquarters", "address": ""}, {"lat": 34.9493491, "lon": 33.6466775, "name": "McDonald's", "address": ""}, {"lat": 35.1770015, "lon": 33.379994, "name": "McDonald's", "address": ""}, {"lat": 35.1723914, "lon": 33.3612232, "name": "McDonald's", "address": ""}, {"lat": 35.085273, "lon": 33.3798568, "name": "McDonald's", "address": ""}, {"lat": 35.1446247, "lon": 33.3615119, "name": "McDonald's", "address": "Λεωφόρος Αθαλάσσης"}, {"lat": 35.1636403, "lon": 33.3304423, "name": "McDonald's", "address": "Λεωφόρος Γρίβα Διγενή"}, {"lat": 35.1491238, "lon": 33.3581674, "name": "Ronald McDonald's House", "address": "28ης Οκτωβρίου 10"}, {"lat": 35.1128146, "lon": 33.2914539, "name": "McDonald's", "address": "Agiou Georgiou Avenue 94"}, {"lat": 35.1113383, "lon": 33.3823491, "name": "McDonald's", "address": "Makariou III Avenue 50"}, {"lat": 35.1304638, "lon": 33.3711577, "name": "McDonald's", "address": ""}]}, "kfc": {"name": "KFC", "logo": "brands/kfc.png", "source": "OSM/Overpass", "count": 18, "points": [{"lat": 34.698086, "lon": 33.0939672, "name": "KFC", "address": ""}, {"lat": 34.6876141, "lon": 33.0453889, "name": "KFC", "address": ""}, {"lat": 34.6834725, "lon": 33.0132989, "name": "KFC", "address": ""}, {"lat": 34.652517, "lon": 32.9973081, "name": "KFC", "address": "Fragklinou Rousvelt 285"}, {"lat": 34.6817308, "lon": 32.9734761, "name": "KFC", "address": ""}, {"lat": 34.77282, "lon": 32.4092507, "name": "KFC", "address": "Λεωφόρος Τάφων των Βασιλέων"}, {"lat": 34.7695388, "lon": 32.435975, "name": "KFC", "address": ""}, {"lat": 34.7649683, "lon": 32.4128379, "name": "KFC", "address": ""}, {"lat": 34.974004, "lon": 33.6752788, "name": "KFC", "address": ""}, {"lat": 34.9155028, "lon": 33.6018345, "name": "KFC", "address": "Peloponisou"}, {"lat": 34.9129925, "lon": 33.6377309, "name": "KFC", "address": ""}, {"lat": 35.1599081, "lon": 33.3881784, "name": "KFC", "address": ""}, {"lat": 35.1563486, "lon": 33.3582119, "name": "KFC", "address": ""}, {"lat": 35.1626568, "lon": 33.3178116, "name": "KFC", "address": "28th October Avenue"}, {"lat": 35.1136667, "lon": 33.30776, "name": "KFC", "address": "Αρχιεπισκόπου Μακαρίου Γ'"}, {"lat": 35.113668, "lon": 33.380878, "name": "KFC", "address": "Makariou III Avenue"}, {"lat": 35.1351474, "lon": 33.2793749, "name": "KFC", "address": ""}, {"lat": 35.1305524, "lon": 33.3709601, "name": "KFC", "address": ""}]}, "burgerking": {"name": "Burger King", "logo": "brands/burgerking.svg", "source": "OSM/Overpass", "count": 13, "points": [{"lat": 34.6875182, "lon": 33.0463668, "name": "Burger King", "address": "Makariou III"}, {"lat": 34.6830826, "lon": 32.9683128, "name": "Burger King", "address": ""}, {"lat": 34.7650574, "lon": 32.4128992, "name": "Burger King", "address": ""}, {"lat": 34.8706585, "lon": 33.6093275, "name": "Burger King", "address": ""}, {"lat": 34.8702448, "lon": 33.6077023, "name": "Burger King", "address": ""}, {"lat": 35.1611607, "lon": 33.3436678, "name": "Burger King", "address": ""}, {"lat": 35.1457752, "lon": 33.3602607, "name": "Burger King", "address": "Georgiou Paraskevaidi Avenue 101"}, {"lat": 35.1986428, "lon": 33.3332961, "name": "Burger King", "address": "Şht. Gzt. Hasan Tahsin Caddesi"}, {"lat": 35.1859499, "lon": 33.3508917, "name": "Burger King", "address": "Mehmet Akif Caddesi"}, {"lat": 35.1706709, "lon": 33.3612087, "name": "Burger King", "address": "Λήδρας"}, {"lat": 35.1962594, "lon": 33.3683173, "name": "Burger King Popeyes", "address": ""}, {"lat": 35.1351058, "lon": 33.2793484, "name": "Burger King", "address": ""}, {"lat": 35.1305361, "lon": 33.3706849, "name": "Burger King", "address": ""}]}, "dominos": {"name": "Domino's", "logo": "brands/dominos.svg", "source": "OSM/Overpass", "count": 8, "points": [{"lat": 34.6854991, "lon": 33.0327095, "name": "Domino's", "address": ""}, {"lat": 34.6951678, "lon": 33.0638319, "name": "Domino's", "address": ""}, {"lat": 34.8197297, "lon": 32.4110933, "name": "Dominos", "address": "Leoforos Christou Kkeli 7"}, {"lat": 34.9276752, "lon": 33.6369677, "name": "Domino's", "address": "Makariou III Avenue"}, {"lat": 35.182089, "lon": 33.3576754, "name": "Domino's", "address": "Osmanpaşa Caddesi"}, {"lat": 35.2092813, "lon": 33.3125935, "name": "Domino's", "address": "Kasırga Sokak"}, {"lat": 35.1573398, "lon": 33.3872716, "name": "Domino's", "address": ""}, {"lat": 35.1444542, "lon": 33.3454475, "name": "Domino's", "address": ""}]}, "pizzahut": {"name": "Pizza Hut", "logo": "brands/pizzahut.svg", "source": "OSM/Overpass", "count": 24, "points": [{"lat": 34.7094152, "lon": 33.1263242, "name": "Pizza Hut", "address": ""}, {"lat": 34.6928566, "lon": 33.0819024, "name": "Pizza Hut", "address": ""}, {"lat": 34.6865684, "lon": 33.0355445, "name": "Pizza Hut", "address": ""}, {"lat": 34.6864031, "lon": 33.0354355, "name": "Pizza Hut", "address": ""}, {"lat": 34.6880616, "lon": 33.0108073, "name": "Pizza Hut", "address": ""}, {"lat": 34.6530003, "lon": 32.9967743, "name": "Pizza Hut", "address": "Fragklinou Rousvelt 285"}, {"lat": 34.7090897, "lon": 33.0548382, "name": "Pizza Hut", "address": ""}, {"lat": 34.6830492, "lon": 32.9683927, "name": "Pizza Hut", "address": ""}, {"lat": 34.7560083, "lon": 32.4161527, "name": "Pizza Hut", "address": ""}, {"lat": 34.7766228, "lon": 32.4283434, "name": "Pizza Hut", "address": "Λεωφόρος Νικολάου Νικολαΐδη"}, {"lat": 34.7648201, "lon": 32.4461634, "name": "Pizza Hut", "address": ""}, {"lat": 34.7898927, "lon": 32.4236099, "name": "Pizza Hut", "address": ""}, {"lat": 34.9711097, "lon": 33.670691, "name": "Pizza Hut", "address": ""}, {"lat": 34.9157022, "lon": 33.6376714, "name": "Pizza Hut", "address": ""}, {"lat": 34.9173487, "lon": 33.62309, "name": "Pizza Hut", "address": "Griva Digeni Avenue"}, {"lat": 34.9157089, "lon": 33.6378426, "name": "Pizza Hut", "address": ""}, {"lat": 35.1573978, "lon": 33.3679374, "name": "Pizza Hut", "address": ""}, {"lat": 35.1710697, "lon": 33.3359028, "name": "Pizza Hut", "address": "Grigori Afxentiou"}, {"lat": 35.1726371, "lon": 33.376146, "name": "Pizza Hut", "address": "Markou Drakou"}, {"lat": 35.1415393, "lon": 33.358911, "name": "Pizza Hut", "address": "Ιωσήφ Χατζηιωσήφ"}, {"lat": 35.113924, "lon": 33.3806688, "name": "Pizza Hut", "address": ""}, {"lat": 35.155297, "lon": 33.3391331, "name": "Pizza Hut", "address": "Στέλιου Χατζηπετρή 70"}, {"lat": 35.1573169, "lon": 33.3918417, "name": "Pizza Hut", "address": ""}, {"lat": 35.1350636, "lon": 33.2793201, "name": "Pizza Hut", "address": ""}]}, "papajohns": {"name": "Papa John's", "logo": "brands/papajohns.png", "source": "OSM/Overpass", "count": 8, "points": [{"lat": 34.7008136, "lon": 33.075861, "name": "Papa John's", "address": ""}, {"lat": 34.6678257, "lon": 33.0138298, "name": "Papa John's", "address": ""}, {"lat": 34.778565, "lon": 32.4242184, "name": "Papa John's", "address": ""}, {"lat": 34.784229, "lon": 32.4305188, "name": "Papa Johns", "address": ""}, {"lat": 34.9177993, "lon": 33.6209767, "name": "Papa John's", "address": "Griva Digeni Avenue"}, {"lat": 35.1551776, "lon": 33.358673, "name": "Papa John's", "address": ""}, {"lat": 35.1615403, "lon": 33.3316902, "name": "Papa John's", "address": "Νίκου Κρανιδιώτη 7"}, {"lat": 35.1112586, "lon": 33.3064224, "name": "Papa John's", "address": ""}], "icon_type": "letter", "letter": "P"}, "dodopizza": {"name": "Dodo Pizza", "logo": "dodo-logo.png", "source": "OSM/Overpass", "count": 2, "points": [{"lat": 34.6847147, "lon": 33.0603467, "name": "Dodo Pizza", "address": ""}, {"lat": 34.6711888, "lon": 33.0117607, "name": "Dodo Pizza", "address": ""}]}};
+const map = L.map('map', {zoomControl: true}).setView([34.95, 33.05], 10);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  maxZoom: 19, attribution: '© OpenStreetMap'
+}).addTo(map);
+
+function esc(s) { return String(s||'').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]); }
+
+const dodoIcon = L.divIcon({
+  className: 'dodo-icon-wrap',
+  html: '<div class="dodo-marker"><img src="dodo-logo.png" alt="Dodo"></div>',
+  iconSize: [34, 34],
+  iconAnchor: [17, 17],
+  popupAnchor: [0, -16],
+});
+for (const d of DODO) {
+  const m = L.marker([d.lat, d.lon], {icon: dodoIcon, zIndexOffset: 1000});
+  m.bindPopup(`<div class="lok-popup"><h3>🍕 ${esc(d.name)}</h3><div class="actions"><a href="${esc(d.gmaps)}" target="_blank">Open in Maps</a></div></div>`);
+  m.addTo(map);
+}
+
+// QSR-конкуренты — отдельный слой на бренд, можно тоглить через легенду.
+const qsrLegend = document.getElementById('qsr-legend');
+const qsrLayers = {};
+for (const [slug, brand] of Object.entries(QSR)) {
+  if (!brand.points || !brand.points.length) continue;
+  // Бренды с icon_type='letter' рисуются буквой на белом круге — для тех, у кого
+  // оригинальный логотип выглядит как map-pin / точка (Saints) и мешает на карте.
+  const useLetter = brand.icon_type === 'letter' && brand.letter;
+  const icon = L.divIcon({
+    className: 'qsr-icon-wrap',
+    html: useLetter
+      ? `<div class="qsr-letter">${esc(brand.letter)}</div>`
+      : `<div class="qsr-marker"><img src="${esc(brand.logo)}" alt="${esc(brand.name)}"></div>`,
+    iconSize: useLetter ? [20, 20] : [18, 18],
+    iconAnchor: useLetter ? [10, 10] : [9, 9],
+    popupAnchor: [0, -10],
+  });
+  const layer = L.layerGroup();
+  for (const p of brand.points) {
+    const mk = L.marker([p.lat, p.lon], {icon, zIndexOffset: 500});
+    const gmaps = `https://www.google.com/maps/?q=${p.lat},${p.lon}`;
+    mk.bindPopup(`<div class="lok-popup"><h3>${esc(brand.name)}</h3>${p.address ? `<div class="meta" style="font-size:12px;color:#6b7280;">📍 ${esc(p.address)}</div>` : ''}<div class="actions"><a href="${esc(gmaps)}" target="_blank">Open in Maps</a></div></div>`);
+    layer.addLayer(mk);
+  }
+  layer.addTo(map);
+  qsrLayers[slug] = layer;
+  // legend row with toggle checkbox
+  const row = document.createElement('div');
+  row.className = 'row';
+  const legendIcon = useLetter
+    ? `<span class="qsr-letter" style="width:14px;height:14px;font-size:9px;margin-right:6px;display:inline-flex;vertical-align:middle;">${esc(brand.letter)}</span>`
+    : `<img class="dodo" src="${esc(brand.logo)}" alt="">`;
+  row.innerHTML = `<input type="checkbox" id="t-${slug}" checked style="margin-right:6px">${legendIcon}${esc(brand.name)} (${brand.count})`;
+  qsrLegend.appendChild(row);
+  row.querySelector('input').addEventListener('change', (e) => {
+    if (e.target.checked) layer.addTo(map);
+    else map.removeLayer(layer);
+  });
+}
+
+// Слои лотов: по свежести + отдельный "не подходит".
+// "не подходит" — выключен по умолчанию (не добавляем в карту сразу).
+const lokLayers = {
+  fresh:         L.layerGroup().addTo(map),
+  recent:        L.layerGroup().addTo(map),
+  old:           L.layerGroup().addTo(map),
+  not_suitable:  L.layerGroup(),
+  in_progress:   L.layerGroup().addTo(map),
+  to_review:     L.layerGroup().addTo(map),
+};
+const lokCounts = {fresh: 0, recent: 0, old: 0, not_suitable: 0, in_progress: 0, to_review: 0};
+const starIcon = L.divIcon({
+  className: 'star-icon-wrap',
+  html: '<div class="star-marker">★</div>',
+  iconSize: [26, 26],
+  iconAnchor: [13, 13],
+  popupAnchor: [0, -12],
+});
+const starIconBlue = L.divIcon({
+  className: 'star-icon-wrap',
+  html: '<div class="star-marker blue">★</div>',
+  iconSize: [26, 26],
+  iconAnchor: [13, 13],
+  popupAnchor: [0, -12],
+});
+// --- Смена статуса прямо из карточки → Sheets кол. K через Apps Script webhook ---
+const WEBHOOK = '';
+const WEBHOOK_SECRET = '';
+const STATUS_BTNS = [
+  {value: 'To review', label: '★ To review', cls: 'st-review'},
+  {value: 'In progress', label: '★ In progress', cls: 'st-progress'},
+  {value: 'Not suitable', label: '🚫 Not suitable', cls: 'st-no'},
+];
+// Реплика python-бакетизации статусов (gen_map.build_features)
+const ST_REVIEW = new Set(['ок двигаем на обсуждение','ok двигаем на обсуждение','двигаем на обсуждение','на обсуждение','на обсуждении','обсуждаем','to review','review','discuss','for discussion']);
+const ST_PROGRESS = new Set(['в работе','в процессе','wip','in progress','working','двигаем','звонок назначен','смотрю','смотрим','переговоры','избранное','favorite','starred']);
+const ST_NO = new Set(['не подходит','отклонено','отказ','reject','nope','no','not suitable','rejected','pass']);
+
+function toast(msg, ms) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('show'), ms || 2600);
+}
+
+function bucketOf(f) {
+  const s = (f.status || '').toLowerCase().replace(/\./g, ' ').replace(/\s+/g, ' ').trim();
+  if (ST_REVIEW.has(s)) return 'to_review';
+  if (ST_PROGRESS.has(s)) return 'in_progress';
+  if (ST_NO.has(s)) return 'not_suitable';
+  return f.fresh_bucket || 'old';
+}
+
+function updateCounts() {
+  for (const b of ['to_review','in_progress','fresh','recent','old','not_suitable']) {
+    document.getElementById('c-' + b).textContent = lokCounts[b] || 0;
+  }
+}
+
+// Свежий url→row из rows.json (деплоится вместе с картой каждый цикл) —
+// защита от сдвига строк, если вкладка с картой открыта дольше часа.
+async function fetchRow(f) {
+  try {
+    const rj = await fetch('rows.json?ts=' + Date.now(), {cache: 'no-store'}).then(r => r.json());
+    if (rj.rows && rj.rows[f.url]) return rj.rows[f.url];
+  } catch (e) {}
+  return f.sheet_row || null;
+}
+
+// Локальный кэш статусов: вебхук пишет в Sheets, но FEATURES в lokali.html
+// перегенерируются раз в час, поэтому reload до следующего цикла показывал бы
+// старый (зелёный) статус. localStorage хранит последний клик пользователя и
+// накладывается на FEATURES при загрузке; самоочищается, когда вшитые данные
+// догонят (baked.status === stored).
+const LS_KEY = 'lokStatus_v1';
+function loadLocalStatus() {
+  try { return JSON.parse(localStorage.getItem(LS_KEY) || '{}'); } catch (e) { return {}; }
+}
+function saveLocalStatus(url, value) {
+  if (!url) return;
+  const m = loadLocalStatus();
+  m[url] = value;  // '' = явный сброс, тоже храним
+  try { localStorage.setItem(LS_KEY, JSON.stringify(m)); } catch (e) {}
+}
+
+async function setStatus(f, value, box) {
+  box.querySelectorAll('button').forEach(b => b.disabled = true);
+  try {
+    const row = await fetchRow(f);
+    if (!row) throw new Error('row not found in the sheet');
+    // Content-Type не ставим (text/plain) — иначе CORS preflight, который Apps Script не умеет
+    const resp = await fetch(WEBHOOK, {
+      method: 'POST',
+      body: JSON.stringify({secret: WEBHOOK_SECRET, op: 'update_cells',
+                             cells: [{row: row, col: 11, value: value}]}),
+    }).then(r => r.json());
+    if (resp && resp.error) throw new Error(resp.error);
+    if (!resp || resp.ok === false) throw new Error('webhook did not confirm the write');
+    f.status = value;
+    f.sheet_row = row;
+    saveLocalStatus(f.url, value);
+    map.closePopup();
+    renderFeature(f);
+    updateCounts();
+    if (typeof buildTopLayer === 'function' && map.hasLayer(topLayer)) buildTopLayer();
+    toast(value ? '✓ Status: ' + value : '✓ Status cleared');
+  } catch (e) {
+    toast('⚠️ Failed to update status: ' + e.message, 4200);
+    box.querySelectorAll('button').forEach(b => b.disabled = false);
+  }
+}
+
+const fmtNum = (n) => (n == null ? '—' : String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' '));
+const scoreEmoji = (s) => (s == null ? '❔' : s >= 70 ? '🟢' : s >= 50 ? '🟡' : s >= 30 ? '🟠' : '🔴');
+function scoreBlock(f) {
+  const sc = f.score_data;
+  if (f.score == null || !sc) return '';
+  const dodo = sc.nearest_dodo_km != null ? ` · 🍕 Dodo ${sc.nearest_dodo_km} km` : '';
+  const approx = (sc.geo_source && sc.geo_source !== 'detail' && sc.geo_source !== 'manual')
+    ? `<div class="score-warn">⚠️ approximate coordinates — score is indicative</div>` : '';
+  return `<div class="score-box">
+    <div class="score-hd">${scoreEmoji(f.score)} Location score: <b>${f.score}/100</b></div>
+    <div class="score-rows">
+      👥 <b>~${fmtNum(sc.residents_500)}</b> residents within 500 m · ${fmtNum(sc.residents_1000)} within 1 km <span style="color:#94a3b8">(${sc.pop_source === 'kontur' ? 'Kontur' : 'estimate'})</span><br>
+      🚏 ${sc.transit_300} transit stops · 🛍 ${sc.shops_300} shops · 🍽 ${sc.food_400} food places<br>
+      🏢 ${sc.offices_500} offices · 🎓 ${sc.edu_500} education · ⚔️ ${sc.competitors_200} competitors${dodo}
+    </div>${approx}
+  </div>`;
+}
+
+function popupNode(f) {
+  const bucket = bucketOf(f);
+  const ceiling = f.ceiling ? (f.ceiling.toFixed ? f.ceiling.toFixed(1) : f.ceiling) + ' m' : (f.uncertain_ceiling ? '⚠️ no data' : '—');
+  const statusColor = bucket === 'to_review' ? '#2563eb' : '#dc2626';
+  const statusIcon = (bucket === 'in_progress' || bucket === 'to_review') ? '★' : '🚫';
+  const statusLine = f.status ? `<div class="meta" style="font-size:12px;color:${statusColor};font-weight:600;">${statusIcon} status: ${esc(f.status)}${f.removal_date ? ` · ${esc(f.removal_date)}` : ''}</div>` : '';
+  const sheetLink = f.sheet_url
+    ? `<a class="secondary" href="${esc(f.sheet_url)}" target="_blank">Sheet · row ${f.sheet_row}</a>`
+    : `<a class="secondary" href="https://docs.google.com/spreadsheets/d/1jL7junHZDJCqG2EDp6olOPmPoOCConXR7xKz-QM-qAo/edit?gid=0" target="_blank">Sheet</a>`;
+  const manualLine = f.manual_coord ? `<div class="meta" style="font-size:11px;color:#059669;">📌 location pinned manually (Sheets col. L)</div>` : '';
+  const titleText = (f.district && f.district !== 'Unknown') ? f.district : (f.title || f.address || 'Listing');
+  const el = document.createElement('div');
+  el.className = 'lok-popup';
+  el.innerHTML = `
+      <h3>${esc(titleText)}</h3>
+      ${f.address ? `<div class="meta" style="font-size:12px; color:#6b7280;">📍 ${esc(f.address)}</div>` : ''}
+      <div class="photo-slot"></div>
+      ${manualLine}
+      ${statusLine}
+      <div class="meta">
+        💶 <strong>${f.price ? f.price + ' €/mo' : '—'}</strong> · 📐 <strong>${f.area ? f.area + ' m²' : '—'}</strong><br>
+        🏢 ${esc(f.floor || '—')} · ceiling ${ceiling}
+      </div>
+      ${scoreBlock(f)}
+      <div class="desc">${esc(f.description || '—')}</div>
+      <div class="status-btns"></div>
+      <div class="actions">
+        <a href="${esc(f.url)}" target="_blank">Listing</a>
+        <a class="secondary" href="${esc(f.gmaps)}" target="_blank">Maps</a>
+        ${f.yandex ? `<a class="secondary" href="${esc(f.yandex)}" target="_blank">Street View</a>` : ''}
+        ${sheetLink}
+      </div>
+      <div class="footer">
+        ${f.date_posted ? `📅 posted: <strong>${esc(f.date_posted)}</strong>` : ''}
+        ${f.date_updated ? `<br>🔄 updated: <strong>${esc(f.date_updated)}</strong>` : ''}
+        <br>${esc(f.source)} · ${f.days_since} days ago
+      </div>
+  `;
+  // Фотогалерея: hotlink с CDN источников; битые → выкидываем на лету
+  const slot = el.querySelector('.photo-slot');
+  const photos = (f.photos || []).slice();
+  if (photos.length) {
+    const wrap = document.createElement('div');
+    wrap.className = 'photo-wrap';
+    const img = document.createElement('img');
+    img.referrerPolicy = 'no-referrer';
+    img.alt = '';
+    const count = document.createElement('span');
+    count.className = 'photo-count';
+    let idx = 0;
+    // CDN-даунсайз: полноразмер (2000px+) грузится секундами. OLX поддерживает
+    // ;s=WxH — просим 1000px; попапу больше не нужно.
+    const shrink = (u) => u.replace(/;s=\d+x\d+/, ';s=1000x700');
+    // Ленивая предзагрузка: только соседи текущего (все 10 сразу душат канал
+    // и первое фото грузится дольше).
+    const warmed = new Set();
+    const warm = (i) => {
+      const u = shrink(photos[(i + photos.length) % photos.length]);
+      if (warmed.has(u)) return;
+      warmed.add(u);
+      const p = new Image(); p.referrerPolicy = 'no-referrer'; p.decoding = 'async'; p.src = u;
+    };
+    const show = () => {
+      img.src = shrink(photos[idx]);
+      count.textContent = (idx + 1) + ' / ' + photos.length;
+      count.style.display = photos.length > 1 ? '' : 'none';
+      if (photos.length > 1) { warm(idx + 1); warm(idx - 1); }
+    };
+    img.addEventListener('error', () => {
+      photos.splice(idx, 1);
+      if (!photos.length) { wrap.remove(); return; }
+      if (idx >= photos.length) idx = 0;
+      show();
+    });
+    img.style.cursor = f.url ? 'pointer' : 'default';
+    img.title = f.url ? 'Open the listing in a new tab' : '';
+    img.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (f.url) window.open(f.url, '_blank', 'noopener');
+    });
+    wrap.appendChild(img);
+    wrap.appendChild(count);
+    if (photos.length > 1) {
+      for (const [cls, d] of [['prev', -1], ['next', 1]]) {
+        const b = document.createElement('button');
+        b.className = 'photo-nav ' + cls;
+        b.textContent = cls === 'prev' ? '‹' : '›';
+        b.addEventListener('click', (e) => {
+          e.stopPropagation();
+          idx = (idx + d + photos.length) % photos.length;
+          show();
+        });
+        wrap.appendChild(b);
+      }
+    }
+    show();
+    slot.replaceWith(wrap);
+  } else {
+    slot.remove();
+  }
+
+  const box = el.querySelector('.status-btns');
+  if (!WEBHOOK) { box.style.display = 'none'; }
+  for (const sb of STATUS_BTNS) {
+    const btn = document.createElement('button');
+    btn.textContent = sb.label;
+    btn.className = sb.cls + (f.status === sb.value ? ' active' : '');
+    btn.title = f.status === sb.value ? 'Click again to clear the status' : 'Write to Sheets col. K';
+    // повторный клик по активному статусу = сброс (пустая K)
+    btn.addEventListener('click', () => setStatus(f, f.status === sb.value ? '' : sb.value, box));
+    box.appendChild(btn);
+  }
+  return el;
+}
+
+function renderFeature(f) {
+  if (f._marker && f._bucket) {
+    lokLayers[f._bucket].removeLayer(f._marker);
+    lokCounts[f._bucket] = (lokCounts[f._bucket] || 1) - 1;
+  }
+  const bucket = bucketOf(f);
+  const marker = bucket === 'to_review'
+    ? L.marker([f.lat, f.lon], {icon: starIconBlue, zIndexOffset: 850})
+    : bucket === 'in_progress'
+    ? L.marker([f.lat, f.lon], {icon: starIcon, zIndexOffset: 800})
+    : L.circleMarker([f.lat, f.lon], {
+        radius: 9, fillColor: bucket === 'not_suitable' ? '#dc2626' : f.fresh_color,
+        color: '#fff', weight: 2, opacity: 1, fillOpacity: 0.95
+      });
+  marker.bindPopup(() => popupNode(f), {maxWidth: 340});
+  marker.addTo(lokLayers[bucket]);
+  f._marker = marker;
+  f._bucket = bucket;
+  lokCounts[bucket] = (lokCounts[bucket] || 0) + 1;
+}
+
+// Наложить локально сохранённые статусы поверх вшитых FEATURES (см. setStatus).
+// Если вшитый статус уже совпал с сохранённым — запись из кэша убираем (самоочистка).
+(() => {
+  const ls = loadLocalStatus();
+  let changed = false;
+  for (const f of FEATURES) {
+    if (!Object.prototype.hasOwnProperty.call(ls, f.url)) continue;
+    if ((f.status || '') === (ls[f.url] || '')) { delete ls[f.url]; changed = true; }
+    else f.status = ls[f.url];
+  }
+  if (changed) { try { localStorage.setItem(LS_KEY, JSON.stringify(ls)); } catch (e) {} }
+})();
+
+for (const f of FEATURES) renderFeature(f);
+updateCounts();
+
+// --- Слой-подсветка «топ 20% по скорингу» (исключая «не подходит») ---
+// Кольцо-ореол поверх обычного маркера. Порог пересчитывается динамически:
+// 20% лучших по score среди оценённых и не отбракованных лотов.
+const topLayer = L.layerGroup();
+function buildTopLayer() {
+  topLayer.clearLayers();
+  const elig = FEATURES.filter(f => f.score != null && bucketOf(f) !== 'not_suitable');
+  elig.sort((a, b) => b.score - a.score);
+  const n = elig.length ? Math.max(1, Math.ceil(elig.length * 0.2)) : 0;
+  const cut = n ? elig[n - 1].score : null;   // включаем все с таким же score (ничьи на границе)
+  const top = cut == null ? [] : elig.filter(f => f.score >= cut);
+  for (const f of top) {
+    L.circleMarker([f.lat, f.lon], {
+      radius: 15, color: '#a855f7', weight: 3, opacity: 0.95,
+      fill: false, interactive: false
+    }).addTo(topLayer);
+  }
+  const el = document.getElementById('c-top20');
+  if (el) el.textContent = top.length;
+}
+buildTopLayer();
+if (document.getElementById('t-top20').checked) topLayer.addTo(map);
+document.getElementById('t-top20').addEventListener('change', (e) => {
+  if (e.target.checked) { buildTopLayer(); topLayer.addTo(map); }
+  else map.removeLayer(topLayer);
+});
+
+// Тоглы — каждый чекбокс управляет своим слоем; «не подходит» стартует выкл.
+for (const b of ['to_review', 'in_progress', 'fresh', 'recent', 'old', 'not_suitable']) {
+  document.getElementById('t-' + b).addEventListener('change', (e) => {
+    if (e.target.checked) lokLayers[b].addTo(map);
+    else map.removeLayer(lokLayers[b]);
+  });
+}
+
+// «Сбросить выбор» — снимает все галочки слоёв (лоты + QSR), убирая их с карты.
+document.getElementById('t-clear-all').addEventListener('change', (e) => {
+  if (!e.target.checked) return;
+  for (const cb of document.querySelectorAll('input[id^="t-"]')) {
+    if (cb.id === 't-clear-all') continue;
+    if (cb.checked) { cb.checked = false; cb.dispatchEvent(new Event('change')); }
+  }
+  e.target.checked = false;  // работает как кнопка-сброс, сам остаётся пустым
+});
+
+// Auto-fit to features
+if (FEATURES.length) {
+  const bounds = L.latLngBounds(FEATURES.map(f => [f.lat, f.lon]));
+  map.fitBounds(bounds, {padding: [40, 40]});
+}
+</script>
+</body>
+</html>

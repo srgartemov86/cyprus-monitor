@@ -301,7 +301,8 @@ def _floor_from_text(text):
     t = text.lower()
     # «ground floor + mezzanine/basement storage» — это всё равно уличный этаж;
     # приоритет у ground floor, если он назван явно
-    has_ground = re.search(r'\bground\s*[-]?\s*floor\b|\bstreet\s+level\b|\bground\s+level\b', t)
+    has_ground = re.search(r'\bground\s*[-]?\s*floor\b|\bgroundfloor\b|\bg/f\b|\bstreet\s+level\b|'
+                           r'\bground\s+level\b|\bισόγειο\b|\bισογείου\b', t)
     if has_ground:
         return 'ground floor'
     if re.search(r'\bmezzanine\b', t) and re.search(r'\bon\s+(?:the\s+)?mezzanine\b|mezzanine\s+(?:floor|level)\s+(?:shop|office|unit)', t):

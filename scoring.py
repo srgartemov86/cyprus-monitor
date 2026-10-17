@@ -339,7 +339,9 @@ def score_line(sc):
         extra.append(f"🏢 {sc['offices_500']} offices/{sc['edu_500']} edu")
     if sc["competitors_200"]:
         extra.append(f"⚔️ {sc['competitors_200']} competitors in 200 m")
-    if sc.get("nearest_dodo_km") is not None:
+    # Ближайшая Dodo дальше 10 км — это другой город (Кипр: точки известны не для
+    # всех городов), строка «Dodo 58 km» только путает.
+    if sc.get("nearest_dodo_km") is not None and sc["nearest_dodo_km"] <= 10:
         extra.append(f"🍕 Dodo {sc['nearest_dodo_km']} km")
     line = " · ".join(parts)
     if extra:

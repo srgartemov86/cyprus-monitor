@@ -315,15 +315,22 @@ ZY_LIST = ZY_BASE + '/search/rent/grid?type%5B5%5D=5&type%5B17%5D=17&type%5B355%
 
 
 def zy_get(url, timeout=35):
+    """Сначала напрямую (с Mac работает), при неудаче через CY-прокси: с раннера
+    GitHub первый боевой прогон 17.10 отдал zyprus как источник down."""
     from curl_cffi import requests as cffi
-    for imp in ('chrome124', 'chrome131'):
+    routes = [None]
+    if _RES_PROXY:
+        routes.append({'http': _RES_PROXY, 'https': _RES_PROXY})
+    for i, proxies in enumerate(routes):
         try:
-            r = cffi.get(url, impersonate=imp, timeout=timeout, allow_redirects=True,
+            r = cffi.get(url, impersonate=_IMPS[i % len(_IMPS)], timeout=timeout,
+                         allow_redirects=True, proxies=proxies,
                          headers={'Accept-Language': 'en-GB,en;q=0.9'})
-            if r.status_code in (200, 404):
+            if r.status_code in (200, 404) and 'Just a moment' not in r.text[:3000]:
                 return r
+            _v(f'  zy_get http={r.status_code} via {"proxy" if proxies else "direct"}: {url[:80]}')
         except Exception as e:
-            _v(f'  zy_get {type(e).__name__}: {url[:80]}')
+            _v(f'  zy_get {type(e).__name__} via {"proxy" if proxies else "direct"}: {url[:80]}')
         time.sleep(1.0)
     return None
 

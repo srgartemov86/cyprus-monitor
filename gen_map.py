@@ -1138,12 +1138,9 @@ def main():
     state = load_state()
     print(f"  state listings: {len(state['listings'])}")
 
-    # 1a. Backfill: detail-page coords для 4zida/halooglasi/cityexpert.
-    #     Дёшево: typically 0-3 кандидатов в steady state.
-    import backfill_coords
-    bf_updated, bf_failed = backfill_coords.run(state)
-    if bf_updated:
-        print(f"  backfill: {bf_updated} updated, {bf_failed} failed")
+    # 1a. Backfill detail-координат (белградские источники) на Кипре не нужен:
+    #     bazaraki/zyprus отдают гео сразу. Модуль удалён из клона.
+    bf_updated, bf_failed = 0, 0
 
     # 1b. Re-Nominatim для лотов с geo_source='nominatim' — используем disambiguation по району.
     #     Нужно для nekretnine.rs (нет detail-coords) и старых nominatim-центроидов.
