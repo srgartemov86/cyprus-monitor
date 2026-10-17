@@ -3969,12 +3969,7 @@
       "_send_retry": 1
     }
   ],
-  "source_cooldown": {
-    "zyprus": {
-      "fails": 0,
-      "until": 1792268604.894489
-    }
-  },
+  "source_cooldown": {},
   "last_sweep_health": {
     "at": "2026-10-17T18:05:22.950744+00:00",
     "by_source": {
