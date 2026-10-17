@@ -155,11 +155,13 @@ def _price_int(s):
 
 
 def _area_from_text(s):
-    m = re.search(r'(\d{2,4}(?:[.,]\d)?)\s*(?:m²|m2|sqm|sq\.?\s*m|square\s*met)', s or '', re.I)
+    m = re.search(r'(\d{1,3}(?:,\d{3})+|\d{2,4}(?:[.,]\d)?)\s*(?:m²|m2|sqm|sq\.?\s*m|square\s*met)', s or '', re.I)
     if not m:
         return None
+    v = m.group(1)
+    v = v.replace(',', '') if re.fullmatch(r'\d{1,3}(?:,\d{3})+', v) else v.replace(',', '.')
     try:
-        return float(m.group(1).replace(',', '.'))
+        return float(v)
     except ValueError:
         return None
 
@@ -364,9 +366,10 @@ def _zy_cards(html):
         price = _price_int(re.sub(r'(?<=\d)[.,](?=\d{3}\b)', '', fld('price').split('€')[-1]))
         loc = fld('location')
         city, area, street = zy_split_location(loc)
-        tm = re.match(r'\s*([A-Za-z\- ]+?)\s+(\d{2,5})\s*(?:sqm|m²|m2)', title, re.I)
+        # «Commercial Building 1,052 SQM»: запятая — разделитель тысяч (баг 17.10: читалось 52)
+        tm = re.match(r'\s*([A-Za-z\- ]+?)\s+(\d{1,3}(?:,\d{3})+|\d{2,5})\s*(?:sqm|m²|m2)', title, re.I)
         out.append({'id': pid, 'url': ZY_BASE + path, 'title': title, 'price': price,
-                    'area': float(tm.group(2)) if tm else _area_from_text(title),
+                    'area': float(tm.group(2).replace(',', '')) if tm else _area_from_text(title),
                     'type': tm.group(1).strip() if tm else '', 'street': street,
                     'district_label': f'{city} — {area}' if area else city,
                     'municipality': city, 'source': 'zyprus.com', 'date': ''})
