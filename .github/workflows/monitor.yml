@@ -64,6 +64,16 @@ jobs:
           WATCHDOG_PAT: ${{ secrets.WATCHDOG_PAT }}
           TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
 
+      # Перекрёстный добор cron-слотов: каждый монитор дёргает соседей, если у них
+      # не было прогона 50 мин (GitHub пропускает большинство schedule-слотов).
+      - name: Dispatch siblings if stale
+        if: always()
+        run: |
+          python dispatch_sibling.py cluj-monitor
+          python dispatch_sibling.py belgrade-monitor
+        env:
+          WATCHDOG_PAT: ${{ secrets.WATCHDOG_PAT }}
+
       - name: Commit state back
         if: always()
         run: |
