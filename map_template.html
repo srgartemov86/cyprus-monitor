@@ -185,6 +185,15 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 function esc(s) { return String(s||'').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]); }
 function toggleSide() { document.body.classList.toggle('collapsed'); setTimeout(() => map.invalidateSize(), 50); }
+// Ссылки из попапов: встроенные браузеры (Telegram, iOS webview) глотают target=_blank —
+// если новое окно не открылось, переходим в том же (18.10: «не работает переход на карту»)
+document.addEventListener('click', (e) => {
+  const a = e.target.closest('.leaflet-popup a[href]');
+  if (!a) return;
+  e.preventDefault(); e.stopPropagation();
+  const w = window.open(a.href, '_blank', 'noopener');
+  if (!w) location.href = a.href;
+}, true);
 document.querySelectorAll('.tabs div').forEach(t => t.addEventListener('click', () => {
   document.querySelectorAll('.tabs div').forEach(x => x.classList.remove('on')); t.classList.add('on');
   document.querySelectorAll('.pane').forEach(p => p.classList.toggle('on', p.id === t.dataset.p));
