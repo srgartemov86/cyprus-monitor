@@ -388,7 +388,9 @@ def parse_bazaraki(html, cand):
     if pub:
         out['published_at'] = _bz_published_iso(pub)
     gal = ad.get('gallery') or {}
-    imgs = gal.get('preview') or gal.get('full') or gal.get('small') or []
+    # full = 1600 px, small = 800 px jpg, preview = 160 px превью (им по ошибке
+    # кормили альбомы и карту до 18.10: «плохое качество фоток»)
+    imgs = gal.get('full') or gal.get('small') or gal.get('preview') or []
     if imgs:
         out['photo_url'] = imgs[0]
     out['is_closed'] = bool(ad.get('is_closed'))
@@ -465,8 +467,8 @@ def extract_photo_urls(html, source, max_n=10):
         if source == 'bazaraki.com':
             ad = curl_sweep.bz_ad_from_html(html) or {}
             gal = ad.get('gallery') or {}
-            # preview (~900px webp) хватает и альбому, и попапу карты; full тяжелее
-            urls = list(gal.get('preview') or gal.get('full') or gal.get('small') or [])
+            # full = 1600 px (~60 КБ webp); preview это 160 px превью, не для альбома
+            urls = list(gal.get('full') or gal.get('small') or gal.get('preview') or [])
         elif source == 'zyprus.com':
             urls = list(curl_sweep.zy_parse_detail(html).get('images') or [])
     except Exception:
