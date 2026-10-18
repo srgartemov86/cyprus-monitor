@@ -524,7 +524,7 @@ def build_features(state, sheet):
         row_num = srow.get('row')
         # bucket: to_review (оранж. звезда) > in_progress (красн. звезда) > not_suitable > removed > по свежести
         if status_l in STATUS_TO_REVIEW:
-            bucket = 'to_review'
+            bucket = 'in_progress'  # «To review» слит с «In progress» (18.10.2026)
             color = '#2563eb'  # синий (для совместимости — реальный маркер divIcon ★ blue)
         elif status_l in STATUS_IN_PROGRESS:
             bucket = 'in_progress'
