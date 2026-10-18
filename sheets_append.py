@@ -35,11 +35,12 @@ MAIN_SHEET_GID = 498788918
 REJECT_SHEET_NAME = 'Rejected'
 GOOGLE_TOKEN = os.environ.get('GOOGLE_TOKEN_PATH', '/Users/dodo/.config/gcloud/dodo-drive-token.json')
 
-# Кипр v1: Apps Script вебхука нет (деплой только руками Сергея в браузере) —
-# кнопки статусов на карте выключены, статус ставится в таблице (кол. K).
+# Apps Script вебхук — ТОЛЬКО для кнопок статусов на карте. Деплой общий с Клужем
+# (проект cluj-lokali-webhook, версия 2 от 18.10.2026 выпущена через Apps Script API):
+# секрет выбирает таблицу, пишет только в колонку K (ALLOWED_COLS).
 # Все записи бота идут напрямую через Sheets API ниже — webhook им не нужен.
-WEBHOOK_URL = ''
-SECRET = ''
+WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbyliXATQKxywDQ24IhbTukqf2yC0z2ccpXh_VK8y9FA2tq6JUrGpUuuvu3D3s2mTduq/exec'
+SECRET = 'cyprus-lokali-4782e161ec403a61-2026'
 
 
 def _sheets_service():
