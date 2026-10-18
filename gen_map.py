@@ -675,7 +675,6 @@ HTML_TEMPLATE = """<!DOCTYPE html>
   <div class="row" style="border-top:1px solid #e5e7eb; margin-top:6px; padding-top:6px;"><input type="checkbox" id="t-top20" style="margin-right:6px"><span class="dot" style="background:transparent;border:3px solid #a855f7;width:11px;height:11px;box-sizing:border-box"></span>🏆 top 20% by score (<span id="c-top20">0</span>)</div>
   <div id="qsr-legend" style="border-top:1px solid #e5e7eb; margin-top:6px; padding-top:6px;"></div>
   <div class="row" style="border-top:1px solid #e5e7eb; margin-top:6px; padding-top:6px;"><input type="checkbox" id="t-clear-all" style="margin-right:6px"><span style="color:#6b7280;cursor:pointer">Clear selection</span></div>
-  <div class="row" style="border-top:1px solid #e5e7eb; margin-top:6px; padding-top:6px;"><a href="naselje_score.html" style="color:#2563eb; text-decoration:none;">🔥 Scoring heatmap →</a></div>
 </div>
 <div class="stats">Listings: <strong>{count}</strong> · updated {built_at}</div>
 <div id="toast"></div>
