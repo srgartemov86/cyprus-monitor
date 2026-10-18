@@ -372,7 +372,7 @@ def main():
             _passed_lines = ''
             _today_sent = [v for v in st.get('listings', {}).values()
                            if (v.get('sent_at') or '')[:10] == today
-                           and v.get('telegram_message_id')]
+                           and v.get('telegram_message_id') is not None]  # 0 = текстовая карточка без фото, тоже отправлена
             _today_sent.sort(key=lambda v: v.get('sent_at') or '')
             for v in _today_sent[:10]:
                 _label = (f"{v.get('district') or '?'} · {v.get('area_m2')} m² · "
