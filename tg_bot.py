@@ -124,7 +124,7 @@ def edit_caption(chat_id, message_id, caption):
     return {'ok': True} if res.get('ok') else {'ok': False, 'error': res.get('description')}
 
 
-STATUS_BUTTONS = (('wip', 'In progress'), ('no', 'Not suitable'), ('seen', 'Viewed'))
+STATUS_BUTTONS = (('wip', 'In progress'), ('no', 'Not suitable'))  # «Viewed»/«To review» убраны 18.10
 STATUS_LABEL = dict(STATUS_BUTTONS)
 
 

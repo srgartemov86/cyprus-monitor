@@ -149,10 +149,7 @@
   </header>
   <div class="tabs"><div class="on" data-p="p1">Layers</div><div data-p="p2">Ranking</div></div>
   <div class="pane on" id="p1">
-    <h3>City</h3>
-    <div class="chips" id="cityChips"></div>
     <h3>Listings</h3>
-    <label class="row"><input type="checkbox" id="t-to_review" checked> <span class="star blue">★</span> To review<span class="n" id="c-to_review">0</span></label>
     <label class="row"><input type="checkbox" id="t-in_progress" checked> <span class="star">★</span> In progress<span class="n" id="c-in_progress">0</span></label>
     <label class="row"><input type="checkbox" id="t-fresh" checked> <span class="dot" style="background:var(--good)"></span> Listed ≤ 2 days ago<span class="n" id="c-fresh">0</span></label>
     <label class="row"><input type="checkbox" id="t-recent" checked> <span class="dot" style="background:var(--mid)"></span> 3–15 days<span class="n" id="c-recent">0</span></label>
@@ -162,11 +159,10 @@
     <h3>Competitors</h3>
     <label class="row"><input type="checkbox" id="t-dodo" checked> <span class="lgi"><img src="dodo-logo.png" alt=""></span> Dodo Pizza<span class="n" id="c-dodo">0</span></label>
     <div id="qsr-legend"></div>
-    <span class="btn" id="clearAll">Clear selection</span>
-    <div class="note">Marker colour = listing age. Stars = status set in the sheet or under the Telegram card. Score 0–100 in each popup: residents, retail, food places, offices, seafront, minus competitors and our own units.</div>
+    <div class="note">Marker colour = listing age. Star = «In progress» set in the popup, in the sheet or under the Telegram card. Score 0–100 in each popup: residents, retail, food places, offices, seafront, minus competitors and our own units.</div>
   </div>
   <div class="pane" id="p2">
-    <h3>Active listings by location score</h3>
+    <h3 style="margin-top:8px">Active listings by location score</h3>
     <table id="rank"><thead><tr><th style="width:28px">#</th><th>Where</th><th class="r" style="width:46px">m²</th><th class="r" style="width:58px">€/mo</th><th class="r" style="width:62px">Score</th></tr></thead><tbody></tbody></table>
     <div class="note">Click a row to fly to the listing. Rejected and «not suitable» excluded.</div>
   </div>
@@ -235,17 +231,15 @@ for (const [slug, brand] of Object.entries(QSR)) {
 // --- Слои лотов ---
 const lokLayers = {
   fresh: L.layerGroup().addTo(map), recent: L.layerGroup().addTo(map), old: L.layerGroup().addTo(map),
-  not_suitable: L.layerGroup(), in_progress: L.layerGroup().addTo(map), to_review: L.layerGroup().addTo(map),
+  not_suitable: L.layerGroup(), in_progress: L.layerGroup().addTo(map),
 };
-const lokCounts = {fresh: 0, recent: 0, old: 0, not_suitable: 0, in_progress: 0, to_review: 0};
+const lokCounts = {fresh: 0, recent: 0, old: 0, not_suitable: 0, in_progress: 0};
 const FRESH_COLOR = {fresh: '#30a14e', recent: '#ff9f0a', old: '#86868b'};
 const starIcon = L.divIcon({className: '', html: '<div class="star-marker">★</div>', iconSize: [26, 26], iconAnchor: [13, 13], popupAnchor: [0, -12]});
-const starIconBlue = L.divIcon({className: '', html: '<div class="star-marker blue">★</div>', iconSize: [26, 26], iconAnchor: [13, 13], popupAnchor: [0, -12]});
 
 const WEBHOOK = 'https://script.google.com/macros/s/AKfycbyliXATQKxywDQ24IhbTukqf2yC0z2ccpXh_VK8y9FA2tq6JUrGpUuuvu3D3s2mTduq/exec';
 const WEBHOOK_SECRET = 'cyprus-lokali-4782e161ec403a61-2026';
 const STATUS_BTNS = [
-  {value: 'To review', label: '★ To review', cls: 'st-review'},
   {value: 'In progress', label: '★ In progress', cls: 'st-progress'},
   {value: 'Not suitable', label: '🚫 Not suitable', cls: 'st-no'},
 ];
@@ -260,13 +254,13 @@ function toast(msg, ms) {
 }
 function bucketOf(f) {
   const s = (f.status || '').toLowerCase().replace(/\./g, ' ').replace(/\s+/g, ' ').trim();
-  if (ST_REVIEW.has(s)) return 'to_review';
-  if (ST_PROGRESS.has(s)) return 'in_progress';
+  // «To review» слит с «In progress» (Сергей, 18.10): один рабочий статус
+  if (ST_REVIEW.has(s) || ST_PROGRESS.has(s)) return 'in_progress';
   if (ST_NO.has(s)) return 'not_suitable';
   return f.fresh_bucket || 'old';
 }
 function updateCounts() {
-  for (const b of ['to_review','in_progress','fresh','recent','old','not_suitable']) document.getElementById('c-' + b).textContent = lokCounts[b] || 0;
+  for (const b of ['in_progress','fresh','recent','old','not_suitable']) document.getElementById('c-' + b).textContent = lokCounts[b] || 0;
 }
 async function fetchRow(f) {
   try {
@@ -321,8 +315,8 @@ function scoreBlock(f) {
 function popupNode(f) {
   const bucket = bucketOf(f);
   const ceiling = f.ceiling ? (f.ceiling.toFixed ? f.ceiling.toFixed(1) : f.ceiling) + ' m' : null;
-  const statusColor = bucket === 'to_review' ? 'var(--review)' : bucket === 'in_progress' ? 'var(--acc)' : 'var(--bad)';
-  const statusIcon = (bucket === 'in_progress' || bucket === 'to_review') ? '★' : '🚫';
+  const statusColor = bucket === 'in_progress' ? 'var(--acc)' : 'var(--bad)';
+  const statusIcon = bucket === 'in_progress' ? '★' : '🚫';
   const statusLine = f.status ? `<div class="meta" style="color:${statusColor};font-weight:600;">${statusIcon} ${esc(f.status)}${f.removal_date ? ` · ${esc(f.removal_date)}` : ''}</div>` : '';
   const sheetLink = f.sheet_url ? `<a class="secondary" href="${esc(f.sheet_url)}" target="_blank">Sheet · row ${f.sheet_row}</a>` : '';
   const manualLine = f.manual_coord ? `<div class="meta" style="font-size:11px;color:#059669;">📌 location pinned manually (Sheets col. L)</div>` : '';
@@ -386,8 +380,7 @@ function cityVisible(f) { const c = cityOf(f); return activeCities.has(c) || (c 
 function renderFeature(f) {
   if (f._marker && f._bucket) { lokLayers[f._bucket].removeLayer(f._marker); lokCounts[f._bucket] = (lokCounts[f._bucket] || 1) - 1; }
   const bucket = bucketOf(f);
-  const marker = bucket === 'to_review' ? L.marker([f.lat, f.lon], {icon: starIconBlue, zIndexOffset: 850})
-    : bucket === 'in_progress' ? L.marker([f.lat, f.lon], {icon: starIcon, zIndexOffset: 800})
+  const marker = bucket === 'in_progress' ? L.marker([f.lat, f.lon], {icon: starIcon, zIndexOffset: 800})
     : L.circleMarker([f.lat, f.lon], {radius: 9, fillColor: bucket === 'not_suitable' ? '#d93a2b' : (FRESH_COLOR[f.fresh_bucket] || f.fresh_color || '#86868b'), color: '#fff', weight: 2, opacity: 1, fillOpacity: 0.95});
   // autoPan с отступом под боковую панель (364 px + поля), иначе попап уезжает под неё
   marker.bindPopup(() => popupNode(f), {maxWidth: 350, autoPanPaddingTopLeft: L.point(410, 24), autoPanPaddingBottomRight: L.point(24, 24)});
@@ -463,7 +456,7 @@ function buildRanking() {
 }
 buildRanking();
 
-for (const b of ['to_review', 'in_progress', 'fresh', 'recent', 'old', 'not_suitable']) {
+for (const b of ['in_progress', 'fresh', 'recent', 'old', 'not_suitable']) {
   document.getElementById('t-' + b).addEventListener('change', (e) => e.target.checked ? lokLayers[b].addTo(map) : map.removeLayer(lokLayers[b]));
 }
 document.getElementById('clearAll').addEventListener('click', () => {

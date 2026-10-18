@@ -36,6 +36,9 @@
   a{color:var(--acc);text-decoration:none;font-weight:500}
   .grad{height:6px;background:linear-gradient(90deg,#ffffcc,#fd8d3c,#bd0026);border-radius:3px;margin:6px 0 4px}
   .cell b{color:var(--acc)}
+  .back{display:inline-flex;align-items:center;gap:6px;margin:0 0 12px;padding:8px 16px;border-radius:980px;background:var(--acc);color:#fff;
+    font-weight:600;font-size:13px;text-decoration:none;box-shadow:0 4px 12px rgba(255,105,0,.3);transition:background .15s,transform .1s}
+  .back:hover{background:#e85f00} .back:active{transform:scale(.97)}
   #side{max-height:calc(100vh - 36px);overflow:auto;scrollbar-width:thin}
   .meth{margin-top:14px;border-top:.5px solid var(--sep);padding-top:10px}
   .meth summary{cursor:pointer;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--tx3);font-weight:600;list-style:none;display:flex;align-items:center;gap:6px}
@@ -54,6 +57,7 @@
 </style></head><body>
 <div id="map"></div>
 <div id="side">
+  <a class="back" href="lokali.html">&#8592; Back to listings map</a>
   <h1>Scoring heatmap · Cyprus</h1>
   <div class="sub">Where a pizzeria would score best, before any listing appears. Same cy-v1 formula as in the cards: residents, retail, food places, offices, seafront, minus competitors and our own units.</div>
   <h3>City</h3>
@@ -61,7 +65,7 @@
   <h3>Location score (0–100)</h3>
   <div class="grad"></div>
   <div id="buckets"></div>
-  <div class="sub" style="margin-top:10px">300 m grid, residents estimated from OSM building stock. <a href="lokali.html">← listings map</a></div>
+  <div class="sub" style="margin-top:10px">300 m grid, residents estimated from OSM building stock.</div>
   <details class="meth">
     <summary>Methodology</summary>
     <div class="mbody">
