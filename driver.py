@@ -51,8 +51,11 @@ def gemini_summary(desc_ro):
               "(deposit, availability, VAT). "
               "Use ONLY facts present in the text; if something is not stated, omit it, never "
               "guess or add typical terms. Plain text, no intro, no bullets, no markdown. "
-              "Then, on the LAST line, output exactly 'LOCATION: <street name or nearby landmarks "
-              "mentioned in the text, max 8 words>' or 'LOCATION: none' if the text gives no hint.\n\n"
+              "Then output two final lines: 'LOCATION: <street name or nearby landmarks mentioned "
+              "in the text, max 8 words>' (or 'LOCATION: none'), and 'FLOOR: ground' if the unit is "
+              "on the ground floor / street level, 'FLOOR: upper' if it is on an upper floor only, "
+              "'FLOOR: basement' if it is below ground only, 'FLOOR: mezzanine' if mezzanine only, "
+              "or 'FLOOR: unknown' if the text does not say.\n\n"
               + desc_ro[:2000])
     body = {'contents': [{'parts': [{'text': prompt}]}],
             # думающие flash-модели тратят токены на reasoning ДО ответа —
@@ -72,10 +75,20 @@ def gemini_summary(desc_ro):
     return None
 
 
-def split_location_hint(text):
-    """Отделяет 'LOCATION: ...' (последняя строка ответа Gemini) от summary."""
+FLOOR_HINT = {}  # listing_key -> ground/upper/basement/mezzanine (из ответа Gemini)
+
+
+def split_location_hint(text, listing_key=None):
+    """Отделяет хвостовые строки 'LOCATION: ...' и 'FLOOR: ...' ответа Gemini от summary.
+    FLOOR кладётся в FLOOR_HINT[listing_key]."""
     if not text:
         return text, None
+    mf = re.search(r'\n?FLOOR:\s*([a-z]+)\s*\.?\s*$', text, re.IGNORECASE)
+    if mf:
+        fl = mf.group(1).lower()
+        if listing_key and fl in ('ground', 'upper', 'basement', 'mezzanine'):
+            FLOOR_HINT[listing_key] = fl
+        text = text[:mf.start()].rstrip()
     m = re.search(r'\n?LOCATION:\s*(.+)\s*$', text, re.IGNORECASE)
     if not m:
         return text, None
@@ -114,7 +127,7 @@ def english_summary(pass_rec):
         return '', None
     g = gemini_summary(desc)
     if g:
-        return split_location_hint(g)
+        return split_location_hint(g, pass_rec.get('listing_key'))
     return glossary_en(desc), None
 
 
@@ -178,6 +191,21 @@ def main():
         for p in passes:
             caption = p.get('caption') or ''
             summary, loc_hint = english_summary(p)
+            # Этаж по тексту (Gemini FLOOR): регулярка cycle ловит только буквальный
+            # «ground floor», агенты пишут «street level», «ισόγειο», «g/f».
+            fl = FLOOR_HINT.get(p['listing_key'])
+            if fl in ('upper', 'basement', 'mezzanine') and '🏢 ground floor' not in caption:
+                print(f"  FLOOR reject {p['listing_key']}: {fl}", file=sys.stderr)
+                subprocess.run([sys.executable, 'cycle.py', '--reject', p['listing_key'],
+                                f'floor={fl} (per text)'],
+                               capture_output=True, cwd=HERE, timeout=120)
+                continue
+            if fl == 'ground' and '⚠️ uncertain_floor' in caption:
+                caption = caption.replace('🏢 floor n/a', '🏢 ground floor (per text)')
+                caption = re.sub(r' ?⚠️ uncertain_floor', '', caption)
+                caption = re.sub(r'\n\n+(?=📝)', '\n\n', re.sub(r'\n(?=\n📝)', '', caption))
+                subprocess.run([sys.executable, 'cycle.py', '--set-field', p['listing_key'],
+                                'floor', 'ground floor'], capture_output=True, cwd=HERE, timeout=120)
             # адресная зацепка из текста объявления (улица/ориентиры) — в строку 📍,
             # когда структурного адреса нет (кейс OLX 'zona OMV Marasti...')
             if loc_hint:
@@ -253,6 +281,19 @@ def main():
                                         text=True, timeout=60, cwd=HERE)
                     if '"ok": true' not in (er.stdout or ''):
                         print(f'  caption edit failed for {mid}', file=sys.stderr)
+                # Кнопки статуса под карточкой (Сергей, 18.10): нажатия забирает
+                # process_callbacks.py на следующем прогоне и пишет в кол. K таблицы
+                try:
+                    import tg_bot
+                    sb = tg_bot.send_status_buttons(CHAT_ID, p['listing_key'], reply_to=mid or None)
+                    if sb.get('ok'):
+                        subprocess.run([sys.executable, 'cycle.py', '--set-field', p['listing_key'],
+                                        'status_msg_id', str(sb['message_id'])],
+                                       capture_output=True, cwd=HERE, timeout=120)
+                    else:
+                        print(f"  status buttons failed: {sb.get('error')}", file=sys.stderr)
+                except Exception as e:
+                    print(f'  status buttons error: {e}', file=sys.stderr)
                 sent += 1
             except Exception as e:
                 # не mark-sent → лот останется unalerted, доедет следующим циклом
@@ -264,6 +305,14 @@ def main():
                f"{c.get('address','')} — was {c['old']} € → now {c['new']} €/mo\n"
                f"🔗 {c.get('url','')}")
         send_text(msg, reply_to=c.get('reply_to_message_id'))
+
+    # Нажатия кнопок статуса с прошлого часа → таблица (кол. K) и state
+    try:
+        cb = run_json(['process_callbacks.py'], 180)
+        if cb.get('applied'):
+            print(f"  status callbacks applied: {cb['applied']}", file=sys.stderr)
+    except Exception as e:
+        print(f'  process_callbacks failed: {e}', file=sys.stderr)
 
     fin = run_json(['cycle.py', '--finalize'], 600)
 

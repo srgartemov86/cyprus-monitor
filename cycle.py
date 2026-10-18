@@ -140,6 +140,14 @@ DARK_PATS = [r'\b(?:located|situated)\s+(?:in|on)\s+(?:the\s+)?(?:basement|under
              r'\bshop\s+(?:in|on)\s+(?:the\s+)?basement\b',
              r'no\s+(?:natural\s+light|windows)', r'without\s+windows']
 
+# Признаки уличного помещения для лотов типа Offices (без них офис = офис).
+RETAIL_STRONG = [
+    r'\bshop\b', r'\bshops\b', r'\bshowroom', r'\bretail\b', r'street\s+front', r'\bfrontage\b',
+    r'shop\s*front', r'display\s+window', r'glass\s+fa[cç]ade', r'\bglass\s+front',
+    r'window\s+display', r'\bcaf[eé]\b', r'\brestaurant\b', r'\bbakery\b', r'\bkiosk\b',
+    r'main\s+(?:road|street|avenue)\b', r'\bcorner\s+(?:unit|shop|space|premises)',
+]
+
 # Apartment detection: жильё протекает в commercial-выдачу (хозяева сдают
 # «под офис»). Реджект если жилые маркеры есть И нет коммерческого контр-маркера.
 RESIDENTIAL_PATS = [
@@ -511,11 +519,18 @@ def apply_filters(cand, detail, skip_price=False):
         return False, flags, 'suburb'
 
     type_ = (detail.get('type') or cand.get('type') or '').lower()
-    if any(w in type_ for w in ('office', 'storage', 'warehouse', 'industrial', 'residential')):
+    if any(w in type_ for w in ('storage', 'warehouse', 'industrial', 'residential')):
         return False, flags, f'type={type_[:30]}'
 
     haystack = ((detail.get('description', '') or '') + ' ' +
                 (detail.get('title', '') or '')).lower()
+
+    # Тип «Offices» (bazaraki) берём только с явной витриной/улицей в тексте:
+    # «shop/office» на Кипре частая формулировка для уличного помещения.
+    if 'office' in type_:
+        if not any(re.search(p, haystack) for p in RETAIL_STRONG):
+            return False, flags, f'type={type_[:30]}'
+        flags.append('listed_as_office')
 
     # Офис-паттерн в контексте СОСЕДСТВА («next to office buildings») — это
     # описание окружения, не назначения помещения.
@@ -525,7 +540,7 @@ def apply_filters(cand, detail, skip_price=False):
         r'[a-z,\s]{0,30}$')
     # Тип bazaraki «Shops, showrooms» / «Restaurants, bars» явный: «shop/office
     # space» в тексте такого лота — не офис, а универсальное помещение.
-    _explicit_retail = any(w in type_ for w in ('shop', 'showroom', 'restaurant', 'bar'))
+    _explicit_retail = any(w in type_ for w in ('shop', 'showroom', 'restaurant', 'bar', 'office'))
     for pat in ([] if _explicit_retail else OFFICE_PATS):
         hard_hit = False
         for m_ in re.finditer(pat, haystack):
@@ -1090,7 +1105,7 @@ def run_process():
             url = (l.get('url') or '').lower()
             if any(slug in url for slug in RESORT_SLUGS): continue
             type_ = (l.get('type', '') or '').lower()
-            if any(b in type_ for b in ['office', 'storage', 'warehouse', 'industrial']): continue
+            if any(b in type_ for b in ['storage', 'warehouse', 'industrial']): continue
             # Курорты и населённые пункты вне четырёх городов режем по
             # municipality (city.name) и по url-слагу.
             mun = _norm_sub(l.get('municipality') or '')
@@ -1390,7 +1405,7 @@ def run_process():
                    for s in RESORT_SLUGS):
                 continue
             type_ = (l.get('type', '') or '').lower()
-            if any(b in type_ for b in ['office', 'storage', 'warehouse', 'industrial']):
+            if any(b in type_ for b in ['storage', 'warehouse', 'industrial']):
                 continue
             existing = s['listings'].get(key)
             if existing and (existing.get('in_sheet') or existing.get('rejected')
@@ -1600,6 +1615,55 @@ def run_process():
             'reject_sheet': reject_sheet,
             'summary': summary,
         }, ensure_ascii=False))
+
+
+def cmd_reject(listing_key, reason):
+    """driver.py: лот прошёл фильтры cycle, но Gemini по тексту определил верхний
+    этаж/подвал (FLOOR). Помечаем rejected и пишем строку в Rejected."""
+    with StateLock():
+        s = load_state()
+        rec = s.get('listings', {}).get(listing_key)
+        if not rec:
+            print(json.dumps({'ok': False, 'error': 'listing_key not in state'}))
+            return 1
+        rec['rejected'] = True
+        rec['in_sheet'] = False
+        rec['flags'] = [reason] + [f for f in (rec.get('flags') or []) if f != 'uncertain_floor']
+        rec['last_seen_at'] = now_iso()
+        save_state(s)
+        res = write_rejects_to_sheet([{
+            'key': listing_key, 'reason': reason, 'district': rec.get('district') or '',
+            'address': rec.get('address') or '', 'area': rec.get('area_m2'),
+            'price': rec.get('price_eur'), 'url': rec.get('url'), 'source': rec.get('source'),
+            'lat': rec.get('geo_lat'), 'lon': rec.get('geo_lon'), 'score': rec.get('score'),
+        }])
+    print(json.dumps({'ok': True, 'reject_sheet': res}))
+    return 0
+
+
+def cmd_set_field(listing_key, field, value):
+    """driver.py: дописать поле лота после отправки (floor из Gemini, id сообщения
+    со статус-кнопками)."""
+    allowed = {'floor': str, 'status_msg_id': int}
+    if field not in allowed:
+        print(json.dumps({'ok': False, 'error': f'field {field} not allowed'}))
+        return 1
+    with StateLock():
+        s = load_state()
+        rec = s.get('listings', {}).get(listing_key)
+        if not rec:
+            print(json.dumps({'ok': False, 'error': 'listing_key not in state'}))
+            return 1
+        try:
+            rec[field] = allowed[field](value)
+        except (TypeError, ValueError):
+            print(json.dumps({'ok': False, 'error': 'bad value'}))
+            return 1
+        if field == 'floor':
+            rec['flags'] = [f for f in (rec.get('flags') or []) if f != 'uncertain_floor']
+        save_state(s)
+    print(json.dumps({'ok': True}))
+    return 0
 
 
 def cmd_mark_sent(listing_key, message_id, desc_ru=None):
@@ -2049,6 +2113,10 @@ def main():
                     help='Mark a pass as sent + insert to Sheets')
     ap.add_argument('--geocode-hint', nargs=2, metavar=('KEY', 'HINT'),
                     help='Геокодировать адресную зацепку из текста, записать geo+score в state')
+    ap.add_argument('--reject', nargs=2, metavar=('KEY', 'REASON'),
+                    help='Пометить лот rejected (driver: этаж по тексту Gemini) + строка в Rejected')
+    ap.add_argument('--set-field', nargs=3, metavar=('KEY', 'FIELD', 'VALUE'),
+                    help='Дописать поле лота: floor | status_msg_id')
     ap.add_argument('--desc-ru', default=None,
                     help='Английская выжимка для Sheets кол. F (вместо сырого описания)')
     ap.add_argument('--finalize', action='store_true',
@@ -2063,7 +2131,8 @@ def main():
         DRY_RUN = True
         print('=== DRY-RUN: state и Google Sheet НЕ будут изменены ===', file=sys.stderr)
 
-    if args.dry_run and (args.finalize or args.mark_sent or args.geocode_hint):
+    if args.dry_run and (args.finalize or args.mark_sent or args.geocode_hint
+                         or args.reject or args.set_field):
         # finalize/mark-sent пишут через подпроцессы (check_status → лист,
         # gen_map → surge) — dry-run их не гейтит. Запрещаем совсем.
         print('dry-run поддерживает только process-фазу (без --finalize/--mark-sent)',
@@ -2074,6 +2143,10 @@ def main():
         return cmd_mark_sent(args.mark_sent[0], args.mark_sent[1], desc_ru=args.desc_ru)
     if args.geocode_hint:
         return cmd_geocode_hint(args.geocode_hint[0], args.geocode_hint[1])
+    if args.reject:
+        return cmd_reject(args.reject[0], args.reject[1])
+    if args.set_field:
+        return cmd_set_field(*args.set_field)
     if args.finalize:
         return cmd_finalize()
     return run_process()

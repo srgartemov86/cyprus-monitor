@@ -2,3 +2,4 @@ __pycache__/
 .cy-photos/
 data/state.json.lock
 *.pyc
+data/osm_raw_cache_cyprus.json

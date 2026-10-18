@@ -124,6 +124,49 @@ def edit_caption(chat_id, message_id, caption):
     return {'ok': True} if res.get('ok') else {'ok': False, 'error': res.get('description')}
 
 
+STATUS_BUTTONS = (('wip', 'In progress'), ('no', 'Not suitable'), ('seen', 'Viewed'))
+STATUS_LABEL = dict(STATUS_BUTTONS)
+
+
+def status_keyboard(listing_key):
+    return json.dumps({'inline_keyboard': [[
+        {'text': label, 'callback_data': f'st|{listing_key}|{code}'}
+        for code, label in STATUS_BUTTONS]]})
+
+
+def send_status_buttons(chat_id, listing_key, reply_to=None):
+    """Сообщение-ответ под карточкой с кнопками статуса (альбому inline-клавиатуру
+    Bot API не даёт). Нажатия забирает process_callbacks.py на следующем прогоне."""
+    data = {'text': 'Status: not set', 'reply_markup': status_keyboard(listing_key),
+            'disable_notification': 'true'}
+    if reply_to:
+        data['reply_parameters'] = json.dumps(
+            {'message_id': int(reply_to), 'allow_sending_without_reply': True})
+    res = _with_chat(chat_id, lambda cid: _call('sendMessage', data={**data, 'chat_id': cid}))
+    if not res.get('ok'):
+        return {'ok': False, 'error': res.get('description')}
+    return {'ok': True, 'message_id': res['result']['message_id']}
+
+
+def edit_status_message(chat_id, message_id, text, listing_key):
+    res = _with_chat(chat_id, lambda cid: _call('editMessageText', data={
+        'chat_id': cid, 'message_id': int(message_id), 'text': text[:4096],
+        'reply_markup': status_keyboard(listing_key)}))
+    return {'ok': True} if res.get('ok') else {'ok': False, 'error': res.get('description')}
+
+
+def get_updates(offset=None, limit=100):
+    data = {'limit': limit, 'timeout': 0, 'allowed_updates': json.dumps(['callback_query'])}
+    if offset is not None:
+        data['offset'] = int(offset)
+    res = _call('getUpdates', data=data, timeout=30)
+    return res.get('result') or [] if res.get('ok') else []
+
+
+def answer_callback(callback_id, text=''):
+    return _call('answerCallbackQuery', data={'callback_query_id': callback_id, 'text': text[:200]})
+
+
 def _read(src):
     return sys.stdin.read() if src == '-' else open(src, encoding='utf-8').read()
 

@@ -39,7 +39,10 @@ BZ_BASE = 'https://www.bazaraki.com'
 BZ_LIST = BZ_BASE + '/real-estate-to-rent/commercial-property/'
 # Типы bazaraki (type---N): 1 Offices, 2 Storage/warehouses, 3 Restaurants/bars,
 # 4 Shops/showrooms, 5 Other, 6 Building, 7 Mixed use, 8 Residential buildings.
-BZ_TYPES = {3: 'Restaurants, bars', 4: 'Shops, showrooms', 6: 'Building', 7: 'Mixed use'}
+# Offices (1) добавлен 18.10 по решению Сергея: на Кипре половина уличных помещений
+# сдаётся как «shop/office»; cycle пропускает их только с явными признаками витрины.
+BZ_TYPES = {3: 'Restaurants, bars', 4: 'Shops, showrooms', 6: 'Building', 7: 'Mixed use',
+            1: 'Offices'}
 # Фильтр цены в URL: те же рамки, что в cycle (PRICE_NEAR_*), чтобы near-miss
 # по цене тоже попадал в выдачу для листа Rejected.
 BZ_PRICE_MIN, BZ_PRICE_MAX = 900, 8000
