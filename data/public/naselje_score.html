@@ -22,7 +22,7 @@
   .leaflet-popup-content-wrapper{border-radius:14px;background:rgba(255,255,255,.9);backdrop-filter:var(--blur);box-shadow:0 16px 48px rgba(0,0,0,.18),var(--hairline);font-family:inherit}
   .leaflet-popup-content{margin:12px 14px;font-size:12.5px;line-height:1.5}
   .leaflet-popup-tip{background:rgba(255,255,255,.9)}
-  #side{position:absolute;top:18px;left:18px;width:300px;background:var(--panel);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
+  #side{position:absolute;top:18px;left:18px;width:320px;background:var(--panel);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
     border-radius:var(--r);box-shadow:0 24px 60px rgba(0,0,0,.14),var(--hairline);z-index:1001;padding:18px 20px 16px}
   #side h1{margin:0 0 4px;font-size:18px;font-weight:600;letter-spacing:-.02em;display:flex;align-items:center;gap:9px}
   #side h1:before{content:'';width:9px;height:9px;border-radius:50%;background:var(--acc)}
@@ -36,6 +36,20 @@
   a{color:var(--acc);text-decoration:none;font-weight:500}
   .grad{height:6px;background:linear-gradient(90deg,#ffffcc,#fd8d3c,#bd0026);border-radius:3px;margin:6px 0 4px}
   .cell b{color:var(--acc)}
+  #side{max-height:calc(100vh - 36px);overflow:auto;scrollbar-width:thin}
+  .meth{margin-top:14px;border-top:.5px solid var(--sep);padding-top:10px}
+  .meth summary{cursor:pointer;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--tx3);font-weight:600;list-style:none;display:flex;align-items:center;gap:6px}
+  .meth summary::-webkit-details-marker{display:none}
+  .meth summary:before{content:'›';display:inline-block;transition:transform .2s;font-size:14px;color:var(--acc)}
+  .meth[open] summary:before{transform:rotate(90deg)}
+  .mbody{font-size:12px;color:var(--tx);line-height:1.5;margin-top:8px}
+  .mbody p{margin:6px 0}
+  .mbody b{font-weight:600}
+  .mbody table{border-collapse:collapse;width:100%;font-size:11.5px;margin:6px 0}
+  .mbody th,.mbody td{padding:4px 4px;text-align:left;border-bottom:.5px solid var(--sep)}
+  .mbody th{color:var(--tx3);font-weight:600;font-size:10px;text-transform:uppercase;letter-spacing:.04em}
+  .mbody td:nth-child(n+2),.mbody th:nth-child(n+2){text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .mbody .dim{color:var(--tx3);font-size:11px}
   @media(max-width:760px){#side{width:calc(100% - 28px);left:14px;top:14px}.leaflet-top.leaflet-left{left:14px;top:230px}}
 </style></head><body>
 <div id="map"></div>
@@ -48,6 +62,30 @@
   <div class="grad"></div>
   <div id="buckets"></div>
   <div class="sub" style="margin-top:10px">300 m grid, residents estimated from OSM building stock. <a href="lokali.html">← listings map</a></div>
+  <details class="meth">
+    <summary>Methodology</summary>
+    <div class="mbody">
+      <p><b>What is scored.</b> Every 300 × 300 m cell of the four city cores (Limassol, Nicosia, Paphos, Larnaca) is scored as if a pizzeria stood at its centre. Cells with fewer than 200 residents and fewer than 3 shops or stops within reach are left blank (sea, hills, industrial land).</p>
+      <p><b>Signals (OpenStreetMap, formula cy-v1).</b> Each signal is capped at a saturation threshold, scaled 0–1 and weighted:</p>
+      <table>
+        <tr><th>Signal</th><th>Radius</th><th>Saturates at</th><th>Weight</th></tr>
+        <tr><td>Residents (catchment)</td><td>500 m</td><td>8 000</td><td>0.32</td></tr>
+        <tr><td>Residents (secondary)</td><td>1 km</td><td>30 000</td><td>0.10</td></tr>
+        <tr><td>Shops</td><td>300 m</td><td>30</td><td>0.18</td></tr>
+        <tr><td>Food places (proven traffic)</td><td>400 m</td><td>20</td><td>0.16</td></tr>
+        <tr><td>Daytime: offices + 4×schools</td><td>500 m</td><td>40</td><td>0.14</td></tr>
+        <tr><td>Transit stops</td><td>300 m</td><td>6</td><td>0.04</td></tr>
+        <tr><td>Seafront (coastline)</td><td>500 m</td><td>yes/no</td><td>+0.06</td></tr>
+        <tr><td>Direct competitors (penalty)</td><td>200 m</td><td>20</td><td>−0.06</td></tr>
+        <tr><td>Own Dodo unit (cannibalisation)</td><td>&lt; 600 m</td><td>linear</td><td>−0.08</td></tr>
+      </table>
+      <p>Score = 100 × weighted sum, clipped to 0–100. Weights sum to 1.0 on the positive side, so a cell saturating every signal with no penalties scores 100.</p>
+      <p><b>Residents.</b> Not census data: estimated from building footprints × floors (OSM <i>building:levels</i> or a default per building type) × 0.8 usable share ÷ m² per person by housing type (flats 40, houses 55). Low-rise suburbs therefore read lower than towers, which is what a delivery-and-walk-in pizzeria needs.</p>
+      <p><b>Why these weights.</b> Cyprus cities are car-oriented, so transit is almost irrelevant (0.04 vs 0.16 in the Belgrade/Cluj version). Dense retail and food clusters on the seafront and in old centres are the real footfall, so shops, food places and the coastline bonus carry more; 20 competitors within 200 m is normal there, not a warning. Calibrated on our own units: Limassol-1 scores 81, Nicosia-1 78, Nicosia-2 42, Limassol-2 32.</p>
+      <p><b>Limits.</b> The score measures how lively a place is, not Dodo demand: it does not see the Russian-speaking audience, delivery share or seasonality. Nicosia centre scores high while our unit there underperforms. A demand layer (aggregator or own delivery orders by address) is the next step.</p>
+      <p class="dim">Same formula as the score in each listing card; data © OpenStreetMap contributors.</p>
+    </div>
+  </details>
 </div>
 <script>
 const CITIES={Limassol:[34.685,33.04,13],Nicosia:[35.16,33.36,13],Paphos:[34.77,32.43,13],Larnaca:[34.915,33.62,13]};
