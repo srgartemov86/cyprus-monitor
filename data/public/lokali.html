@@ -145,12 +145,11 @@
 <div id="side">
   <header>
     <h1>Cyprus locations<span class="hideBtn" onclick="toggleSide()" title="Hide panel">&#8249;</span></h1>
-    <div class="sub"><b id="hdrCount">42</b> listings · updated 2026-10-18 16:59 · <a href="naselje_score.html">scoring heatmap &#8250;</a></div>
+    <div class="sub"><b id="hdrCount">42</b> listings · updated 2026-10-18 19:33 · <a href="naselje_score.html">scoring heatmap &#8250;</a></div>
+    <div class="chips" id="cityChips" style="margin:12px 0 0"></div>
   </header>
   <div class="tabs"><div class="on" data-p="p1">Layers</div><div data-p="p2">Ranking</div></div>
   <div class="pane on" id="p1">
-    <h3>City</h3>
-    <div class="chips" id="cityChips"></div>
     <h3>Listings</h3>
     <label class="row"><input type="checkbox" id="t-to_review" checked> <span class="star blue">★</span> To review<span class="n" id="c-to_review">0</span></label>
     <label class="row"><input type="checkbox" id="t-in_progress" checked> <span class="star">★</span> In progress<span class="n" id="c-in_progress">0</span></label>
@@ -166,7 +165,7 @@
     <div class="note">Marker colour = listing age. Stars = status set in the sheet or under the Telegram card. Score 0–100 in each popup: residents, retail, food places, offices, seafront, minus competitors and our own units.</div>
   </div>
   <div class="pane" id="p2">
-    <h3>Active listings by location score</h3>
+    <h3 style="margin-top:8px">Active listings by location score</h3>
     <table id="rank"><thead><tr><th style="width:28px">#</th><th>Where</th><th class="r" style="width:46px">m²</th><th class="r" style="width:58px">€/mo</th><th class="r" style="width:62px">Score</th></tr></thead><tbody></tbody></table>
     <div class="note">Click a row to fly to the listing. Rejected and «not suitable» excluded.</div>
   </div>
