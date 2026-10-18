@@ -134,11 +134,16 @@ def status_keyboard(listing_key):
         for code, label in STATUS_BUTTONS]]})
 
 
-def send_status_buttons(chat_id, listing_key, reply_to=None):
+def status_text(status_line, sheet_link=None):
+    return status_line + (f'\n📋 Sheet: {sheet_link}' if sheet_link else '')
+
+
+def send_status_buttons(chat_id, listing_key, reply_to=None, sheet_link=None):
     """Сообщение-ответ под карточкой с кнопками статуса (альбому inline-клавиатуру
-    Bot API не даёт). Нажатия забирает process_callbacks.py на следующем прогоне."""
-    data = {'text': 'Status: not set', 'reply_markup': status_keyboard(listing_key),
-            'disable_notification': 'true'}
+    Bot API не даёт) и ссылкой на строку таблицы (в текстовую карточку без фото
+    её иначе не дописать). Нажатия забирает process_callbacks.py на следующем прогоне."""
+    data = {'text': status_text('Status: not set', sheet_link), 'reply_markup': status_keyboard(listing_key),
+            'disable_notification': 'true', 'disable_web_page_preview': 'true'}
     if reply_to:
         data['reply_parameters'] = json.dumps(
             {'message_id': int(reply_to), 'allow_sending_without_reply': True})
@@ -148,10 +153,10 @@ def send_status_buttons(chat_id, listing_key, reply_to=None):
     return {'ok': True, 'message_id': res['result']['message_id']}
 
 
-def edit_status_message(chat_id, message_id, text, listing_key):
+def edit_status_message(chat_id, message_id, text, listing_key, sheet_link=None):
     res = _with_chat(chat_id, lambda cid: _call('editMessageText', data={
-        'chat_id': cid, 'message_id': int(message_id), 'text': text[:4096],
-        'reply_markup': status_keyboard(listing_key)}))
+        'chat_id': cid, 'message_id': int(message_id), 'text': status_text(text, sheet_link)[:4096],
+        'reply_markup': status_keyboard(listing_key), 'disable_web_page_preview': 'true'}))
     return {'ok': True} if res.get('ok') else {'ok': False, 'error': res.get('description')}
 
 

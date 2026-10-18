@@ -55,7 +55,8 @@ def main():
         tg_bot.answer_callback(cq.get('id', ''), f'{label} saved')  # обычно уже протух, не страшно
         msg = (cq.get('message') or {})
         if msg.get('message_id'):
-            edits.append((msg['message_id'], f'Status: {label} · {rec["status_by"]} · {when}', key))
+            edits.append((msg['message_id'], f'Status: {label} · {rec["status_by"]} · {when}', key,
+                          rec.get('sheet_link')))
         if rec.get('url'):
             if url_rows is None:
                 try:
@@ -82,8 +83,8 @@ def main():
             sheet_ok = len(cells)
         except Exception as e:
             sheet_ok = f'fail: {e}'
-    for mid, text, key in edits:
-        tg_bot.edit_status_message(CHAT_ID, mid, text, key)
+    for mid, text, key, link in edits:
+        tg_bot.edit_status_message(CHAT_ID, mid, text, key, sheet_link=link)
     print(json.dumps({'ok': True, 'applied': applied, 'updates': len(updates), 'sheet': sheet_ok}))
     return 0
 

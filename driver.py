@@ -285,7 +285,8 @@ def main():
                 # process_callbacks.py на следующем прогоне и пишет в кол. K таблицы
                 try:
                     import tg_bot
-                    sb = tg_bot.send_status_buttons(CHAT_ID, p['listing_key'], reply_to=mid or None)
+                    sb = tg_bot.send_status_buttons(CHAT_ID, p['listing_key'], reply_to=mid or None,
+                                                    sheet_link=link)
                     if sb.get('ok'):
                         subprocess.run([sys.executable, 'cycle.py', '--set-field', p['listing_key'],
                                         'status_msg_id', str(sb['message_id'])],
