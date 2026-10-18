@@ -700,6 +700,12 @@ def main():
 
     # 3. Build features
     feats = build_features(state, sheet)
+    # 3a. features.json — лёгкий слой лотов для страницы тепловой карты (naselje_score.html)
+    slim = [{k: f.get(k) for k in ('lat', 'lon', 'district', 'area', 'price', 'score', 'url',
+                                   'status', 'fresh_bucket', 'address')} for f in feats]
+    json.dump({'built_at': datetime.datetime.now().strftime('%Y-%m-%d %H:%M'), 'features': slim},
+              open(os.path.join(os.path.dirname(OUT_HTML), 'features.json'), 'w', encoding='utf-8'),
+              ensure_ascii=False)
     feats.sort(key=lambda f: f['days_since'])
     print(f"  features: {len(feats)}")
 

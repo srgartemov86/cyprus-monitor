@@ -36,6 +36,22 @@
   a{color:var(--acc);text-decoration:none;font-weight:500}
   .grad{height:6px;background:linear-gradient(90deg,#ffffcc,#fd8d3c,#bd0026);border-radius:3px;margin:6px 0 4px}
   .cell b{color:var(--acc)}
+  .lrow{display:flex;align-items:center;gap:10px;padding:6px 0;cursor:pointer;font-size:13px}
+  .lrow input[type=checkbox]{appearance:none;-webkit-appearance:none;margin:0;flex:none;cursor:pointer;width:38px;height:23px;border-radius:12px;background:var(--fill2);position:relative;transition:background .25s}
+  .lrow input[type=checkbox]:after{content:'';position:absolute;top:2px;left:2px;width:19px;height:19px;border-radius:50%;background:#fff;box-shadow:0 2px 5px rgba(0,0,0,.18);transition:transform .25s}
+  .lrow input[type=checkbox]:checked{background:var(--acc)} .lrow input[type=checkbox]:checked:after{transform:translateX(15px)}
+  .n{margin-left:auto;color:var(--tx2);font-size:12px;background:var(--fill);padding:2px 8px;border-radius:980px;font-weight:500}
+  .lot b{color:var(--acc)} .lot a{display:inline-block;margin-top:6px;padding:5px 12px;border-radius:980px;background:var(--acc);color:#fff;font-weight:500;font-size:12px}
+  #menuBtn{display:none;position:absolute;bottom:18px;left:18px;z-index:1002;width:42px;height:42px;border-radius:12px;background:var(--panel);backdrop-filter:var(--blur);align-items:center;justify-content:center;cursor:pointer;box-shadow:var(--sh),var(--hairline);font-size:17px}
+  body.collapsed #side{display:none} body.collapsed #menuBtn{display:flex}
+  .hideBtn{display:none;margin-left:auto;width:28px;height:28px;border-radius:50%;background:var(--fill);color:var(--tx2);align-items:center;justify-content:center;cursor:pointer;font-size:15px;flex:none}
+  @media(max-width:760px){
+    #side{top:auto;bottom:0;left:0;right:0;width:100%;max-height:46vh;height:46vh;border-radius:18px 18px 0 0;padding:6px 16px 14px;box-shadow:0 -12px 40px rgba(0,0,0,.16),var(--hairline)}
+    #side:before{content:'';display:block;width:36px;height:4px;border-radius:2px;background:rgba(0,0,0,.18);margin:4px auto 10px}
+    #side h1{font-size:17px}
+    .hideBtn{display:flex}
+    .leaflet-top.leaflet-left{left:12px;top:12px}
+  }
   .back{display:inline-flex;align-items:center;gap:6px;margin:0 0 12px;padding:8px 16px;border-radius:980px;background:var(--acc);color:#fff;
     font-weight:600;font-size:13px;text-decoration:none;box-shadow:0 4px 12px rgba(255,105,0,.3);transition:background .15s,transform .1s}
   .back:hover{background:#e85f00} .back:active{transform:scale(.97)}
@@ -56,12 +72,15 @@
   @media(max-width:760px){#side{width:calc(100% - 28px);left:14px;top:14px}.leaflet-top.leaflet-left{left:14px;top:230px}}
 </style></head><body>
 <div id="map"></div>
+<div id="menuBtn" onclick="document.body.classList.remove('collapsed')" title="Show panel">&#9776;</div>
 <div id="side">
   <a class="back" href="lokali.html">&#8592; Back to listings map</a>
-  <h1>Scoring heatmap · Cyprus</h1>
+  <h1>Scoring heatmap · Cyprus<span class="hideBtn" onclick="document.body.classList.add('collapsed')" title="Hide panel">&#8249;</span></h1>
   <div class="sub">Where a pizzeria would score best, before any listing appears. Same cy-v1 formula as in the cards: residents, retail, food places, offices, seafront, minus competitors and our own units.</div>
   <h3>City</h3>
   <div class="chips" id="chips"></div>
+  <h3>Listings</h3>
+  <label class="lrow"><input type="checkbox" id="t-lots" checked> Show active listings on top<span class="n" id="c-lots">–</span></label>
   <h3>Location score (0–100)</h3>
   <div class="grad"></div>
   <div id="buckets"></div>
@@ -109,6 +128,21 @@ fetch('score_heatmap_cyprus.geojson').then(r=>r.json()).then(gj=>{
 const chips=document.getElementById('chips');
 for(const [c,v] of Object.entries(CITIES)){const el=document.createElement('span');el.className='chip'+(c==='Limassol'?' on':'');el.textContent=c;
   el.onclick=()=>{document.querySelectorAll('.chip').forEach(x=>x.classList.remove('on'));el.classList.add('on');map.flyTo([v[0],v[1]],v[2]);};chips.appendChild(el);}
+// Слой активных лотов поверх тепловой карты (features.json пишет gen_map каждый цикл)
+const lotsLayer=L.layerGroup().addTo(map);
+const scoreCol=s=>(s==null?'#86868b':s>=70?'#30a14e':s>=50?'#c98a00':s>=30?'#e85f00':'#d93a2b');
+fetch('features.json?ts='+Date.now()).then(r=>r.json()).then(d=>{
+  const fs=(d.features||[]).filter(f=>f.lat!=null && !/not suitable|rejected|removed/i.test(f.status||''));
+  for(const f of fs){
+    const id=(f.url||'').match(/\/adv\/(\d+)_|\/property\/(\d+)\//); const lot=id?(id[1]||id[2]):'';
+    const m=L.circleMarker([f.lat,f.lon],{radius:7,color:'#fff',weight:2,fillColor:scoreCol(f.score),fillOpacity:0.95});
+    m.bindTooltip(`${(f.district||'').split(' (')[0]} · ${f.area||'?'} m² · ${f.price||'?'} €${f.score!=null?' · score '+f.score:''}`,{direction:'top',offset:[0,-6]});
+    m.bindPopup(`<div class="lot"><b>${f.district||'Listing'}</b><br>📐 ${f.area||'—'} m² · 💶 ${f.price||'—'} €/mo${f.score!=null?' · score <b>'+f.score+'</b>':''}<br><a href="lokali.html#lot=${encodeURIComponent(lot)}">Open on listings map &#8250;</a></div>`);
+    lotsLayer.addLayer(m);
+  }
+  document.getElementById('c-lots').textContent=fs.length;
+}).catch(()=>{document.getElementById('c-lots').textContent='n/a';});
+document.getElementById('t-lots').addEventListener('change',e=>e.target.checked?lotsLayer.addTo(map):map.removeLayer(lotsLayer));
 const bk=document.getElementById('buckets');
 const labels=['80+','70–80','60–70','50–60','40–50','30–40','20–30','< 20'];
 STOPS.forEach((s,i)=>bk.insertAdjacentHTML('beforeend',`<div class="row"><i style="background:${s[1]}"></i>${labels[i]}</div>`));
