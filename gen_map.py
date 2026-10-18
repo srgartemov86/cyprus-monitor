@@ -16,7 +16,7 @@ from curl_cffi import requests
 STATE_PATH = os.path.join(os.environ.get('CY_DATA', '/Users/dodo/cyprus-monitor-cloud/data'), 'state.json')
 QSR_PATH   = os.path.join(os.environ.get('CY_DATA', '/Users/dodo/cyprus-monitor-cloud/data'), 'qsr_cyprus.json')
 OUT_HTML   = os.path.join(os.environ.get('CY_DATA', '/Users/dodo/cyprus-monitor-cloud/data'), 'public', 'lokali.html')
-SHEET_ID   = '1NZNlx2G24Ea-zGNurKx7fTAmHgLK4tOSjtB7ScYx-7c'
+SHEET_ID   = '1PNXJg4aT5jeWYz9sqlQmE6yoz-Lvf6D8PgJFusPZCYE'  # Cyprus locations; до 18.10 стоял клужский id
 SHEET_GID  = '498788918'
 CHROME_PROFILE_COOKIES = '/Users/dodo/Library/Application Support/Google/Chrome/Profile 3/Cookies'
 NOMINATIM_UA = "DodoPizzeriaMonitor/1.0 (s.artemov@dodobrands.io)"

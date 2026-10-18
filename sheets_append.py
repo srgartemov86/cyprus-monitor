@@ -2,7 +2,7 @@
 """Insert/manage rows in Cyprus Sheets — напрямую через Sheets API v4
 (OAuth-токен drive), без Apps Script webhook.
 
-Spreadsheet: 1NZNlx2G24Ea-zGNurKx7fTAmHgLK4tOSjtB7ScYx-7c
+Spreadsheet: 1PNXJg4aT5jeWYz9sqlQmE6yoz-Lvf6D8PgJFusPZCYE (Cyprus locations, Dodo monitor)
   Лист «Лоты» (первый, gid 498788918):
     A=Адрес | B=Район | C=Площадь | D=Цена | E=Ссылка | F=Текст объявления (RU)
     G=Дата размещения | H=Дата добавления | I=Дата снятия с сайта |

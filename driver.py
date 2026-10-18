@@ -10,7 +10,7 @@
 
 Запускается из GitHub Actions (см. .github/workflows/monitor.yml).
 Env: CY_DATA, TG_SESSION, TG_API_ID, TG_API_HASH, GOOGLE_TOKEN_PATH,
-     CY_CHAT_ID (default 3828339567).
+     CY_CHAT_ID (переменная репо: группа Cyprus-lokal-monitor 5275271850).
 """
 import json, os, re, subprocess, sys, tempfile
 from pathlib import Path
