@@ -28,8 +28,10 @@ RAW_CACHE = os.path.join(DATA, 'osm_raw_cache_cyprus.json')
 QSR_PATH = os.path.join(DATA, 'qsr_cyprus.json')
 RAW_CACHE_TTL_H = 72
 UA = 'dodo-cyprus-location-scout/1.0 (s.artemov@dodobrands.io)'
-MIRRORS = ['https://overpass-api.de/api/interpreter',
-           'https://maps.mail.ru/osm/tools/overpass/api/interpreter',
+# mail.ru первым: 18.10 overpass-api.de отвечал 406/таймаутами, а 150 с × 3 зеркала
+# × 2 круга на тайл превращали сбор 111 тайлов в бесконечность
+MIRRORS = ['https://maps.mail.ru/osm/tools/overpass/api/interpreter',
+           'https://overpass-api.de/api/interpreter',
            'https://overpass.private.coffee/api/interpreter']
 
 # Bbox городских ядер (6 км от центра поиска + запас на кольцо 1 км)
@@ -90,7 +92,7 @@ def fetch_tile(S, W, N, E):
         for m in MIRRORS:
             try:
                 r = requests.post(m, data={'data': q},
-                                  headers={'User-Agent': UA}, timeout=150)
+                                  headers={'User-Agent': UA}, timeout=75)
                 if r.status_code == 200 and r.text.lstrip().startswith('{'):
                     return r.json().get('elements', [])
             except Exception:

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Location scoring · Cyprus</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#f5f5f7;--panel:rgba(255,255,255,.72);--tx:#1d1d1f;--tx2:#6e6e73;--tx3:#86868b;
+    --sep:rgba(0,0,0,.07);--fill:rgba(120,120,128,.12);--fill2:rgba(120,120,128,.2);--acc:#FF6900;
+    --blur:saturate(180%) blur(30px);--r:18px;--r2:12px;--sh:0 8px 30px rgba(0,0,0,.10),0 1px 2px rgba(0,0,0,.04);
+    --hairline:0 0 0 .5px rgba(0,0,0,.08)}
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:var(--bg);color:var(--tx);
+    font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',Inter,'Segoe UI',Roboto,sans-serif;
+    font-size:13px;letter-spacing:-.01em;-webkit-font-smoothing:antialiased}
+  #map{position:absolute;inset:0;width:100%;height:100vh}
+  .leaflet-tile-pane{filter:saturate(.3) contrast(.98) brightness(1.06)}
+  .leaflet-control-zoom{border:none!important;border-radius:10px!important;overflow:hidden;box-shadow:var(--sh),var(--hairline)!important}
+  .leaflet-control-zoom a{background:rgba(255,255,255,.82)!important;color:var(--tx)!important;border:none!important;width:32px!important;height:32px!important;line-height:32px!important;font-size:17px!important}
+  .leaflet-top.leaflet-left{left:338px;top:18px}
+  .leaflet-popup-content-wrapper{border-radius:14px;background:rgba(255,255,255,.9);backdrop-filter:var(--blur);box-shadow:0 16px 48px rgba(0,0,0,.18),var(--hairline);font-family:inherit}
+  .leaflet-popup-content{margin:12px 14px;font-size:12.5px;line-height:1.5}
+  .leaflet-popup-tip{background:rgba(255,255,255,.9)}
+  #side{position:absolute;top:18px;left:18px;width:300px;background:var(--panel);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
+    border-radius:var(--r);box-shadow:0 24px 60px rgba(0,0,0,.14),var(--hairline);z-index:1001;padding:18px 20px 16px}
+  #side h1{margin:0 0 4px;font-size:18px;font-weight:600;letter-spacing:-.02em;display:flex;align-items:center;gap:9px}
+  #side h1:before{content:'';width:9px;height:9px;border-radius:50%;background:var(--acc)}
+  .sub{color:var(--tx2);font-size:12px;line-height:1.45}
+  h3{margin:16px 0 6px;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--tx3);font-weight:600}
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .chip{padding:5px 12px;border-radius:980px;background:var(--fill);cursor:pointer;font-weight:500;font-size:12.5px}
+  .chip.on{background:var(--acc);color:#fff}
+  .row{display:flex;align-items:center;margin:3px 0;font-size:12px}
+  .row i{width:16px;height:11px;border-radius:3px;margin-right:8px;display:inline-block}
+  a{color:var(--acc);text-decoration:none;font-weight:500}
+  .grad{height:6px;background:linear-gradient(90deg,#ffffcc,#fd8d3c,#bd0026);border-radius:3px;margin:6px 0 4px}
+  .cell b{color:var(--acc)}
+  @media(max-width:760px){#side{width:calc(100% - 28px);left:14px;top:14px}.leaflet-top.leaflet-left{left:14px;top:230px}}
+</style></head><body>
+<div id="map"></div>
+<div id="side">
+  <h1>Scoring heatmap · Cyprus</h1>
+  <div class="sub">Where a pizzeria would score best, before any listing appears. Same cy-v1 formula as in the cards: residents, retail, food places, offices, seafront, minus competitors and our own units.</div>
+  <h3>City</h3>
+  <div class="chips" id="chips"></div>
+  <h3>Location score (0–100)</h3>
+  <div class="grad"></div>
+  <div id="buckets"></div>
+  <div class="sub" style="margin-top:10px">300 m grid, residents estimated from OSM building stock. <a href="lokali.html">← listings map</a></div>
+</div>
+<script>
+const CITIES={Limassol:[34.685,33.04,13],Nicosia:[35.16,33.36,13],Paphos:[34.77,32.43,13],Larnaca:[34.915,33.62,13]};
+const map=L.map('map',{zoomControl:true}).setView([34.685,33.04],13);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap',maxZoom:19}).addTo(map);
+const STOPS=[[80,'#800026'],[70,'#bd0026'],[60,'#e31a1c'],[50,'#fc4e2a'],[40,'#fd8d3c'],[30,'#feb24c'],[20,'#fed976'],[0,'#ffffcc']];
+const col=s=>{for(const [t,c] of STOPS){if(s>=t) return c;} return '#ffffcc';};
+fetch('score_heatmap_cyprus.geojson').then(r=>r.json()).then(gj=>{
+  L.geoJSON(gj,{style:f=>({fillColor:col(f.properties.score),weight:0.25,color:'#999',fillOpacity:0.66}),
+    onEachFeature:(f,l)=>{const p=f.properties;
+      l.bindPopup(`<div class="cell">Score <b>${p.score}/100</b> · ${p.city}<hr style="margin:4px 0;border:0;border-top:1px solid #eee">`+
+        `👥 ~${Number(p.res500).toLocaleString('en')} residents in 500 m<br>`+
+        `🛍 ${p.shops} shops · 🍽 ${p.food} food places · 🏢 ${p.offices} offices<br>`+
+        `⚔️ ${p.comp} competitors in 200 m${p.sea?' · 🌊 seafront':''}</div>`);}
+  }).addTo(map);
+});
+const chips=document.getElementById('chips');
+for(const [c,v] of Object.entries(CITIES)){const el=document.createElement('span');el.className='chip'+(c==='Limassol'?' on':'');el.textContent=c;
+  el.onclick=()=>{document.querySelectorAll('.chip').forEach(x=>x.classList.remove('on'));el.classList.add('on');map.flyTo([v[0],v[1]],v[2]);};chips.appendChild(el);}
+const bk=document.getElementById('buckets');
+const labels=['80+','70–80','60–70','50–60','40–50','30–40','20–30','< 20'];
+STOPS.forEach((s,i)=>bk.insertAdjacentHTML('beforeend',`<div class="row"><i style="background:${s[1]}"></i>${labels[i]}</div>`));
+</script></body></html>
