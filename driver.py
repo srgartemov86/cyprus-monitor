@@ -21,6 +21,7 @@ CHAT_ID = os.environ.get('CY_CHAT_ID', '')  # супергруппа Cyprus-loka
 # @clujmonitorbot (общий бот мониторов локаций, user id 135201285), не в рабочий чат лотов.
 ALERT_CHAT_ID = os.environ.get('CY_ALERT_CHAT_ID', '135201285')
 MANY_PASSES = 15  # SKILL: при ≥15 лотов — одна сводка вместо N сообщений
+MAP_URL = 'https://dodo-cyprus-lokali.surge.sh/lokali.html'
 
 # Фолбэк без Gemini: текст объявления как есть (на Кипре он и так английский).
 GLOSSARY = []  # пар замен нет: описания на английском
@@ -48,7 +49,8 @@ def gemini_summary(desc_ro):
               "lines with only what matters for a restaurant tenant: space type/condition, floor, "
               "street frontage/windows, utilities (ventilation, power, HVAC, kitchen), terms "
               "(deposit, availability, VAT). "
-              "Plain text, no intro, no bullets, no markdown. "
+              "Use ONLY facts present in the text; if something is not stated, omit it, never "
+              "guess or add typical terms. Plain text, no intro, no bullets, no markdown. "
               "Then, on the LAST line, output exactly 'LOCATION: <street name or nearby landmarks "
               "mentioned in the text, max 8 words>' or 'LOCATION: none' if the text gives no hint.\n\n"
               + desc_ro[:2000])
@@ -105,6 +107,11 @@ def english_summary(pass_rec):
     if not desc:  # в state нет — берём snippet из caption
         m = re.search(r'📝 Summary:\s*(.+)', pass_rec.get('caption') or '', re.DOTALL)
         desc = m.group(1).strip() if m else ''
+    # Нет описания (или вместо него заглушка Cloudflare) — Gemini НЕ зовём: из одного
+    # заголовка модель выдумала «2 months deposit, three-phase power» (zyprus_41052, 18.10).
+    _body = (rec.get('description') or '').strip() if isinstance(rec, dict) else ''
+    if len(_body) < 40 or 'just a moment' in desc.lower():
+        return '', None
     g = gemini_summary(desc)
     if g:
         return split_location_hint(g)
@@ -210,11 +217,15 @@ def main():
                 head, tail = caption[:idx], caption[idx:]
                 m = re.search(r'\n\n\S+ Location score.*$', tail, re.DOTALL)
                 score_part = m.group(0) if m else ''
-                # −140: резерв под "📋 Sheet: <link>", который допишется после mark-sent
-                budget = 1024 - 140 - len(head) - len(score_part) - len('📝 Summary: \n')
+                # −200: резерв под строку карты и "📋 Sheet: <link>" после mark-sent
+                budget = 1024 - 200 - len(head) - len(score_part) - len('📝 Summary: \n')
                 caption = head + f'📝 Summary: {summary[:max(budget, 100)].rstrip()}\n' + score_part
             elif summary:
                 caption += f'\n📝 Summary: {summary[:600]}\n'
+            elif '📝 Summary:' not in caption:
+                caption += '\n📝 Summary: no description in the listing\n'
+            # Ссылка на карту всех помещений — в конце каждой карточки (Сергей, 18.10)
+            caption = caption.rstrip('\n') + f'\n🗺 All locations: {MAP_URL}'
             caption = caption[:1024]
             photos = [ph for ph in (p.get('photo_paths') or []) if os.path.exists(ph)]
             try:

@@ -271,6 +271,12 @@ def fetch_html(url, timeout=20):
             return emb, 200
         r = curl_sweep.bz_get(url, timeout=max(timeout, 35))
         return (r.text, r.status_code) if r is not None else ('', 0)
+    if 'zyprus.com' in url:
+        # с DC-IP раннера zyprus отдаёт Cloudflare-челлендж голому curl (18.10:
+        # лот ушёл в чат с title «Just a moment...» и без фото) — zy_get: напрямую,
+        # затем через CY-прокси; челлендж = неудача, лот вернётся в очередь
+        r = curl_sweep.zy_get(url, timeout=max(timeout, 35))
+        return (r.text, r.status_code) if r is not None else ('', 0)
     try:
         r = subprocess.run(
             ['curl', '-sL', '-A', UA, '--max-time', str(timeout), '--compressed',
@@ -411,8 +417,14 @@ def extract_district(cand, detail):
     # bazaraki: location «Limassol — Limassol Marina» → «Limassol (Limassol Marina)»;
     # формат «Город (район)» нужен дедупу и фидбеку (они режут по ' (').
     label = (detail.get('subdistrict') or cand.get('district_label') or '').strip()
+    if label.lower() == 'unknown':
+        label = ''
     if label:
-        parts = [p.strip() for p in re.split(r'\s[—–-]\s', label, maxsplit=1)]
+        # «Limassol — Zakaki» (bazaraki/zyprus) или «Limassol (Zakaki)» (наш же формат
+        # из state у зависших лотов)
+        mp = re.match(r'^(.+?)\s*\((.+)\)\s*$', label)
+        parts = [mp.group(1).strip(), mp.group(2).strip()] if mp else \
+            [p.strip() for p in re.split(r'\s[—–-]\s', label, maxsplit=1)]
         city = _district_from_text(parts[0]) or curl_sweep.city_of(label) or parts[0]
         area = parts[1] if len(parts) > 1 else ''
         # «Limassol — Limassol - Zakaki»: повтор города в районе убираем
@@ -1111,7 +1123,10 @@ def run_process():
                 'source': _v.get('source'), 'id': _v.get('id'), 'url': _v['url'],
                 'title': _v.get('title') or '', 'area': _v.get('area_m2'),
                 'price': _v.get('price_eur'), 'street': _v.get('address') or '',
-                'municipality': _v.get('district') or '', 'type': None,
+                'municipality': (_v.get('district') or '').split(' (')[0], 'type': None,
+                # метка района нужна extract_district: без неё зависший лот уходил
+                # в чат как «Location · Unknown» (zyprus_41052, 18.10)
+                'district_label': _v.get('district') or '',
                 'floor': _v.get('floor'), 'lat': _v.get('geo_lat'), 'lon': _v.get('geo_lon'),
                 'date': _v.get('refreshed_at') or '',
             })

@@ -44,6 +44,11 @@ jobs:
           SURGE_LOGIN: ${{ secrets.SURGE_LOGIN }}
           SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
 
+      # Прогон мог стоять в очереди concurrency, пока сосед дописывал state:
+      # освежаем data/ перед циклом, иначе лот уходит в чат второй раз (18.10).
+      - name: Refresh state from origin
+        run: git pull -q --ff-only origin main || true
+
       - name: Run monitor cycle
         run: python driver.py
         env:

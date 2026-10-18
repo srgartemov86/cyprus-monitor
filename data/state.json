@@ -3756,32 +3756,6 @@
       },
       "scored_at": "2026-10-17T18:06:42.700167+00:00"
     },
-    "zyprus_41052": {
-      "source": "zyprus.com",
-      "id": "41052",
-      "url": "https://www.zyprus.com/property/41052/bedrooms-building-commercial-building-in-agios-nikolaos-limassol-city-centre",
-      "title": "Just a moment...",
-      "area_m2": 110.0,
-      "price_eur": 2700,
-      "floor": null,
-      "address": "Agios Nikolaos",
-      "district": "Unknown",
-      "subdistrict": null,
-      "first_seen_at": "2026-10-18T09:59:00.733383+00:00",
-      "last_seen_at": "2026-10-18T09:59:00.733392+00:00",
-      "in_sheet": true,
-      "alerted": true,
-      "flags": [
-        "uncertain_floor",
-        "uncertain_distance"
-      ],
-      "description": "",
-      "rejected": false,
-      "description_ru": "Shop space, ready for renovation, ground floor with mezzanine, large glass storefront.\nEquipped with three-phase power, provision for kitchen extraction, and air conditioning.\nTwo months deposit required, immediate availability, subject to VAT.",
-      "telegram_message_id": 0,
-      "sent_at": "2026-10-18T09:59:43.424822+00:00",
-      "sheet_link": "https://docs.google.com/spreadsheets/d/1PNXJg4aT5jeWYz9sqlQmE6yoz-Lvf6D8PgJFusPZCYE/edit#gid=498788918&rangeid=1357602960"
-    },
     "bazaraki_6013393": {
       "source": "bazaraki.com",
       "id": "6013393",
