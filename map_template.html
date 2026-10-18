@@ -389,7 +389,8 @@ function renderFeature(f) {
   const marker = bucket === 'to_review' ? L.marker([f.lat, f.lon], {icon: starIconBlue, zIndexOffset: 850})
     : bucket === 'in_progress' ? L.marker([f.lat, f.lon], {icon: starIcon, zIndexOffset: 800})
     : L.circleMarker([f.lat, f.lon], {radius: 9, fillColor: bucket === 'not_suitable' ? '#d93a2b' : (FRESH_COLOR[f.fresh_bucket] || f.fresh_color || '#86868b'), color: '#fff', weight: 2, opacity: 1, fillOpacity: 0.95});
-  marker.bindPopup(() => popupNode(f), {maxWidth: 350});
+  // autoPan с отступом под боковую панель (364 px + поля), иначе попап уезжает под неё
+  marker.bindPopup(() => popupNode(f), {maxWidth: 350, autoPanPaddingTopLeft: L.point(410, 24), autoPanPaddingBottomRight: L.point(24, 24)});
   marker.bindTooltip(`${esc((f.district || '').split(' (')[0] || 'Listing')} · ${f.area || '?'} m² · ${f.price || '?'} €${f.score != null ? ' · score ' + f.score : ''}`, {direction: 'top', offset: [0, -8]});
   f._marker = marker; f._bucket = bucket;
   lokCounts[bucket] = (lokCounts[bucket] || 0) + 1;
