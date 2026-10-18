@@ -215,7 +215,9 @@ def _list_ads(html):
 def sweep_bazaraki(pages=6):
     """Все типы BZ_TYPES по Кипру с фильтром цены; detail для не известных лотов
     (площадь, координаты, тип) — в BZ_EMBED и в кандидата."""
-    known = known_ids()
+    # detail не тянем для уже учтённых И для стоящих в очереди лотов: очередь
+    # обрабатывается по 12 за цикл, а свип иначе перекачивал её целиком каждый час
+    known = known_ids() | _pending_ids()
     seen, cands = set(), []
     for t, tname in BZ_TYPES.items():
         for p in range(1, pages + 1):
@@ -277,6 +279,16 @@ def bz_embedded_html(aid):
     return ('<html><head><title>' + (ad.get('name') or '') + '</title></head><body>'
             '<script id="bz-ad" type="application/json">' + json.dumps(ad, ensure_ascii=False)
             + '</script></body></html>')
+
+
+def _pending_ids():
+    """ID лотов в очереди pending_candidates (площадь у них уже есть)."""
+    try:
+        with open(STATE_PATH) as f:
+            q = json.load(f).get('pending_candidates') or []
+        return {str(c.get('id')) for c in q if c.get('id')}
+    except Exception:
+        return set()
 
 
 def known_ids():

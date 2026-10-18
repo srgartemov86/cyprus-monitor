@@ -74,6 +74,17 @@ def fetch(url, timeout=25):
         except Exception as e:
             return 'ERR', 0, str(e)[:80], None
 
+    if 'zyprus.com' in url:
+        try:
+            import curl_sweep
+            r = curl_sweep.zy_get(url, timeout=timeout)  # Cloudflare на DC-IP: напрямую, затем прокси
+            if r is None:
+                return 'ERR', 0, 'zyprus challenge after retries', None
+            m = re.search(r'<title>([^<]*)</title>', r.text)
+            return str(r.status_code), len(r.text), (m.group(1).strip() if m else ''), None
+        except Exception as e:
+            return 'ERR', 0, str(e)[:80], None
+
     try:
         r = subprocess.run(
             ['curl', '-sL', '-A', UA, '--max-time', str(timeout),

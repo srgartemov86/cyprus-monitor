@@ -313,7 +313,9 @@ def main():
             st = json.load(f)
         ds = st.get('daily_stats') or {}
         today = now_local.strftime('%Y-%m-%d')
-        if (now_local.hour >= 21 and ds.get('date') == today
+        # последний прогон дня: cron 16:40 UTC = 18:40 зимой / 19:40 летом, порог 18
+        # (с порогом 21 сводка уходила только при ручных запусках)
+        if (now_local.hour >= 18 and ds.get('date') == today
                 and st.get('daily_digest_sent') != today):
             _sheet = 'https://docs.google.com/spreadsheets/d/1PNXJg4aT5jeWYz9sqlQmE6yoz-Lvf6D8PgJFusPZCYE/edit'
             # прошедшие лоты дня — буллетами: район · м² · цена, ссылкой на объявление

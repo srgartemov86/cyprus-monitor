@@ -133,7 +133,11 @@ MALL_PATS = [
 ]
 COURT_PATS = [r'inner\s+courtyard', r'back\s+of\s+the\s+building', r'no\s+(?:street\s+)?frontage',
               r'rear\s+(?:entrance|access)\s+only', r'through\s+the\s+courtyard']
-DARK_PATS = [r'\bbasement\b', r'\bunderground\b',
+# Только когда САМО помещение подвальное: «basement storage», «underground parking»
+# в описании обычного магазина — норма для Кипра (7 ложных реджектов 17–18.10).
+DARK_PATS = [r'\b(?:located|situated)\s+(?:in|on)\s+(?:the\s+)?(?:basement|underground)\b',
+             r'\b(?:basement|underground)\s+(?:shop|space|unit|premises|level\s+only|floor\s+only)\b',
+             r'\bshop\s+(?:in|on)\s+(?:the\s+)?basement\b',
              r'no\s+(?:natural\s+light|windows)', r'without\s+windows']
 
 # Apartment detection: жильё протекает в commercial-выдачу (хозяева сдают
