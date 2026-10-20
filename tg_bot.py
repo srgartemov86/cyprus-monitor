@@ -118,6 +118,14 @@ def send_album(chat_id, caption, photos):
     return {'ok': True, 'message_ids': ids, 'first_message_id': ids[0] if ids else None}
 
 
+def edit_text(chat_id, message_id, text):
+    """Правка текстового сообщения (карточка без фото): дописать ссылку на строку таблицы."""
+    res = _with_chat(chat_id, lambda cid: _call('editMessageText', data={
+        'chat_id': cid, 'message_id': int(message_id), 'text': (text or '')[:4096],
+        'disable_web_page_preview': 'true'}))
+    return {'ok': True} if res.get('ok') else {'ok': False, 'error': res.get('description')}
+
+
 def edit_caption(chat_id, message_id, caption):
     res = _with_chat(chat_id, lambda cid: _call('editMessageCaption', data={
         'chat_id': cid, 'message_id': int(message_id), 'caption': (caption or '')[:1024]}))

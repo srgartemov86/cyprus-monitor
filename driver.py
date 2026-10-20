@@ -163,7 +163,12 @@ def send_text(text, reply_to=None, chat_id=None, html=False):
     r = subprocess.run([sys.executable] + args, input=text, capture_output=True,
                        text=True, timeout=60, cwd=HERE)
     sys.stderr.write(r.stderr or '')
-    return r.returncode == 0
+    if r.returncode != 0:
+        return False
+    try:  # message_id нужен, чтобы дописать ссылку на таблицу в текстовую карточку
+        return int(json.loads((r.stdout or '').strip().splitlines()[-1]).get('message_id') or 0) or True
+    except Exception:
+        return True
 
 
 def main():
@@ -261,7 +266,8 @@ def main():
                     res = send_album(caption, photos)
                     mid = res.get('first_message_id')
                 else:
-                    mid = 0 if send_text(caption) else None
+                    _t = send_text(caption)
+                    mid = (_t if isinstance(_t, int) and not isinstance(_t, bool) else 0) if _t else None
                     if p.get('had_photos'):
                         nophoto_sent += 1  # фото были в объявлении, но не скачались
                 if mid is None:
@@ -281,20 +287,15 @@ def main():
                                         text=True, timeout=60, cwd=HERE)
                     if '"ok": true' not in (er.stdout or ''):
                         print(f'  caption edit failed for {mid}', file=sys.stderr)
-                # Кнопки статуса под карточкой (Сергей, 18.10): нажатия забирает
-                # process_callbacks.py на следующем прогоне и пишет в кол. K таблицы
-                try:
-                    import tg_bot
-                    sb = tg_bot.send_status_buttons(CHAT_ID, p['listing_key'], reply_to=mid or None,
-                                                    sheet_link=link)
-                    if sb.get('ok'):
-                        subprocess.run([sys.executable, 'cycle.py', '--set-field', p['listing_key'],
-                                        'status_msg_id', str(sb['message_id'])],
-                                       capture_output=True, cwd=HERE, timeout=120)
-                    else:
-                        print(f"  status buttons failed: {sb.get('error')}", file=sys.stderr)
-                except Exception as e:
-                    print(f'  status buttons error: {e}', file=sys.stderr)
+                elif link and mid and not photos:
+                    # текстовая карточка без фото: ссылку дописываем правкой текста
+                    try:
+                        import tg_bot
+                        tg_bot.edit_text(CHAT_ID, mid, f'{caption.rstrip()}\n📋 Sheet: {link}')
+                    except Exception as e:
+                        print(f'  text edit failed for {mid}: {e}', file=sys.stderr)
+                # Отдельное сообщение со статус-кнопками под карточкой убрано 20.10 по
+                # просьбе Сергея: статус ставится в попапе карты или в таблице.
                 sent += 1
             except Exception as e:
                 # не mark-sent → лот останется unalerted, доедет следующим циклом
@@ -306,14 +307,6 @@ def main():
                f"{c.get('address','')} — was {c['old']} € → now {c['new']} €/mo\n"
                f"🔗 {c.get('url','')}")
         send_text(msg, reply_to=c.get('reply_to_message_id'))
-
-    # Нажатия кнопок статуса с прошлого часа → таблица (кол. K) и state
-    try:
-        cb = run_json(['process_callbacks.py'], 180)
-        if cb.get('applied'):
-            print(f"  status callbacks applied: {cb['applied']}", file=sys.stderr)
-    except Exception as e:
-        print(f'  process_callbacks failed: {e}', file=sys.stderr)
 
     fin = run_json(['cycle.py', '--finalize'], 600)
 
