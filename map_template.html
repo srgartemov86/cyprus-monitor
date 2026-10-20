@@ -204,6 +204,9 @@ function toggleSide() { document.body.classList.toggle('collapsed'); setTimeout(
 document.addEventListener('click', (e) => {
   const a = e.target.closest('.leaflet-popup a[href]');
   if (!a) return;
+  // крестик закрытия и прочие якоря (#close) — не ссылки: иначе открывалась новая вкладка
+  // с картой и сброшенными фильтрами (Сергей, 20.10)
+  if (a.classList.contains('leaflet-popup-close-button') || a.getAttribute('href').startsWith('#')) return;
   e.preventDefault(); e.stopPropagation();
   const w = window.open(a.href, '_blank', 'noopener');
   if (!w) location.href = a.href;
