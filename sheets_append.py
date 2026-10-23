@@ -7,7 +7,7 @@ Spreadsheet: 1PNXJg4aT5jeWYz9sqlQmE6yoz-Lvf6D8PgJFusPZCYE (Cyprus locations, Dod
     A=Адрес | B=Район | C=Площадь | D=Цена | E=Ссылка | F=Текст объявления (RU)
     G=Дата размещения | H=Дата добавления | I=Дата снятия с сайта |
     J=Комментарий (user-only) | K=Статус | L=Точное место (user-only)
-  Лист «не прошли фильтр» (gid 133442332): A..H как в Белграде.
+  Лист «не прошли фильтр» (gid 133442332): A..H те же колонки, что в основном листе.
 
 Interface (cycle.py/check_status/gen_map импортируют эти имена): insert_lots, update_cells, append_reject_rows,
 _sheets_service, SPREADSHEET_ID. WEBHOOK_URL/SECRET оставлены пустыми для

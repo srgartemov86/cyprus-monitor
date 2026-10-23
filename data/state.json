@@ -4021,16 +4021,7 @@
     },
     "down": []
   },
-  "send_defers": {
-    "bazaraki_6702345": 1,
-    "bazaraki_6508359": 1,
-    "bazaraki_6659610": 1,
-    "bazaraki_6705940": 1,
-    "bazaraki_5937511": 1,
-    "zyprus_41052": 1,
-    "bazaraki_4827727": 1,
-    "bazaraki_6802704": 1
-  },
+  "send_defers": {},
   "last_cycle_at": "2026-10-23T10:50:13.063272+00:00",
   "daily_stats": {
     "date": "2026-10-23",
