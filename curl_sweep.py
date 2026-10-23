@@ -220,7 +220,11 @@ def sweep_bazaraki(pages=6):
     (площадь, координаты, тип) — в BZ_EMBED и в кандидата."""
     # detail не тянем для уже учтённых И для стоящих в очереди лотов: очередь
     # обрабатывается по 12 за цикл, а свип иначе перекачивал её целиком каждый час
-    known = known_ids() | _pending_ids()
+    # Кэш площадей по id (data/bz_area_cache.json, коммитится со state): лот вне
+    # диапазона не попадает в state и без кэша перекачивался бы каждый час заново
+    # (23.10: ~400 detail-фетчей в сутки впустую).
+    area_cache = _load_area_cache()
+    known = known_ids() | _pending_ids() | set(area_cache)
     seen, cands = set(), []
     for t, tname in BZ_TYPES.items():
         for p in range(1, pages + 1):
@@ -255,9 +259,15 @@ def sweep_bazaraki(pages=6):
         if ad:
             BZ_EMBED[c['id']] = ad
             c.update(bz_cand_from_ad(ad, c))
+            area_cache[c['id']] = c.get('area')
         else:
             _v(f'  bazaraki detail miss: {c["url"][:80]}')
         time.sleep(0.5)
+    for c in cands:  # площадь из кэша для лотов, которые уже смотрели
+        if c.get('area') is None and c['id'] in area_cache and area_cache[c['id']]:
+            c['area'] = area_cache[c['id']]
+    if fetched:
+        _save_area_cache(area_cache)
     # известным лотам площадь из state (нужна detect_price_changes и prefilter)
     if known:
         try:
@@ -282,6 +292,25 @@ def bz_embedded_html(aid):
     return ('<html><head><title>' + (ad.get('name') or '') + '</title></head><body>'
             '<script id="bz-ad" type="application/json">' + json.dumps(ad, ensure_ascii=False)
             + '</script></body></html>')
+
+
+AREA_CACHE_PATH = os.path.join(os.path.dirname(STATE_PATH), 'bz_area_cache.json')
+
+
+def _load_area_cache():
+    try:
+        with open(AREA_CACHE_PATH) as f:
+            return {str(k): v for k, v in json.load(f).items()}
+    except Exception:
+        return {}
+
+
+def _save_area_cache(cache):
+    try:
+        with open(AREA_CACHE_PATH, 'w') as f:
+            json.dump(cache, f)
+    except Exception as e:
+        _v(f'  area cache write failed: {e}')
 
 
 def _pending_ids():

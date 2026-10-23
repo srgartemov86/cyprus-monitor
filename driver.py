@@ -252,7 +252,8 @@ def main():
                 score_part = m.group(0) if m else ''
                 # −200: резерв под строку карты и "📋 Sheet: <link>" после mark-sent
                 budget = 1024 - 200 - len(head) - len(score_part) - len('📝 Summary: \n')
-                caption = head + f'📝 Summary: {summary[:max(budget, 100)].rstrip()}\n' + score_part
+                _sum = summary[:max(budget, 100)].rstrip() or 'no description in the listing'
+                caption = head + f'📝 Summary: {_sum}\n' + score_part
             elif summary:
                 caption += f'\n📝 Summary: {summary[:600]}\n'
             elif '📝 Summary:' not in caption:
