@@ -258,8 +258,10 @@ def main():
                 caption += f'\n📝 Summary: {summary[:600]}\n'
             elif '📝 Summary:' not in caption:
                 caption += '\n📝 Summary: no description in the listing\n'
-            # Ссылка на карту всех помещений — в конце каждой карточки (Сергей, 18.10)
-            caption = caption.rstrip('\n') + f'\n🗺 All locations: {MAP_URL}'
+            # Ссылка на карту сразу с этим помещением (попап открыт, панель на телефоне
+            # свёрнута): lokali.html#lot=<id объявления> (Сергей, 23.10)
+            _lot_id = p['listing_key'].split('_', 1)[-1]
+            caption = caption.rstrip('\n') + f'\n🗺 On the map: {MAP_URL}#lot={_lot_id}'
             caption = caption[:1024]
             photos = [ph for ph in (p.get('photo_paths') or []) if os.path.exists(ph)]
             try:
