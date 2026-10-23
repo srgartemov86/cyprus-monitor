@@ -621,9 +621,7 @@
           "name": "Papa John's",
           "address": ""
         }
-      ],
-      "icon_type": "letter",
-      "letter": "P"
+      ]
     },
     "dodopizza": {
       "name": "Dodo Pizza",

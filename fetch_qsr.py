@@ -47,8 +47,7 @@ BRAND_META = {
     'burgerking': {'name': 'Burger King',  'logo': 'brands/burgerking.svg'},
     'dominos':    {'name': "Domino's",     'logo': 'brands/dominos.svg'},
     'pizzahut':   {'name': 'Pizza Hut',    'logo': 'brands/pizzahut.svg'},
-    'papajohns':  {'name': "Papa John's",  'logo': 'brands/papajohns.png',
-                   'icon_type': 'letter', 'letter': 'P'},
+    'papajohns':  {'name': "Papa John's",  'logo': 'brands/papajohns.png'},  # логотип 2019 с Wikimedia, 23.10
     'dodopizza':  {'name': 'Dodo Pizza',   'logo': 'dodo-logo.png'},
 }
 
