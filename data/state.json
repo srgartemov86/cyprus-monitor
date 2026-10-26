@@ -12,7 +12,7 @@
       "district": "Larnaca (Larnaka - Finikoudes)",
       "subdistrict": null,
       "first_seen_at": "2026-10-17T10:46:33.112819+00:00",
-      "last_seen_at": "2026-10-26T07:22:19.112623+00:00",
+      "last_seen_at": "2026-10-26T07:49:46.984788+00:00",
       "in_sheet": true,
       "alerted": true,
       "flags": [
@@ -85,7 +85,7 @@
       "district": "Limassol (Kato Polemidia)",
       "subdistrict": null,
       "first_seen_at": "2026-10-17T10:47:02.496007+00:00",
-      "last_seen_at": "2026-10-26T07:22:19.112623+00:00",
+      "last_seen_at": "2026-10-26T07:49:46.984788+00:00",
       "in_sheet": true,
       "alerted": true,
       "flags": [
@@ -153,7 +153,7 @@
       "district": "Larnaca (Larnaka - Skala)",
       "subdistrict": null,
       "first_seen_at": "2026-10-17T10:47:40.694266+00:00",
-      "last_seen_at": "2026-10-26T07:22:19.112623+00:00",
+      "last_seen_at": "2026-10-26T07:49:46.984788+00:00",
       "in_sheet": true,
       "alerted": true,
       "flags": [],
@@ -220,7 +220,7 @@
       "district": "Paphos (Agios Pavlos)",
       "subdistrict": null,
       "first_seen_at": "2026-10-17T10:48:21.499113+00:00",
-      "last_seen_at": "2026-10-26T07:22:19.112623+00:00",
+      "last_seen_at": "2026-10-26T07:49:46.984788+00:00",
       "in_sheet": true,
       "alerted": true,
       "flags": [],
@@ -291,7 +291,7 @@
       "district": "Limassol (Agios Ioannis Lemesou)",
       "subdistrict": null,
       "first_seen_at": "2026-10-17T10:48:52.063539+00:00",
-      "last_seen_at": "2026-10-26T07:22:19.112623+00:00",
+      "last_seen_at": "2026-10-26T07:49:46.984788+00:00",
       "in_sheet": true,
       "alerted": true,
       "flags": [],
@@ -362,7 +362,7 @@
       "district": "Limassol (Katholiki)",
       "subdistrict": null,
       "first_seen_at": "2026-10-17T10:49:32.131663+00:00",
-      "last_seen_at": "2026-10-26T07:22:19.112623+00:00",
+      "last_seen_at": "2026-10-26T07:49:46.984788+00:00",
       "in_sheet": true,
       "alerted": true,
       "flags": [
@@ -430,7 +430,7 @@
       "district": "Limassol (Katholiki)",
       "subdistrict": null,
       "first_seen_at": "2026-10-17T10:50:01.987349+00:00",
-      "last_seen_at": "2026-10-26T07:22:19.112623+00:00",
+      "last_seen_at": "2026-10-26T07:49:46.984788+00:00",
       "in_sheet": true,
       "alerted": true,
       "flags": [],
@@ -501,7 +501,7 @@
       "district": "Larnaca (Larnaka - Skala)",
       "subdistrict": null,
       "first_seen_at": "2026-10-17T13:57:55.762885+00:00",
-      "last_seen_at": "2026-10-26T07:22:19.112623+00:00",
+      "last_seen_at": "2026-10-26T07:49:46.984788+00:00",
       "in_sheet": true,
       "alerted": true,
       "flags": [],
@@ -569,7 +569,7 @@
       "district": "Limassol (Agios Georgios Lemesou)",
       "subdistrict": null,
       "first_seen_at": "2026-10-17T10:50:41.209511+00:00",
-      "last_seen_at": "2026-10-26T07:22:19.112623+00:00",
+      "last_seen_at": "2026-10-26T07:49:46.984788+00:00",
       "in_sheet": true,
       "alerted": true,
       "flags": [],
@@ -662,7 +662,7 @@
       "address": "",
       "district": "Nicosia (Strovolos - Dasoupolis)",
       "first_seen_at": "2026-10-17T10:51:31.900460+00:00",
-      "last_seen_at": "2026-10-26T07:19:26.523961+00:00",
+      "last_seen_at": "2026-10-26T07:46:13.119111+00:00",
       "in_sheet": false,
       "alerted": false,
       "rejected": true,
@@ -681,7 +681,7 @@
       "address": "",
       "district": "Nicosia (Ag. Antonios)",
       "first_seen_at": "2026-10-17T10:51:31.901074+00:00",
-      "last_seen_at": "2026-10-26T07:19:26.523995+00:00",
+      "last_seen_at": "2026-10-26T07:46:13.119145+00:00",
       "in_sheet": false,
       "alerted": false,
       "rejected": true,
@@ -729,7 +729,7 @@
       "address": "",
       "district": "Paphos (Anavargos)",
       "first_seen_at": "2026-10-17T10:51:31.901491+00:00",
-      "last_seen_at": "2026-10-26T07:19:26.524019+00:00",
+      "last_seen_at": "2026-10-26T07:46:13.119168+00:00",
       "in_sheet": false,
       "alerted": false,
       "rejected": true,
@@ -777,7 +777,7 @@
       "address": "",
       "district": "Nicosia (Palouriotissa)",
       "first_seen_at": "2026-10-17T10:51:31.902160+00:00",
-      "last_seen_at": "2026-10-26T07:19:26.524044+00:00",
+      "last_seen_at": "2026-10-26T07:46:13.119193+00:00",
       "in_sheet": false,
       "alerted": false,
       "rejected": true,
@@ -846,7 +846,7 @@
       "address": "",
       "district": "Larnaca (Oroklini)",
       "first_seen_at": "2026-10-17T10:51:31.903236+00:00",
-      "last_seen_at": "2026-10-26T07:19:26.524067+00:00",
+      "last_seen_at": "2026-10-26T07:46:13.119216+00:00",
       "in_sheet": false,
       "alerted": false,
       "rejected": true,
@@ -867,7 +867,7 @@
       "district": "Limassol (Katholiki)",
       "subdistrict": null,
       "first_seen_at": "2026-10-17T13:58:42.413278+00:00",
-      "last_seen_at": "2026-10-26T07:22:19.112623+00:00",
+      "last_seen_at": "2026-10-26T07:49:46.984788+00:00",
       "in_sheet": true,
       "alerted": true,
       "flags": [
@@ -1011,7 +1011,7 @@
       "district": "Nicosia (Egkomi)",
       "subdistrict": null,
       "first_seen_at": "2026-10-17T14:00:03.928815+00:00",
-      "last_seen_at": "2026-10-25T18:11:25.003528+00:00",
+      "last_seen_at": "2026-10-26T07:49:46.984788+00:00",
       "in_sheet": true,
       "alerted": true,
       "flags": [
@@ -1084,7 +1084,7 @@
       "district": "Limassol (Polemidia - Makarios III)",
       "subdistrict": null,
       "first_seen_at": "2026-10-17T14:26:59.239350+00:00",
-      "last_seen_at": "2026-10-25T18:11:25.003528+00:00",
+      "last_seen_at": "2026-10-26T07:49:46.984788+00:00",
       "in_sheet": true,
       "alerted": true,
       "flags": [
@@ -1466,7 +1466,7 @@
       "district": "Nicosia (Egkomi)",
       "subdistrict": null,
       "first_seen_at": "2026-10-17T14:03:54.277892+00:00",
-      "last_seen_at": "2026-10-25T18:11:25.003528+00:00",
+      "last_seen_at": "2026-10-26T07:49:46.984788+00:00",
       "in_sheet": true,
       "alerted": true,
       "flags": [
@@ -1533,7 +1533,7 @@
       "district": "Limassol (Omonia)",
       "subdistrict": null,
       "first_seen_at": "2026-10-17T14:04:24.186922+00:00",
-      "last_seen_at": "2026-10-25T18:11:25.003528+00:00",
+      "last_seen_at": "2026-10-26T07:49:46.984788+00:00",
       "in_sheet": true,
       "alerted": true,
       "flags": [
@@ -1607,7 +1607,7 @@
       "address": "",
       "district": "Larnaca (Larnaka - Skala)",
       "first_seen_at": "2026-10-17T14:05:18.306635+00:00",
-      "last_seen_at": "2026-10-26T07:19:26.524097+00:00",
+      "last_seen_at": "2026-10-26T07:46:13.119246+00:00",
       "in_sheet": false,
       "alerted": false,
       "rejected": true,
@@ -1770,7 +1770,7 @@
       "district": "Limassol (Katholiki)",
       "subdistrict": null,
       "first_seen_at": "2026-10-17T14:28:22.835596+00:00",
-      "last_seen_at": "2026-10-25T18:11:25.003528+00:00",
+      "last_seen_at": "2026-10-26T07:49:46.984788+00:00",
       "in_sheet": true,
       "alerted": true,
       "flags": [
@@ -1840,7 +1840,7 @@
       "district": "Limassol (Historical Center)",
       "subdistrict": null,
       "first_seen_at": "2026-10-17T17:33:41.679877+00:00",
-      "last_seen_at": "2026-10-25T18:11:25.003528+00:00",
+      "last_seen_at": "2026-10-26T07:49:46.984788+00:00",
       "in_sheet": true,
       "alerted": true,
       "flags": [
@@ -2158,7 +2158,7 @@
       "district": "Limassol (Agios Georgios)",
       "subdistrict": null,
       "first_seen_at": "2026-10-17T17:48:26.323707+00:00",
-      "last_seen_at": "2026-10-25T18:11:25.003528+00:00",
+      "last_seen_at": "2026-10-26T07:49:46.984788+00:00",
       "in_sheet": true,
       "alerted": true,
       "flags": [
@@ -2430,7 +2430,7 @@
       "district": "Limassol (Kato Polemidia)",
       "subdistrict": null,
       "first_seen_at": "2026-10-17T17:35:50.454353+00:00",
-      "last_seen_at": "2026-10-25T18:11:25.003528+00:00",
+      "last_seen_at": "2026-10-26T07:49:46.984788+00:00",
       "in_sheet": true,
       "alerted": true,
       "flags": [
@@ -2611,7 +2611,7 @@
       "district": "Limassol (Omonia)",
       "subdistrict": null,
       "first_seen_at": "2026-10-17T17:37:33.940729+00:00",
-      "last_seen_at": "2026-10-26T07:19:26.523895+00:00",
+      "last_seen_at": "2026-10-26T07:46:13.119044+00:00",
       "in_sheet": true,
       "alerted": true,
       "flags": [
@@ -2933,7 +2933,7 @@
       "address": "",
       "district": "Limassol (Kato Polemidia)",
       "first_seen_at": "2026-10-17T17:49:37.626242+00:00",
-      "last_seen_at": "2026-10-26T07:19:26.524124+00:00",
+      "last_seen_at": "2026-10-26T07:46:13.119273+00:00",
       "in_sheet": false,
       "alerted": false,
       "rejected": true,
@@ -3029,7 +3029,7 @@
       "address": "",
       "district": "Limassol (Apostolos Andreas)",
       "first_seen_at": "2026-10-17T18:19:55.787546+00:00",
-      "last_seen_at": "2026-10-26T07:19:26.524153+00:00",
+      "last_seen_at": "2026-10-26T07:46:13.119302+00:00",
       "in_sheet": false,
       "alerted": false,
       "rejected": true,
@@ -3077,7 +3077,7 @@
       "address": "",
       "district": "Unknown",
       "first_seen_at": "2026-10-17T18:19:55.827225+00:00",
-      "last_seen_at": "2026-10-26T07:19:26.527044+00:00",
+      "last_seen_at": "2026-10-26T07:46:13.120216+00:00",
       "in_sheet": false,
       "alerted": false,
       "rejected": true,
@@ -3095,7 +3095,7 @@
       "address": "Agios Nikolaos",
       "district": "Unknown",
       "first_seen_at": "2026-10-17T18:19:55.864292+00:00",
-      "last_seen_at": "2026-10-26T07:19:26.527068+00:00",
+      "last_seen_at": "2026-10-26T07:46:13.120239+00:00",
       "in_sheet": false,
       "alerted": false,
       "rejected": true,
@@ -3144,7 +3144,7 @@
       "district": "Nicosia (Trypiotis)",
       "subdistrict": null,
       "first_seen_at": "2026-10-18T11:09:45.716438+00:00",
-      "last_seen_at": "2026-10-25T18:11:25.003528+00:00",
+      "last_seen_at": "2026-10-26T07:49:46.984788+00:00",
       "in_sheet": true,
       "alerted": true,
       "flags": [
@@ -3216,7 +3216,7 @@
       "district": "Nicosia (Ag Konst and Elenis)",
       "subdistrict": null,
       "first_seen_at": "2026-10-18T11:10:25.452636+00:00",
-      "last_seen_at": "2026-10-25T18:11:25.003528+00:00",
+      "last_seen_at": "2026-10-26T07:49:46.984788+00:00",
       "in_sheet": true,
       "alerted": true,
       "flags": [],
@@ -3285,7 +3285,7 @@
       "district": "Limassol (Agia Napa)",
       "subdistrict": null,
       "first_seen_at": "2026-10-18T11:10:31.060270+00:00",
-      "last_seen_at": "2026-10-25T18:11:25.003528+00:00",
+      "last_seen_at": "2026-10-26T07:49:46.984788+00:00",
       "in_sheet": true,
       "alerted": true,
       "flags": [],
@@ -3352,7 +3352,7 @@
       "district": "Nicosia (Trypiotis)",
       "subdistrict": null,
       "first_seen_at": "2026-10-18T11:11:53.023735+00:00",
-      "last_seen_at": "2026-10-25T18:11:25.003528+00:00",
+      "last_seen_at": "2026-10-26T07:49:46.984788+00:00",
       "in_sheet": true,
       "alerted": true,
       "flags": [],
@@ -3420,7 +3420,7 @@
       "district": "Nicosia (Agioi Omologites)",
       "subdistrict": null,
       "first_seen_at": "2026-10-18T11:12:09.792603+00:00",
-      "last_seen_at": "2026-10-25T18:11:25.003528+00:00",
+      "last_seen_at": "2026-10-26T07:49:46.984788+00:00",
       "in_sheet": true,
       "alerted": true,
       "flags": [],
@@ -3666,7 +3666,7 @@
       "district": "Limassol (Mesa Geitonia)",
       "subdistrict": null,
       "first_seen_at": "2026-10-21T07:58:57.006395+00:00",
-      "last_seen_at": "2026-10-25T18:11:25.003528+00:00",
+      "last_seen_at": "2026-10-26T07:49:46.984788+00:00",
       "in_sheet": true,
       "alerted": true,
       "flags": [],
@@ -3727,7 +3727,7 @@
       "address": "",
       "district": "Nicosia (Lykabittos)",
       "first_seen_at": "2026-10-21T09:59:38.544154+00:00",
-      "last_seen_at": "2026-10-26T07:19:26.523930+00:00",
+      "last_seen_at": "2026-10-26T07:46:13.119080+00:00",
       "in_sheet": false,
       "alerted": false,
       "rejected": true,
@@ -3844,7 +3844,7 @@
       "district": "Limassol (Germasogeia Tourist Area)",
       "subdistrict": null,
       "first_seen_at": "2026-10-23T10:49:29.219564+00:00",
-      "last_seen_at": "2026-10-25T17:22:04.606778+00:00",
+      "last_seen_at": "2026-10-26T07:49:46.984788+00:00",
       "in_sheet": true,
       "alerted": true,
       "flags": [
@@ -3908,8 +3908,8 @@
       "address": "",
       "district": "Nicosia (Agioi Omologites)",
       "subdistrict": null,
-      "first_seen_at": "2026-10-26T06:55:49.118810+00:00",
-      "last_seen_at": "2026-10-26T06:55:49.118818+00:00",
+      "first_seen_at": "2026-10-26T07:36:23.594775+00:00",
+      "last_seen_at": "2026-10-26T07:36:23.594781+00:00",
       "in_sheet": false,
       "alerted": false,
       "flags": [
@@ -3920,7 +3920,7 @@
       "geo_lat": 35.15542857351731,
       "geo_lon": 33.34445164371132,
       "geo_source": "detail_approx",
-      "published_at": "2026-10-05T06:55:49.114993+00:00",
+      "published_at": "2026-10-05T07:36:23.590992+00:00",
       "photo_url": "https://cdn1.bazaraki.com/media/cache1/b2/54/b254dfcc34ba667733bda638009c791d.webp",
       "photo_urls": [
         "https://cdn1.bazaraki.com/media/cache1/b2/54/b254dfcc34ba667733bda638009c791d.webp",
@@ -3965,7 +3965,7 @@
         "residents_500_osm_raw": 6661,
         "geo_source": "detail_approx"
       },
-      "scored_at": "2026-10-26T06:58:16.884725+00:00"
+      "scored_at": "2026-10-26T07:37:00.854690+00:00"
     },
     "bazaraki_6100695": {
       "source": "bazaraki.com",
@@ -4114,8 +4114,8 @@
       "address": "",
       "district": "Nicosia (Egkomi)",
       "subdistrict": null,
-      "first_seen_at": "2026-10-26T06:58:18.464162+00:00",
-      "last_seen_at": "2026-10-26T06:58:18.464167+00:00",
+      "first_seen_at": "2026-10-26T07:37:02.455481+00:00",
+      "last_seen_at": "2026-10-26T07:37:02.455486+00:00",
       "in_sheet": false,
       "alerted": false,
       "flags": [
@@ -4125,7 +4125,7 @@
       "geo_lat": 35.15213227888992,
       "geo_lon": 33.30697990944938,
       "geo_source": "detail",
-      "published_at": "2026-10-05T06:58:18.463724+00:00",
+      "published_at": "2026-10-05T07:37:02.455065+00:00",
       "photo_url": "https://cdn1.bazaraki.com/media/cache1/63/33/6333b1ca0255288294040e84c60fcf82.webp",
       "photo_urls": [
         "https://cdn1.bazaraki.com/media/cache1/63/33/6333b1ca0255288294040e84c60fcf82.webp",
@@ -4170,7 +4170,7 @@
         "residents_500_osm_raw": 2392,
         "geo_source": "detail"
       },
-      "scored_at": "2026-10-26T07:00:41.244064+00:00"
+      "scored_at": "2026-10-26T07:37:30.946282+00:00"
     },
     "bazaraki_6766962": {
       "source": "bazaraki.com",
@@ -4183,8 +4183,8 @@
       "address": "",
       "district": "Nicosia (Egkomi)",
       "subdistrict": null,
-      "first_seen_at": "2026-10-26T07:00:43.328289+00:00",
-      "last_seen_at": "2026-10-26T07:00:43.328293+00:00",
+      "first_seen_at": "2026-10-26T07:37:34.365527+00:00",
+      "last_seen_at": "2026-10-26T07:37:34.365531+00:00",
       "in_sheet": false,
       "alerted": false,
       "flags": [
@@ -4194,7 +4194,7 @@
       "geo_lat": 35.160566399999965,
       "geo_lon": 33.31473699999998,
       "geo_source": "detail",
-      "published_at": "2026-10-05T07:00:43.328117+00:00",
+      "published_at": "2026-10-05T07:37:34.365362+00:00",
       "photo_url": "https://cdn1.bazaraki.com/media/cache1/39/b8/39b852ea754835af7b8bb9cf72528bc8.webp",
       "photo_urls": [
         "https://cdn1.bazaraki.com/media/cache1/39/b8/39b852ea754835af7b8bb9cf72528bc8.webp",
@@ -4234,7 +4234,7 @@
         "residents_500_osm_raw": 4702,
         "geo_source": "detail"
       },
-      "scored_at": "2026-10-26T07:02:51.954680+00:00"
+      "scored_at": "2026-10-26T07:38:11.922267+00:00"
     },
     "bazaraki_6615619": {
       "source": "bazaraki.com",
@@ -4247,8 +4247,8 @@
       "address": "",
       "district": "Limassol (Agios Nicolaos)",
       "subdistrict": null,
-      "first_seen_at": "2026-10-26T07:02:53.591919+00:00",
-      "last_seen_at": "2026-10-26T07:02:53.591924+00:00",
+      "first_seen_at": "2026-10-26T07:38:13.275691+00:00",
+      "last_seen_at": "2026-10-26T07:38:13.275696+00:00",
       "in_sheet": false,
       "alerted": false,
       "flags": [
@@ -4258,7 +4258,7 @@
       "geo_lat": 34.69002079999999,
       "geo_lon": 33.05954130000001,
       "geo_source": "detail",
-      "published_at": "2026-09-28T07:02:53.591646+00:00",
+      "published_at": "2026-09-28T07:38:13.275440+00:00",
       "photo_url": "https://cdn1.bazaraki.com/media/cache1/d9/f1/d9f192c6281d69a2ed8149307041e734.webp",
       "photo_urls": [
         "https://cdn1.bazaraki.com/media/cache1/d9/f1/d9f192c6281d69a2ed8149307041e734.webp",
@@ -4303,7 +4303,7 @@
         "residents_500_osm_raw": 10812,
         "geo_source": "detail"
       },
-      "scored_at": "2026-10-26T07:05:18.172595+00:00"
+      "scored_at": "2026-10-26T07:38:40.228303+00:00"
     },
     "bazaraki_6803036": {
       "source": "bazaraki.com",
@@ -4692,7 +4692,7 @@
       "address": "",
       "district": "Paphos (Anavargos)",
       "first_seen_at": "2026-10-24T05:57:04.761510+00:00",
-      "last_seen_at": "2026-10-26T07:19:26.524177+00:00",
+      "last_seen_at": "2026-10-26T07:46:13.119326+00:00",
       "in_sheet": false,
       "alerted": false,
       "rejected": true,
@@ -4759,7 +4759,7 @@
       "address": "",
       "district": "Limassol (Mesa Geitonia)",
       "first_seen_at": "2026-10-24T05:57:07.096501+00:00",
-      "last_seen_at": "2026-10-26T07:19:26.524201+00:00",
+      "last_seen_at": "2026-10-26T07:46:13.119349+00:00",
       "in_sheet": false,
       "alerted": false,
       "rejected": true,
@@ -4778,7 +4778,7 @@
       "address": "",
       "district": "Nicosia (Palouriotissa)",
       "first_seen_at": "2026-10-24T05:57:08.514112+00:00",
-      "last_seen_at": "2026-10-26T07:19:26.524224+00:00",
+      "last_seen_at": "2026-10-26T07:46:13.119372+00:00",
       "in_sheet": false,
       "alerted": false,
       "rejected": true,
@@ -4826,7 +4826,7 @@
       "address": "",
       "district": "Nicosia (Kaimakli)",
       "first_seen_at": "2026-10-24T05:57:09.623133+00:00",
-      "last_seen_at": "2026-10-26T07:19:26.524249+00:00",
+      "last_seen_at": "2026-10-26T07:46:13.119396+00:00",
       "in_sheet": false,
       "alerted": false,
       "rejected": true,
@@ -4874,7 +4874,7 @@
       "address": "",
       "district": "Nicosia (Strovolos - Stavros)",
       "first_seen_at": "2026-10-24T05:57:10.752723+00:00",
-      "last_seen_at": "2026-10-26T07:19:26.524273+00:00",
+      "last_seen_at": "2026-10-26T07:46:13.119420+00:00",
       "in_sheet": false,
       "alerted": false,
       "rejected": true,
@@ -4893,7 +4893,7 @@
       "address": "",
       "district": "Nicosia (Agios Dometios - Agios Georgios)",
       "first_seen_at": "2026-10-24T05:57:11.773176+00:00",
-      "last_seen_at": "2026-10-26T07:19:26.524296+00:00",
+      "last_seen_at": "2026-10-26T07:46:13.119442+00:00",
       "in_sheet": false,
       "alerted": false,
       "rejected": true,
@@ -4941,7 +4941,7 @@
       "address": "",
       "district": "Nicosia (Faneromeni)",
       "first_seen_at": "2026-10-24T05:57:17.398790+00:00",
-      "last_seen_at": "2026-10-26T07:19:26.524358+00:00",
+      "last_seen_at": "2026-10-26T07:46:13.119464+00:00",
       "in_sheet": false,
       "alerted": false,
       "rejected": true,
@@ -4989,7 +4989,7 @@
       "address": "",
       "district": "Paphos (Agios Pavlos)",
       "first_seen_at": "2026-10-24T05:57:18.656188+00:00",
-      "last_seen_at": "2026-10-26T07:19:26.524384+00:00",
+      "last_seen_at": "2026-10-26T07:46:13.119488+00:00",
       "in_sheet": false,
       "alerted": false,
       "rejected": true,
@@ -5037,7 +5037,7 @@
       "address": "",
       "district": "Nicosia (Latsia - Agios Georgios)",
       "first_seen_at": "2026-10-24T05:57:19.839982+00:00",
-      "last_seen_at": "2026-10-26T07:19:26.524411+00:00",
+      "last_seen_at": "2026-10-26T07:46:13.119512+00:00",
       "in_sheet": false,
       "alerted": false,
       "rejected": true,
@@ -5056,7 +5056,7 @@
       "address": "",
       "district": "Nicosia (Lykabittos)",
       "first_seen_at": "2026-10-24T05:57:21.011082+00:00",
-      "last_seen_at": "2026-10-26T07:19:26.524464+00:00",
+      "last_seen_at": "2026-10-26T07:46:13.119563+00:00",
       "in_sheet": false,
       "alerted": false,
       "rejected": true,
@@ -5075,7 +5075,7 @@
       "address": "",
       "district": "Nicosia (Strovolos - Stavros)",
       "first_seen_at": "2026-10-24T05:57:23.637818+00:00",
-      "last_seen_at": "2026-10-26T07:19:26.524489+00:00",
+      "last_seen_at": "2026-10-26T07:46:13.119587+00:00",
       "in_sheet": false,
       "alerted": false,
       "rejected": true,
@@ -5094,7 +5094,7 @@
       "address": "",
       "district": "Limassol (Agios Ioannis Lemesou)",
       "first_seen_at": "2026-10-24T05:57:23.638755+00:00",
-      "last_seen_at": "2026-10-26T07:19:26.526603+00:00",
+      "last_seen_at": "2026-10-26T07:46:13.119762+00:00",
       "in_sheet": false,
       "alerted": false,
       "rejected": true,
@@ -5142,7 +5142,7 @@
       "address": "",
       "district": "Nicosia (Strovolos - Stavros)",
       "first_seen_at": "2026-10-24T05:57:24.896420+00:00",
-      "last_seen_at": "2026-10-26T07:19:26.526634+00:00",
+      "last_seen_at": "2026-10-26T07:46:13.119788+00:00",
       "in_sheet": false,
       "alerted": false,
       "rejected": true,
@@ -5190,7 +5190,7 @@
       "address": "",
       "district": "Limassol (Kapsalos)",
       "first_seen_at": "2026-10-24T05:57:26.026148+00:00",
-      "last_seen_at": "2026-10-26T07:19:26.526667+00:00",
+      "last_seen_at": "2026-10-26T07:46:13.119820+00:00",
       "in_sheet": false,
       "alerted": false,
       "rejected": true,
@@ -5209,7 +5209,7 @@
       "address": "",
       "district": "Larnaca (Larnaka - Chrysopolitissa)",
       "first_seen_at": "2026-10-24T05:57:27.084739+00:00",
-      "last_seen_at": "2026-10-26T07:19:26.526690+00:00",
+      "last_seen_at": "2026-10-26T07:46:13.119842+00:00",
       "in_sheet": false,
       "alerted": false,
       "rejected": true,
@@ -5228,7 +5228,7 @@
       "address": "",
       "district": "Nicosia (Strovolos - Agios Vasileios)",
       "first_seen_at": "2026-10-24T05:57:28.284848+00:00",
-      "last_seen_at": "2026-10-26T07:19:26.526716+00:00",
+      "last_seen_at": "2026-10-26T07:46:13.119867+00:00",
       "in_sheet": false,
       "alerted": false,
       "rejected": true,
@@ -5247,7 +5247,7 @@
       "address": "",
       "district": "Larnaca (Larnaka - Sotiros)",
       "first_seen_at": "2026-10-24T05:57:29.459710+00:00",
-      "last_seen_at": "2026-10-26T07:19:26.526744+00:00",
+      "last_seen_at": "2026-10-26T07:46:13.119895+00:00",
       "in_sheet": false,
       "alerted": false,
       "rejected": true,
@@ -5266,7 +5266,7 @@
       "address": "",
       "district": "Limassol (Katholiki)",
       "first_seen_at": "2026-10-24T05:57:30.632578+00:00",
-      "last_seen_at": "2026-10-26T07:19:26.526777+00:00",
+      "last_seen_at": "2026-10-26T07:46:13.119924+00:00",
       "in_sheet": false,
       "alerted": false,
       "rejected": true,
@@ -5284,7 +5284,7 @@
       "address": "",
       "district": "Nicosia (Strovolos - Acropolis)",
       "first_seen_at": "2026-10-24T05:57:33.732499+00:00",
-      "last_seen_at": "2026-10-26T07:19:26.526802+00:00",
+      "last_seen_at": "2026-10-26T07:46:13.119975+00:00",
       "in_sheet": false,
       "alerted": false,
       "rejected": true,
@@ -5303,7 +5303,7 @@
       "address": "",
       "district": "Paphos (Chlorakas)",
       "first_seen_at": "2026-10-24T05:57:36.352704+00:00",
-      "last_seen_at": "2026-10-26T07:19:26.526828+00:00",
+      "last_seen_at": "2026-10-26T07:46:13.120004+00:00",
       "in_sheet": false,
       "alerted": false,
       "rejected": true,
@@ -5350,7 +5350,7 @@
       "address": "",
       "district": "Nicosia (Strovolos - Dasoupolis)",
       "first_seen_at": "2026-10-24T05:57:37.553945+00:00",
-      "last_seen_at": "2026-10-26T07:19:26.526851+00:00",
+      "last_seen_at": "2026-10-26T07:46:13.120028+00:00",
       "in_sheet": false,
       "alerted": false,
       "rejected": true,
@@ -5369,7 +5369,7 @@
       "address": "",
       "district": "Limassol (Mesa Geitonia)",
       "first_seen_at": "2026-10-24T05:57:38.949777+00:00",
-      "last_seen_at": "2026-10-26T07:19:26.526886+00:00",
+      "last_seen_at": "2026-10-26T07:46:13.120062+00:00",
       "in_sheet": false,
       "alerted": false,
       "rejected": true,
@@ -5388,7 +5388,7 @@
       "address": "",
       "district": "Limassol (Historical Center)",
       "first_seen_at": "2026-10-24T05:57:41.989236+00:00",
-      "last_seen_at": "2026-10-26T07:19:26.526909+00:00",
+      "last_seen_at": "2026-10-26T07:46:13.120085+00:00",
       "in_sheet": false,
       "alerted": false,
       "rejected": true,
@@ -5436,7 +5436,7 @@
       "address": "",
       "district": "Limassol (Historical Center)",
       "first_seen_at": "2026-10-24T05:57:45.363768+00:00",
-      "last_seen_at": "2026-10-26T07:19:26.526931+00:00",
+      "last_seen_at": "2026-10-26T07:46:13.120107+00:00",
       "in_sheet": false,
       "alerted": false,
       "rejected": true,
@@ -5987,7 +5987,7 @@
       "address": "",
       "district": "Nicosia (Strovolos - Ap. Varnavas and Ag. Makar.)",
       "first_seen_at": "2026-10-24T06:58:17.356274+00:00",
-      "last_seen_at": "2026-10-26T07:19:26.526958+00:00",
+      "last_seen_at": "2026-10-26T07:46:13.120134+00:00",
       "in_sheet": false,
       "alerted": false,
       "rejected": true,
@@ -6006,7 +6006,7 @@
       "address": "",
       "district": "Limassol (Historical Center)",
       "first_seen_at": "2026-10-24T06:58:18.832564+00:00",
-      "last_seen_at": "2026-10-26T07:19:26.526983+00:00",
+      "last_seen_at": "2026-10-26T07:46:13.120158+00:00",
       "in_sheet": false,
       "alerted": false,
       "rejected": true,
@@ -6025,7 +6025,7 @@
       "address": "",
       "district": "Larnaca (Larnaka - Agioi Anargyroi I)",
       "first_seen_at": "2026-10-24T06:58:20.089874+00:00",
-      "last_seen_at": "2026-10-26T07:19:26.527005+00:00",
+      "last_seen_at": "2026-10-26T07:46:13.120180+00:00",
       "in_sheet": false,
       "alerted": false,
       "rejected": true,
@@ -7345,8 +7345,8 @@
       "address": "",
       "district": "Limassol (Katholiki)",
       "subdistrict": null,
-      "first_seen_at": "2026-10-26T07:05:19.704456+00:00",
-      "last_seen_at": "2026-10-26T07:05:19.704462+00:00",
+      "first_seen_at": "2026-10-26T07:38:41.601172+00:00",
+      "last_seen_at": "2026-10-26T07:38:41.601178+00:00",
       "in_sheet": false,
       "alerted": false,
       "flags": [
@@ -7357,7 +7357,7 @@
       "geo_lat": 34.67453333199587,
       "geo_lon": 33.03988832578344,
       "geo_source": "detail",
-      "published_at": "2026-10-24T07:05:19.703910+00:00",
+      "published_at": "2026-10-24T07:38:41.600623+00:00",
       "photo_url": "https://cdn1.bazaraki.com/media/cache1/aa/f2/aaf21d6ef858f35fc91a721f834eba71.webp",
       "photo_urls": [
         "https://cdn1.bazaraki.com/media/cache1/aa/f2/aaf21d6ef858f35fc91a721f834eba71.webp",
@@ -7400,7 +7400,7 @@
         "residents_500_osm_raw": 5155,
         "geo_source": "detail"
       },
-      "scored_at": "2026-10-26T07:05:57.312357+00:00"
+      "scored_at": "2026-10-26T07:39:14.827477+00:00"
     },
     "bazaraki_5242366": {
       "source": "bazaraki.com",
@@ -7844,8 +7844,8 @@
       "address": "",
       "district": "Nicosia (Egkomi)",
       "subdistrict": null,
-      "first_seen_at": "2026-10-26T07:05:58.800352+00:00",
-      "last_seen_at": "2026-10-26T07:05:58.800357+00:00",
+      "first_seen_at": "2026-10-26T07:39:19.101076+00:00",
+      "last_seen_at": "2026-10-26T07:39:19.101082+00:00",
       "in_sheet": false,
       "alerted": false,
       "flags": [
@@ -7856,7 +7856,7 @@
       "geo_lat": 35.153459420854,
       "geo_lon": 33.313873222151,
       "geo_source": "detail",
-      "published_at": "2026-10-23T07:05:58.799816+00:00",
+      "published_at": "2026-10-23T07:39:19.100533+00:00",
       "photo_url": "https://cdn1.bazaraki.com/media/cache1/0d/71/0d71055cd57b5506054c67f86efa7c84.webp",
       "photo_urls": [
         "https://cdn1.bazaraki.com/media/cache1/0d/71/0d71055cd57b5506054c67f86efa7c84.webp",
@@ -7901,7 +7901,7 @@
         "residents_500_osm_raw": 3873,
         "geo_source": "detail"
       },
-      "scored_at": "2026-10-26T07:06:49.135244+00:00"
+      "scored_at": "2026-10-26T07:39:52.083918+00:00"
     },
     "bazaraki_6800798": {
       "source": "bazaraki.com",
@@ -8910,7 +8910,7 @@
       "address": "",
       "district": "Limassol (Historical Center)",
       "first_seen_at": "2026-10-24T13:04:23.734731+00:00",
-      "last_seen_at": "2026-10-26T07:19:26.526578+00:00",
+      "last_seen_at": "2026-10-26T07:46:13.119739+00:00",
       "in_sheet": false,
       "alerted": false,
       "rejected": true,
@@ -10172,8 +10172,8 @@
       "address": "",
       "district": "Limassol (Kapsalos)",
       "subdistrict": null,
-      "first_seen_at": "2026-10-26T07:06:50.546154+00:00",
-      "last_seen_at": "2026-10-26T07:06:50.546158+00:00",
+      "first_seen_at": "2026-10-26T07:39:53.728655+00:00",
+      "last_seen_at": "2026-10-26T07:39:53.728660+00:00",
       "in_sheet": false,
       "alerted": false,
       "flags": [
@@ -10184,7 +10184,7 @@
       "geo_lat": 34.69180664795192,
       "geo_lon": 33.02110764345874,
       "geo_source": "detail_approx",
-      "published_at": "2026-10-21T07:06:50.545770+00:00",
+      "published_at": "2026-10-21T07:39:53.728284+00:00",
       "photo_url": "https://cdn1.bazaraki.com/media/cache1/f8/ef/f8efbf228498866217bb1626ae0238f0.webp",
       "photo_urls": [
         "https://cdn1.bazaraki.com/media/cache1/f8/ef/f8efbf228498866217bb1626ae0238f0.webp",
@@ -10229,7 +10229,7 @@
         "residents_500_osm_raw": 3075,
         "geo_source": "detail_approx"
       },
-      "scored_at": "2026-10-26T07:07:21.753641+00:00"
+      "scored_at": "2026-10-26T07:40:24.588634+00:00"
     },
     "bazaraki_6636016": {
       "source": "bazaraki.com",
@@ -10501,7 +10501,7 @@
       "address": "",
       "district": "Nicosia (Pano Deftera)",
       "first_seen_at": "2026-10-24T17:04:01.149634+00:00",
-      "last_seen_at": "2026-10-26T07:19:26.523855+00:00",
+      "last_seen_at": "2026-10-26T07:46:13.118999+00:00",
       "in_sheet": false,
       "alerted": false,
       "rejected": true,
@@ -11199,7 +11199,7 @@
       "address": "",
       "district": "Limassol (Historical Center)",
       "first_seen_at": "2026-10-25T07:06:19.725810+00:00",
-      "last_seen_at": "2026-10-26T07:19:26.526550+00:00",
+      "last_seen_at": "2026-10-26T07:46:13.119714+00:00",
       "in_sheet": false,
       "alerted": false,
       "rejected": true,
@@ -11219,8 +11219,8 @@
       "address": "",
       "district": "Nicosia (Ag. Antonios)",
       "subdistrict": null,
-      "first_seen_at": "2026-10-26T07:07:23.297050+00:00",
-      "last_seen_at": "2026-10-26T07:07:23.297055+00:00",
+      "first_seen_at": "2026-10-26T07:40:25.907881+00:00",
+      "last_seen_at": "2026-10-26T07:40:25.907885+00:00",
       "in_sheet": false,
       "alerted": false,
       "flags": [
@@ -11231,7 +11231,7 @@
       "geo_lat": 35.169143162959195,
       "geo_lon": 33.372053755519524,
       "geo_source": "detail_approx",
-      "published_at": "2026-10-12T07:07:23.296733+00:00",
+      "published_at": "2026-10-12T07:40:25.907572+00:00",
       "photo_url": "https://cdn1.bazaraki.com/media/cache1/b7/b9/b7b96310c5ed46d1ecb911f2cb2b3d01.webp",
       "photo_urls": [
         "https://cdn1.bazaraki.com/media/cache1/b7/b9/b7b96310c5ed46d1ecb911f2cb2b3d01.webp",
@@ -11274,7 +11274,7 @@
         "residents_500_osm_raw": 6003,
         "geo_source": "detail_approx"
       },
-      "scored_at": "2026-10-26T07:08:01.275604+00:00"
+      "scored_at": "2026-10-26T07:41:14.967159+00:00"
     },
     "bazaraki_6568782": {
       "source": "bazaraki.com",
@@ -11356,8 +11356,8 @@
       "address": "",
       "district": "Nicosia (Ag. Antonios)",
       "subdistrict": null,
-      "first_seen_at": "2026-10-26T07:08:02.569374+00:00",
-      "last_seen_at": "2026-10-26T07:08:02.569391+00:00",
+      "first_seen_at": "2026-10-26T07:41:16.233076+00:00",
+      "last_seen_at": "2026-10-26T07:41:16.233090+00:00",
       "in_sheet": false,
       "alerted": false,
       "flags": [
@@ -11411,7 +11411,7 @@
         "residents_500_osm_raw": 7371,
         "geo_source": "detail_approx"
       },
-      "scored_at": "2026-10-26T07:24:54.447574Z"
+      "scored_at": "2026-10-26T07:41:43.940671+00:00"
     },
     "bazaraki_6745621": {
       "source": "bazaraki.com",
@@ -11758,7 +11758,7 @@
       "address": "",
       "district": "Nicosia (Ag. Antonios)",
       "first_seen_at": "2026-10-25T09:06:55.635154+00:00",
-      "last_seen_at": "2026-10-26T07:19:26.524439+00:00",
+      "last_seen_at": "2026-10-26T07:46:13.119539+00:00",
       "in_sheet": false,
       "alerted": false,
       "rejected": true,
@@ -12524,8 +12524,8 @@
       "address": "",
       "district": "Limassol (Katholiki)",
       "subdistrict": null,
-      "first_seen_at": "2026-10-26T07:12:04.172096+00:00",
-      "last_seen_at": "2026-10-26T07:12:04.172101+00:00",
+      "first_seen_at": "2026-10-26T07:41:45.621029+00:00",
+      "last_seen_at": "2026-10-26T07:41:45.621034+00:00",
       "in_sheet": false,
       "alerted": false,
       "flags": [
@@ -12535,7 +12535,7 @@
       "geo_lat": 34.68159112,
       "geo_lon": 33.03568657,
       "geo_source": "detail",
-      "published_at": "2026-10-19T07:12:04.171735+00:00",
+      "published_at": "2026-10-19T07:41:45.620652+00:00",
       "photo_url": "https://cdn1.bazaraki.com/media/cache1/45/24/45246e8e453d8db88863c3e371acf6c3.webp",
       "photo_urls": [
         "https://cdn1.bazaraki.com/media/cache1/45/24/45246e8e453d8db88863c3e371acf6c3.webp",
@@ -12573,7 +12573,7 @@
         "residents_500_osm_raw": 6730,
         "geo_source": "detail"
       },
-      "scored_at": "2026-10-26T07:15:22.501460+00:00"
+      "scored_at": "2026-10-26T07:42:14.601467+00:00"
     },
     "bazaraki_6573800": {
       "source": "bazaraki.com",
@@ -12586,8 +12586,8 @@
       "address": "",
       "district": "Limassol (Agia Triada)",
       "subdistrict": null,
-      "first_seen_at": "2026-10-26T07:15:24.207655+00:00",
-      "last_seen_at": "2026-10-26T07:15:24.207661+00:00",
+      "first_seen_at": "2026-10-26T07:42:15.981698+00:00",
+      "last_seen_at": "2026-10-26T07:42:15.981703+00:00",
       "in_sheet": false,
       "alerted": false,
       "flags": [
@@ -12597,7 +12597,7 @@
       "geo_lat": 34.68176160593919,
       "geo_lon": 33.04291403377115,
       "geo_source": "detail",
-      "published_at": "2026-10-19T07:15:24.207146+00:00",
+      "published_at": "2026-10-19T07:42:15.981217+00:00",
       "photo_url": "https://cdn1.bazaraki.com/media/cache1/89/20/8920accdf2458d9f9a473b79cadbf84a.webp",
       "photo_urls": [
         "https://cdn1.bazaraki.com/media/cache1/89/20/8920accdf2458d9f9a473b79cadbf84a.webp",
@@ -12642,7 +12642,7 @@
         "residents_500_osm_raw": 8763,
         "geo_source": "detail"
       },
-      "scored_at": "2026-10-26T07:16:11.426919+00:00"
+      "scored_at": "2026-10-26T07:42:56.487911+00:00"
     },
     "bazaraki_6795950": {
       "source": "bazaraki.com",
@@ -12757,8 +12757,8 @@
       "address": "",
       "district": "Limassol (Mesa Geitonia)",
       "subdistrict": null,
-      "first_seen_at": "2026-10-26T07:16:13.020594+00:00",
-      "last_seen_at": "2026-10-26T07:16:13.020599+00:00",
+      "first_seen_at": "2026-10-26T07:42:57.885166+00:00",
+      "last_seen_at": "2026-10-26T07:42:57.885172+00:00",
       "in_sheet": false,
       "alerted": false,
       "flags": [
@@ -12770,7 +12770,7 @@
       "geo_lat": 34.697924613244226,
       "geo_lon": 33.04615370498603,
       "geo_source": "detail_approx",
-      "published_at": "2026-10-26T07:10:13.020133+00:00",
+      "published_at": "2026-10-26T07:09:57.884709+00:00",
       "photo_url": "https://cdn1.bazaraki.com/media/cache1/64/cb/64cba947f2244ca11341ad2fd5459dab.webp",
       "photo_urls": [
         "https://cdn1.bazaraki.com/media/cache1/64/cb/64cba947f2244ca11341ad2fd5459dab.webp",
@@ -12815,7 +12815,7 @@
         "residents_500_osm_raw": 5833,
         "geo_source": "detail_approx"
       },
-      "scored_at": "2026-10-26T07:19:26.416394+00:00"
+      "scored_at": "2026-10-26T07:46:13.044169+00:00"
     },
     "bazaraki_6692700": {
       "source": "bazaraki.com",
@@ -12827,7 +12827,7 @@
       "address": "",
       "district": "Nicosia (Strovolos - Stavros)",
       "first_seen_at": "2026-10-25T17:20:35.873784+00:00",
-      "last_seen_at": "2026-10-26T07:19:26.526499+00:00",
+      "last_seen_at": "2026-10-26T07:46:13.119669+00:00",
       "in_sheet": false,
       "alerted": false,
       "rejected": true,
@@ -12846,7 +12846,7 @@
       "address": "",
       "district": "Nicosia (Strovolos - Chryseleousa)",
       "first_seen_at": "2026-10-25T17:20:35.874221+00:00",
-      "last_seen_at": "2026-10-26T07:19:26.526525+00:00",
+      "last_seen_at": "2026-10-26T07:46:13.119690+00:00",
       "in_sheet": false,
       "alerted": false,
       "rejected": true,
@@ -12865,7 +12865,7 @@
       "address": "",
       "district": "Limassol (Germasogeia)",
       "first_seen_at": "2026-10-26T07:19:26.525763+00:00",
-      "last_seen_at": "2026-10-26T07:19:26.525769+00:00",
+      "last_seen_at": "2026-10-26T07:46:13.119623+00:00",
       "in_sheet": false,
       "alerted": false,
       "rejected": true,
@@ -12884,7 +12884,7 @@
       "address": "",
       "district": "Nicosia (Trypiotis)",
       "first_seen_at": "2026-10-26T07:19:26.526461+00:00",
-      "last_seen_at": "2026-10-26T07:19:26.526467+00:00",
+      "last_seen_at": "2026-10-26T07:46:13.119645+00:00",
       "in_sheet": false,
       "alerted": false,
       "rejected": true,
@@ -12900,18 +12900,88 @@
       "title": "Office in limassol center",
       "price": 4500,
       "thumb": "https://cdn1.bazaraki.com/media/cache1/25/6c/256c301544644ab1c0e902c93138b4cf.webp",
-      "date": "46 minutes ago",
+      "date": "1 hour ago",
       "url": "https://www.bazaraki.com/adv/6722075_office-in-limassol-center/",
       "district_label": "Limassol — Limassol - Katholiki",
       "municipality": "Limassol",
       "type": "Offices",
       "source": "bazaraki.com",
-      "area": 200.0,
-      "postal_code": "3022",
+      "area": 200.0
+    },
+    {
+      "id": "6739735",
+      "title": "Luxury office in town center limassol",
+      "price": 3500,
+      "thumb": "https://cdn1.bazaraki.com/media/cache1/52/b5/52b5b94205303a59b8e533299a85d403.webp",
+      "date": "17 minutes ago",
+      "url": "https://www.bazaraki.com/adv/6739735_luxury-office-in-town-center-limassol/",
+      "district_label": "Limassol — Limassol - Agia Triada",
+      "municipality": "Limassol",
+      "type": "Offices",
+      "source": "bazaraki.com",
+      "area": 165.0,
+      "postal_code": "",
       "is_closed": false,
       "street": "",
-      "lat": 34.6803280690166,
-      "lon": 33.03488002565794,
+      "lat": 34.67866058999999,
+      "lon": 33.04839301063534,
+      "geo_approx": false
+    },
+    {
+      "id": "6631067",
+      "title": "Office in the business center of limassol",
+      "price": 1600,
+      "thumb": "https://cdn1.bazaraki.com/media/cache1/96/43/9643132b9dd35f9d665496d17d3fe612.webp",
+      "date": "17 minutes ago",
+      "url": "https://www.bazaraki.com/adv/6631067_office-for-rent-in-the-business-center-of-limassol/",
+      "district_label": "Limassol — Historical Center",
+      "municipality": "Limassol",
+      "type": "Offices",
+      "source": "bazaraki.com",
+      "area": 100.0,
+      "postal_code": "",
+      "is_closed": false,
+      "street": "",
+      "lat": 34.67513472740266,
+      "lon": 33.04668164003349,
+      "geo_approx": false
+    },
+    {
+      "id": "6807216",
+      "title": "Modern fully furnished office",
+      "price": 2500,
+      "thumb": "https://cdn1.bazaraki.com/media/cache1/a0/ce/a0ce0fcacec0fadcb3cb3a890c5fb81b.webp",
+      "date": "20 minutes ago",
+      "url": "https://www.bazaraki.com/adv/6807216_modern-fully-furnished-office/",
+      "district_label": "Limassol — Limassol - Agios Ioannis",
+      "municipality": "Limassol",
+      "type": "Offices",
+      "source": "bazaraki.com",
+      "area": 140.0,
+      "postal_code": "",
+      "is_closed": false,
+      "street": "",
+      "lat": 34.675123000000006,
+      "lon": 33.01938397,
+      "geo_approx": false
+    },
+    {
+      "id": "6592018",
+      "title": "Office strovolos, athalassas avenue 62",
+      "price": 1850,
+      "thumb": "https://cdn1.bazaraki.com/media/cache1/9b/f0/9bf0500542d0bf695166296fd614d41b.webp",
+      "date": "32 minutes ago",
+      "url": "https://www.bazaraki.com/adv/6592018_office-strovolos-athalassas-avenue-62/",
+      "district_label": "Nicosia — Strovolos - Chryseleousa",
+      "municipality": "Nicosia",
+      "type": "Offices",
+      "source": "bazaraki.com",
+      "area": 140.0,
+      "postal_code": "2012",
+      "is_closed": false,
+      "street": "",
+      "lat": 35.14725088380889,
+      "lon": 33.35494258193813,
       "geo_approx": false
     },
     {
@@ -12925,13 +12995,7 @@
       "municipality": "Limassol",
       "type": "Offices",
       "source": "bazaraki.com",
-      "area": 150.0,
-      "postal_code": "",
-      "is_closed": false,
-      "street": "",
-      "lat": 34.68898505137112,
-      "lon": 33.02696362118851,
-      "geo_approx": false
+      "area": 150.0
     },
     {
       "id": "6648408",
@@ -12944,13 +13008,7 @@
       "municipality": "Nicosia",
       "type": "Offices",
       "source": "bazaraki.com",
-      "area": 102.0,
-      "postal_code": "4102",
-      "is_closed": false,
-      "street": "",
-      "lat": 35.12984301725789,
-      "lon": 33.32628191923125,
-      "geo_approx": true
+      "area": 102.0
     },
     {
       "id": "6648407",
@@ -12963,13 +13021,7 @@
       "municipality": "Nicosia",
       "type": "Offices",
       "source": "bazaraki.com",
-      "area": 100.0,
-      "postal_code": "4102",
-      "is_closed": false,
-      "street": "",
-      "lat": 35.12239040495985,
-      "lon": 33.33042917409024,
-      "geo_approx": true
+      "area": 100.0
     },
     {
       "id": "6195922",
@@ -12982,13 +13034,7 @@
       "municipality": "Nicosia",
       "type": "Offices",
       "source": "bazaraki.com",
-      "area": 150.0,
-      "postal_code": "1061",
-      "is_closed": false,
-      "street": "",
-      "lat": 35.165630438782955,
-      "lon": 33.361911331776184,
-      "geo_approx": false
+      "area": 150.0
     },
     {
       "id": "6531019",
@@ -13001,13 +13047,7 @@
       "municipality": "Limassol",
       "type": "Offices",
       "source": "bazaraki.com",
-      "area": 140.0,
-      "postal_code": "",
-      "is_closed": false,
-      "street": "",
-      "lat": 34.67883166968598,
-      "lon": 33.04561706452182,
-      "geo_approx": true
+      "area": 140.0
     },
     {
       "id": "6138772",
@@ -13020,13 +13060,7 @@
       "municipality": "Limassol",
       "type": "Offices",
       "source": "bazaraki.com",
-      "area": 200.0,
-      "postal_code": "",
-      "is_closed": false,
-      "street": "",
-      "lat": 34.66656142708773,
-      "lon": 33.02246092231931,
-      "geo_approx": false
+      "area": 200.0
     },
     {
       "id": "6583554",
@@ -15391,11 +15425,11 @@
   ],
   "source_cooldown": {},
   "last_sweep_health": {
-    "at": "2026-10-26T06:55:47.979967+00:00",
+    "at": "2026-10-26T07:36:22.389240+00:00",
     "by_source": {
       "bazaraki": {
-        "cards": 543,
-        "parsed": 543
+        "cards": 545,
+        "parsed": 545
       },
       "zyprus": {
         "cards": 27,
@@ -15415,22 +15449,22 @@
     "bazaraki_6795995": 1,
     "bazaraki_6806006": 1
   },
-  "last_cycle_at": "2026-10-26T07:19:26.527125+00:00",
+  "last_cycle_at": "2026-10-26T07:46:13.120305+00:00",
   "daily_stats": {
     "date": "2026-10-26",
-    "runs": 1,
-    "sweep_last": 570,
-    "new": 70,
-    "checked": 12,
+    "runs": 2,
+    "sweep_last": 572,
+    "new": 138,
+    "checked": 24,
     "rejects": 0,
-    "passes": 11,
+    "passes": 23,
     "duplicates": 0
   },
   "last_cycle_stats": {
-    "at": "2026-10-26T07:19:26.548042+00:00",
-    "sweep_raw": 570,
-    "new": 70,
-    "passes": 11,
+    "at": "2026-10-26T07:46:13.159061+00:00",
+    "sweep_raw": 572,
+    "new": 68,
+    "passes": 12,
     "rejects": 0,
     "sources_down": []
   },
@@ -15623,7 +15657,7 @@
   "feedback_aggregates": {
     "by_district": {},
     "source": "sheet_col_K",
-    "updated_at": "2026-10-26T07:24:59.471534+00:00"
+    "updated_at": "2026-10-26T07:50:50.435362+00:00"
   },
   "canary": {
     "date": "2026-10-26",
