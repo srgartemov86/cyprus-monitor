@@ -205,9 +205,27 @@ function esc(s) { return String(s||'').replace(/[&<>"]/g, c => ({'&':'&amp;','<'
 function toggleSide() { document.body.classList.toggle('collapsed'); setTimeout(() => map.invalidateSize(), 50); }
 // Ссылки из попапов: встроенные браузеры (Telegram, iOS webview) глотают target=_blank —
 // если новое окно не открылось, переходим в том же (18.10: «не работает переход на карту»)
+// «Share» в попапе: ссылка lokali.html#lot=<id> открывает карту сразу на этом лоте
+// (Сергей, 26.10). На телефоне — системное меню «поделиться», иначе в буфер обмена.
+function shareLot(id) {
+  const url = location.origin + location.pathname + '#lot=' + encodeURIComponent(id);
+  if (navigator.share && /Mobi|Android|iPhone|iPad/.test(navigator.userAgent)) {
+    navigator.share({url}).catch(() => {});
+    return;
+  }
+  const fallback = () => window.prompt('Copy the link:', url);
+  if (navigator.clipboard && navigator.clipboard.writeText)
+    navigator.clipboard.writeText(url).then(() => toast('Link copied'), fallback);
+  else fallback();
+}
 document.addEventListener('click', (e) => {
   const a = e.target.closest('.leaflet-popup a[href]');
   if (!a) return;
+  if (a.classList.contains('share')) {
+    e.preventDefault(); e.stopPropagation();
+    shareLot(a.dataset.lot);
+    return;
+  }
   // крестик закрытия и прочие якоря (#close) — не ссылки: иначе открывалась новая вкладка
   // с картой и сброшенными фильтрами (Сергей, 20.10)
   if (a.classList.contains('leaflet-popup-close-button') || a.getAttribute('href').startsWith('#')) return;
@@ -369,6 +387,7 @@ function popupNode(f) {
         <a class="secondary" href="${esc(f.gmaps)}" target="_blank">Maps</a>
         ${f.yandex ? `<a class="secondary" href="${esc(f.yandex)}" target="_blank">Street View</a>` : ''}
         ${sheetLink}
+        <a class="secondary share" href="#share" data-lot="${esc(f.id)}" title="Copy a link that opens this listing on the map">Share</a>
       </div>
       <div class="footer">${f.date_posted ? `📅 posted ${esc(f.date_posted)} · ` : ''}${esc(f.source)} · ${f.days_since} days ago</div>`;
   const slot = el.querySelector('.photo-slot');
@@ -525,7 +544,8 @@ setTimeout(() => {
   const mob = window.innerWidth <= 760;
   // #lot=<id> — переход на конкретный лот со страницы тепловой карты
   const lotId = (location.hash.match(/lot=([^&]+)/) || [])[1];
-  const target = lotId ? FEATURES.find(f => (f.url || '').includes(decodeURIComponent(lotId))) : null;
+  // id принимается и полный (bazaraki_6802704 из кнопки Share), и числовой (из карточки Telegram)
+  const target = lotId ? FEATURES.find(f => f.id === decodeURIComponent(lotId) || (f.url || '').includes(decodeURIComponent(lotId))) : null;
   if (target) {
     if (mob) document.body.classList.add('collapsed');
     map.setView([target.lat, target.lon], 16);
