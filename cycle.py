@@ -582,6 +582,13 @@ def apply_filters(cand, detail, skip_price=False):
     return True, flags, ''
 
 
+def _is_image(head):
+    """JPEG/PNG/WebP/AVIF по сигнатуре, а не по расширению в URL."""
+    head = bytes(head[:16])
+    return (len(head) >= 12 and (head[:3] == b'\xff\xd8\xff' or head[:8] == b'\x89PNG\r\n\x1a\n'
+            or (head[:4] == b'RIFF' and head[8:12] == b'WEBP') or head[4:8] == b'ftyp'))
+
+
 def download_photo(url, listing_key):
     PHOTO_DIR.mkdir(exist_ok=True)
     ext_m = re.search(r'\.(jpe?g|webp|avif|png)(?:[?#]|$)', url, re.IGNORECASE)
@@ -590,16 +597,26 @@ def download_photo(url, listing_key):
     # 2 попытки: единичный сбой curl (таймаут/сброс) иначе роняет фото из альбома,
     # а лот с одним фото уходит текстом без альбома.
     ok = False
-    for _attempt in range(2):
-        try:
-            subprocess.run(['curl', '-sL', '-A', UA, '--max-time', '30', url,
-                            '-o', str(raw_path)],
-                           capture_output=True, timeout=35)
-        except Exception:
-            continue
-        if raw_path.exists() and raw_path.stat().st_size >= 1000:
+    if 'bazaraki.com' in url:
+        # С ~24.10.2026 CDN bazaraki отдаёт голому curl заглушку Cloudflare (HTML 4,5 КБ),
+        # она уходила в альбом как .webp → Telegram IMAGE_PROCESS_FAILED на всю карточку.
+        # Качаем тем же путём, что свип: curl_cffi + кипрский прокси.
+        r = curl_sweep.bz_get(url, timeout=30, attempts=3)
+        if r is not None and r.status_code == 200 and _is_image(r.content):
+            raw_path.write_bytes(r.content)
             ok = True
-            break
+    else:
+        for _attempt in range(2):
+            try:
+                subprocess.run(['curl', '-sL', '-A', UA, '--max-time', '30', url,
+                                '-o', str(raw_path)],
+                               capture_output=True, timeout=35)
+            except Exception:
+                continue
+            if (raw_path.exists() and raw_path.stat().st_size >= 1000
+                    and _is_image(raw_path.read_bytes()[:16])):
+                ok = True
+                break
     if not ok:
         return None
     if ext in ('webp', 'avif', 'png'):
