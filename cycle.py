@@ -1876,8 +1876,16 @@ def cmd_finalize():
         out['check_stderr_tail'] = (cr.stderr or '').strip().split('\n')[-3:]
 
     # gen_map deploys to surge.sh automatically; prints to stdout
-    mr = subprocess.run(['python3', str(SCRIPT_DIR / 'gen_map.py')],
-                        capture_output=True, text=True, timeout=240)
+    # gen_map внутри делает до 6 Overpass-запросов (backfill_scores) и Nominatim —
+    # при лежащих зеркалах уходит за 240 с. Таймаут не должен ронять finalize:
+    # 25.10 три цикла упали именно здесь, state не запушился (RuntimeError в driver).
+    try:
+        mr = subprocess.run(['python3', str(SCRIPT_DIR / 'gen_map.py')],
+                            capture_output=True, text=True, timeout=420)
+    except subprocess.TimeoutExpired as e:
+        out['map_timeout'] = True
+        mr = subprocess.CompletedProcess([], 1, (e.stdout or b'').decode(errors='replace') if isinstance(e.stdout, bytes) else (e.stdout or ''),
+                                         'gen_map timeout 420s')
     mout = (mr.stdout or '') + '\n' + (mr.stderr or '')
     out['map_ok'] = bool(re.search(r'wrote\s+/.*lokali\.html', mout))
     out['map_surge_ok'] = 'Success!' in mout

@@ -513,9 +513,13 @@ def build_features(state, sheet):
         date_updated = to_iso_date(date_updated_raw) if date_updated_raw and date_updated_raw != date_posted_raw else ''
         if date_updated == date_posted:
             date_updated = ''
-        # Цвет — по самой свежей из двух дат
+        # Цвет — по самой свежей из трёх дат: публикация на сайте, обновление,
+        # дата попадания в монитор. Bazaraki часто отдаёт объявления, висящие
+        # неделями, а для нас они новые — без first_seen слой «≤ 2 days» пустовал
+        # даже в день, когда пришло 12 карточек (Сергей, 26.10).
         days = min(days_since(date_posted_raw),
-                   days_since(date_updated_raw) if date_updated_raw else 999)
+                   days_since(date_updated_raw) if date_updated_raw else 999,
+                   days_since(v.get('first_seen_at') or '') if v.get('first_seen_at') else 999)
         status_raw = (srow.get('status') or '').strip()
         # Нормализация: lowercase, точки→пробел, схлопнуть множественные пробелы.
         # «ОК. Двигаем на обсуждение» → «ок двигаем на обсуждение».

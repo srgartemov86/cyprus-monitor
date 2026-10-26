@@ -121,6 +121,9 @@
   #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:2000;background:rgba(29,29,31,.92);color:#fff;padding:9px 16px;
     border-radius:980px;font-size:13px;box-shadow:0 8px 24px rgba(0,0,0,.3);opacity:0;transition:opacity .25s;pointer-events:none;backdrop-filter:blur(10px)}
   #toast.show{opacity:1}
+  #lotwait{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:2000;background:rgba(29,29,31,.92);color:#fff;padding:10px 18px;
+    border-radius:14px;font-size:13px;line-height:1.4;max-width:min(92vw,420px);text-align:center;box-shadow:0 8px 24px rgba(0,0,0,.3);backdrop-filter:blur(10px);display:none}
+  #lotwait b{color:#ffb14a}
 
   .dodo-marker{width:34px;height:34px;border-radius:50%;background:#fff;box-shadow:0 0 0 2px var(--acc),0 3px 10px rgba(0,0,0,.3);padding:2px}
   .dodo-marker img{width:100%;height:100%;border-radius:50%}
@@ -164,7 +167,7 @@
   <div class="pane on" id="p1">
     <h3>Listings</h3>
     <label class="row"><input type="checkbox" id="t-in_progress" checked> <span class="star">★</span> In progress<span class="n" id="c-in_progress">0</span></label>
-    <label class="row"><input type="checkbox" id="t-fresh" checked> <span class="dot" style="background:var(--good)"></span> Listed ≤ 2 days ago<span class="n" id="c-fresh">0</span></label>
+    <label class="row"><input type="checkbox" id="t-fresh" checked> <span class="dot" style="background:var(--good)"></span> New: listed or added ≤ 2 days ago<span class="n" id="c-fresh">0</span></label>
     <label class="row"><input type="checkbox" id="t-recent" checked> <span class="dot" style="background:var(--mid)"></span> 3–15 days<span class="n" id="c-recent">0</span></label>
     <label class="row"><input type="checkbox" id="t-old" checked> <span class="dot" style="background:var(--old)"></span> 16+ days<span class="n" id="c-old">0</span></label>
     <label class="row"><input type="checkbox" id="t-not_suitable"> <span class="dot" style="background:var(--bad)"></span> Not suitable<span class="n" id="c-not_suitable">0</span></label>
@@ -185,6 +188,7 @@
 </div>
 <div id="menuBtn" onclick="toggleSide()" title="Show panel">&#9776;</div>
 <div id="toast"></div>
+<div id="lotwait"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script>
 const FEATURES = __FEATURES_JSON__;
@@ -529,6 +533,29 @@ setTimeout(() => {
   } else if (FEATURES.length) {
     map.fitBounds(L.latLngBounds(FEATURES.map(f => [f.lat, f.lon])),
                   mob ? {padding: [20, 20], paddingBottomRight: [20, Math.round(window.innerHeight * 0.48)]} : {padding: [40, 40], paddingTopLeft: [400, 40]});
+  }
+  // Лот из карточки ещё не на карте: карточка уходит в Telegram раньше, чем цикл
+  // пересобирает карту (finalize идёт после всех отправок, это 3–10 минут).
+  // Показываем плашку и раз в 30 с опрашиваем features.json; как только лот
+  // появился — перезагружаем страницу с тем же #lot (Сергей, 26.10).
+  if (lotId && !target) {
+    const box = document.getElementById('lotwait');
+    const id = decodeURIComponent(lotId);
+    box.innerHTML = `Listing <b>${id}</b> is not on the map yet. It appears a few minutes after the Telegram card, once the cycle finishes. This page will refresh automatically.`;
+    box.style.display = 'block';
+    let tries = 0;
+    const poll = async () => {
+      tries += 1;
+      try {
+        const r = await fetch('features.json?t=' + Date.now(), {cache: 'no-store'});
+        const j = await r.json();
+        const feats = Array.isArray(j) ? j : (j.features || []);
+        if (feats.some(f => (f.url || '').includes(id))) { location.reload(); return; }
+      } catch (e) {}
+      if (tries < 40) setTimeout(poll, 30000);
+      else box.innerHTML = `Listing <b>${id}</b> is still not on the map. Open the map without the link and check the table: the cycle may have failed.`;
+    };
+    setTimeout(poll, 30000);
   }
 }, 0);
 </script>
