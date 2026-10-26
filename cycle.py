@@ -1145,11 +1145,15 @@ def run_process():
         # Лоты, зависшие без терминального статуса: прошли фильтр, но не уехали
         # в чат/таблицу (сбой сети или Telegram). В выдаче они уже «известные»,
         # поэтому вернуть их в работу может только этот проход.
+        # Сюда же — лоты, поставленные в таблицу (--stage), чья карточка в
+        # Telegram не ушла: in_sheet без alerted.
         stuck = []
         for _k, _v in (s.get('listings') or {}).items():
             if not isinstance(_v, dict):
                 continue
-            if _v.get('in_sheet') or _v.get('rejected') or _v.get('removed_from_sheet'):
+            if _v.get('rejected') or _v.get('removed_from_sheet'):
+                continue
+            if _v.get('in_sheet') and _v.get('alerted'):
                 continue
             if not (_v.get('url') and _v.get('id')):
                 continue
@@ -1230,7 +1234,10 @@ def run_process():
             done_this_cycle.add(key)
 
             existing = s['listings'].get(key)
-            if existing and (existing.get('in_sheet') or existing.get('rejected')
+            # in_sheet без alerted — лот поставлен в таблицу (--stage), но карточка
+            # не ушла: он идёт дальше как stuck и отправляется заново.
+            if existing and ((existing.get('in_sheet') and existing.get('alerted'))
+                             or existing.get('rejected')
                              or existing.get('removed_from_sheet')):
                 existing['last_seen_at'] = now_iso()
                 continue
@@ -1279,6 +1286,15 @@ def run_process():
             if detail.get('photo_url'): rec['photo_url'] = detail['photo_url']
             purls = extract_photo_urls(html, src)
             if purls: rec['photo_urls'] = purls
+            if existing:
+                # Повторная обработка (stuck или staged-лот без карточки): не терять
+                # дату первого появления, счётчик повторов и уже созданную строку
+                # в таблице — иначе --stage вставит вторую строку, а жнец зомби
+                # никогда не увидит исчерпанных попыток.
+                for _f in ('first_seen_at', 'stuck_retries', 'in_sheet', 'sheet_link',
+                           'staged_at', 'description_ru'):
+                    if existing.get(_f) is not None:
+                        rec[_f] = existing[_f]
 
             if not passed:
                 rec['rejected'] = True
@@ -1685,6 +1701,86 @@ def cmd_set_field(listing_key, field, value):
     return 0
 
 
+def _stage_in_sheet(rec, listing_key, desc_ru=None):
+    """Строка лота в Google Sheets: insert наверх, скоринг в кол. M, named range.
+    Ставит rec['in_sheet'] и rec['sheet_link'], возвращает (ответ Sheets, ссылка).
+    Исключение Sheets — наружу (вызывающий решает, что делать)."""
+    sheet_resp = insert_lots([{
+        'address': rec.get('address') or '',
+        'district': rec.get('district') or '',
+        'area': rec.get('area_m2'),
+        'price': rec.get('price_eur'),
+        'url': rec.get('url'),
+        'description_ru': (desc_ru or rec.get('description_ru')
+                           or rec.get('description') or '')[:1000],
+        'date_posted': (rec.get('refreshed_at')
+                        or rec.get('published_at')
+                        or rec.get('first_seen_at') or '')[:10],
+    }])
+    rec['in_sheet'] = True
+    rec['staged_at'] = now_iso()
+
+    # Находим строку лота по URL один раз (insert_at_top кладёт наверх):
+    # нужна и для скоринга в кол. M, и для named range (ссылка из Telegram).
+    sheet_link = None
+    lot_row = None
+    if rec.get('url'):
+        try:
+            svc = _sheets_service()
+            urls = svc.spreadsheets().values().get(
+                spreadsheetId=SPREADSHEET_ID, range='E2:E1000'
+            ).execute().get('values', [])
+            target = rec['url'].strip()
+            for i, row in enumerate(urls, start=2):
+                if row and row[0].strip() == target:
+                    lot_row = i
+                    break
+        except Exception:
+            pass
+    sc = rec.get('score')
+    if sc is not None and lot_row:
+        try:
+            update_cells([{'row': lot_row, 'col': 13, 'value': sc}])
+        except Exception:
+            pass  # скоринг в M не критичен
+    if lot_row:
+        try:
+            from sheets_append import create_lot_named_range
+            sheet_link = create_lot_named_range(lot_row, listing_key)
+            rec['sheet_link'] = sheet_link
+        except Exception:
+            pass  # ссылка — nice-to-have
+    return sheet_resp, sheet_link
+
+
+def cmd_stage(listing_key, desc_ru=None):
+    """Шаг 1 отправки (driver, 26.10): строка в таблице и точка на карте ДО карточки
+    в Telegram — ссылка «On the map» в карточке тогда открывает лот сразу.
+    alerted не ставим: если карточка не уйдёт, лот вернётся в очередь как stuck
+    (in_sheet без alerted) и уедет следующим циклом; повторный --stage идемпотентен."""
+    with StateLock():
+        s = load_state()
+        rec = s.get('listings', {}).get(listing_key)
+        if not rec:
+            print(json.dumps({'ok': False, 'error': f'listing_key {listing_key} not in state'}))
+            return 1
+        if desc_ru:
+            rec['description_ru'] = desc_ru[:1000]
+        if rec.get('in_sheet'):
+            save_state(s)
+            print(json.dumps({'ok': True, 'sheet_link': rec.get('sheet_link'),
+                              'already': True}))
+            return 0
+        try:
+            sheet_resp, sheet_link = _stage_in_sheet(rec, listing_key, desc_ru)
+        except Exception as e:
+            print(json.dumps({'ok': False, 'sheets_error': str(e)}))
+            return 1
+        save_state(s)
+        print(json.dumps({'ok': True, 'sheets': sheet_resp, 'sheet_link': sheet_link}))
+    return 0
+
+
 def cmd_mark_sent(listing_key, message_id, desc_ru=None):
     """Called by agent after Telegram send_file succeeds.
     desc_ru — английская выжимка от driver (Gemini); идёт в Sheets кол. F (карта показывает её).
@@ -1707,55 +1803,17 @@ def cmd_mark_sent(listing_key, message_id, desc_ru=None):
         s.get('send_defers', {}).pop(listing_key, None)  # счётчик отсрочек больше не нужен
         save_state(s)  # save Telegram metadata first
 
-        try:
-            sheet_resp = insert_lots([{
-                'address': rec.get('address') or '',
-                'district': rec.get('district') or '',
-                'area': rec.get('area_m2'),
-                'price': rec.get('price_eur'),
-                'url': rec.get('url'),
-                'description_ru': (desc_ru or rec.get('description') or '')[:1000],
-                'date_posted': (rec.get('refreshed_at')
-                                or rec.get('published_at')
-                                or rec.get('first_seen_at') or '')[:10],
-            }])
-        except Exception as e:
-            print(json.dumps({'ok': False, 'sheets_error': str(e),
-                              'state_updated': True, 'in_sheet': False}))
-            return 1
-
-        rec['in_sheet'] = True
-
-        # Находим строку лота по URL один раз (insert_at_top кладёт наверх):
-        # нужна и для скоринга в кол. M, и для named range (ссылка из Telegram).
-        sheet_link = None
-        lot_row = None
-        if rec.get('url'):
+        if rec.get('in_sheet'):
+            # Строка уже есть: driver ставит лот в таблицу и на карту (--stage)
+            # ДО отправки карточки, чтобы ссылка «On the map» работала сразу.
+            sheet_resp, sheet_link = 'already staged', rec.get('sheet_link')
+        else:
             try:
-                svc = _sheets_service()
-                urls = svc.spreadsheets().values().get(
-                    spreadsheetId=SPREADSHEET_ID, range='E2:E1000'
-                ).execute().get('values', [])
-                target = rec['url'].strip()
-                for i, row in enumerate(urls, start=2):
-                    if row and row[0].strip() == target:
-                        lot_row = i
-                        break
-            except Exception:
-                pass
-        sc = rec.get('score')
-        if sc is not None and lot_row:
-            try:
-                update_cells([{'row': lot_row, 'col': 13, 'value': sc}])
-            except Exception:
-                pass  # скоринг в M не критичен, не валим mark-sent
-        if lot_row:
-            try:
-                from sheets_append import create_lot_named_range
-                sheet_link = create_lot_named_range(lot_row, listing_key)
-                rec['sheet_link'] = sheet_link
-            except Exception:
-                pass  # ссылка — nice-to-have
+                sheet_resp, sheet_link = _stage_in_sheet(rec, listing_key, desc_ru)
+            except Exception as e:
+                print(json.dumps({'ok': False, 'sheets_error': str(e),
+                                  'state_updated': True, 'in_sheet': False}))
+                return 1
 
         s.setdefault('sent_messages', {})[str(message_id)] = {
             'listing_key': listing_key, 'sent_at': rec['sent_at'],
@@ -2138,7 +2196,9 @@ def cmd_geocode_hint(listing_key, hint):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--mark-sent', nargs=2, metavar=('KEY', 'MSG_ID'),
-                    help='Mark a pass as sent + insert to Sheets')
+                    help='Mark a pass as sent (+ insert to Sheets, если не было --stage)')
+    ap.add_argument('--stage', metavar='KEY',
+                    help='Строка в Sheets до отправки карточки (driver: таблица → карта → Telegram)')
     ap.add_argument('--geocode-hint', nargs=2, metavar=('KEY', 'HINT'),
                     help='Геокодировать адресную зацепку из текста, записать geo+score в state')
     ap.add_argument('--reject', nargs=2, metavar=('KEY', 'REASON'),
@@ -2159,7 +2219,7 @@ def main():
         DRY_RUN = True
         print('=== DRY-RUN: state и Google Sheet НЕ будут изменены ===', file=sys.stderr)
 
-    if args.dry_run and (args.finalize or args.mark_sent or args.geocode_hint
+    if args.dry_run and (args.finalize or args.mark_sent or args.stage or args.geocode_hint
                          or args.reject or args.set_field):
         # finalize/mark-sent пишут через подпроцессы (check_status → лист,
         # gen_map → surge) — dry-run их не гейтит. Запрещаем совсем.
@@ -2169,6 +2229,8 @@ def main():
 
     if args.mark_sent:
         return cmd_mark_sent(args.mark_sent[0], args.mark_sent[1], desc_ru=args.desc_ru)
+    if args.stage:
+        return cmd_stage(args.stage, desc_ru=args.desc_ru)
     if args.geocode_hint:
         return cmd_geocode_hint(args.geocode_hint[0], args.geocode_hint[1])
     if args.reject:

@@ -671,14 +671,20 @@ def main():
     # 1a. Backfill detail-координат не нужен: bazaraki/zyprus отдают гео сразу.
     bf_updated = 0
 
+    # GEN_MAP_QUICK=1 — быстрая пересборка перед отправкой карточек (driver, 26.10):
+    # без Nominatim и Overpass (они и дают минуты), только таблица → html → surge.
+    quick = os.environ.get('GEN_MAP_QUICK') == '1'
+    if quick:
+        print("  quick mode: no regeo / geocode / score backfill")
+
     # 1b. Re-Nominatim для лотов с geo_source='nominatim' — используем disambiguation по району.
     #     Нужно лотам, которые геокодились только по району.
-    regeo_updated = regeo_nominatim(state)
+    regeo_updated = 0 if quick else regeo_nominatim(state)
     if regeo_updated:
         print(f"  regeo_nominatim: {regeo_updated} updated")
 
     # 1c. Догеокод лотов вообще без координат
-    added = ensure_coords(state)
+    added = 0 if quick else ensure_coords(state)
 
     if bf_updated or regeo_updated or added:
         save_state(state)
@@ -690,7 +696,7 @@ def main():
     print(f"  sheet rows: {len(sheet)}")
 
     # 2a. Скоринг локаций (население/трафик/конкуренты) — троттлинг, кэш в state.
-    n_scored = backfill_scores(state, sheet, limit=6)
+    n_scored = 0 if quick else backfill_scores(state, sheet, limit=6)
     if n_scored:
         print(f"  scored {n_scored} new locations")
 

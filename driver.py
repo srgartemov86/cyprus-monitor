@@ -193,6 +193,10 @@ def main():
                                capture_output=True, cwd=HERE, timeout=120)
             sent = len(passes)
     else:
+        # Порядок с 26.10 (Сергей): 1) строка в таблице (--stage), 2) пересборка
+        # карты, 3) карточка в Telegram. Ссылка «On the map» в карточке открывает
+        # лот сразу, а не через 5–10 минут после finalize.
+        ready = []
         for p in passes:
             caption = p.get('caption') or ''
             summary, loc_hint = english_summary(p)
@@ -262,8 +266,43 @@ def main():
             # свёрнута): lokali.html#lot=<id объявления> (Сергей, 23.10)
             _lot_id = p['listing_key'].split('_', 1)[-1]
             caption = caption.rstrip('\n') + f'\n🗺 On the map: {MAP_URL}#lot={_lot_id}'
+            # Шаг 1: строка в таблице до карточки. Ссылку на строку знаем сразу —
+            # кладём в caption, править подпись после отправки больше не нужно.
+            link = None
+            try:
+                st = run_json(['cycle.py', '--stage', p['listing_key'],
+                               '--desc-ru', summary[:900]], 180)
+                link = st.get('sheet_link')
+                if not st.get('ok'):
+                    print(f"  STAGE FAIL {p['listing_key']}: {st}", file=sys.stderr)
+            except Exception as e:
+                print(f"  STAGE FAIL {p['listing_key']}: {e}", file=sys.stderr)
+            if link:
+                caption = caption.rstrip('\n') + f'\n📋 Sheet: {link}'
             caption = caption[:1024]
             photos = [ph for ph in (p.get('photo_paths') or []) if os.path.exists(ph)]
+            ready.append({'p': p, 'caption': caption, 'summary': summary,
+                          'photos': photos, 'link': link})
+
+        # Шаг 2: карта с новыми точками (quick: без Nominatim/Overpass, ~1 мин).
+        # Неудача не блокирует карточки: на карте есть плашка ожидания лота.
+        if ready:
+            try:
+                mr = subprocess.run([sys.executable, 'gen_map.py'], capture_output=True,
+                                    text=True, cwd=HERE, timeout=300,
+                                    env=dict(os.environ, GEN_MAP_QUICK='1'))
+                map_ok = 'Success!' in (mr.stdout or '')
+                print(f"  map before cards: {'deployed' if map_ok else 'NOT deployed'}",
+                      file=sys.stderr)
+                if not map_ok:
+                    print((mr.stdout or '')[-500:] + (mr.stderr or '')[-500:], file=sys.stderr)
+            except Exception as e:
+                print(f'  map before cards failed: {e}', file=sys.stderr)
+
+        # Шаг 3: карточки в Telegram
+        for r in ready:
+            p, caption, summary = r['p'], r['caption'], r['summary']
+            photos, link = r['photos'], r['link']
             try:
                 send_err = ''
                 if photos:
@@ -280,7 +319,11 @@ def main():
                 ms = subprocess.run([sys.executable, 'cycle.py', '--mark-sent',
                                      p['listing_key'], str(mid), '--desc-ru', summary[:900]],
                                     capture_output=True, text=True, cwd=HERE, timeout=120)
-                # mark-sent вернул ссылку на строку таблицы → дописываем в caption
+                # Ссылка на строку обычно уже в caption (шаг 1). Если --stage не
+                # смог, mark-sent вставил строку сам → дописываем ссылку правкой.
+                if link:
+                    sent += 1
+                    continue
                 try:
                     link = json.loads(ms.stdout.strip().splitlines()[-1]).get('sheet_link')
                 except Exception:
