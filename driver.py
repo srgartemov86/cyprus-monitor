@@ -265,16 +265,18 @@ def main():
             caption = caption[:1024]
             photos = [ph for ph in (p.get('photo_paths') or []) if os.path.exists(ph)]
             try:
+                send_err = ''
                 if photos:
                     res = send_album(caption, photos)
                     mid = res.get('first_message_id')
+                    send_err = res.get('error') or ''
                 else:
                     _t = send_text(caption)
                     mid = (_t if isinstance(_t, int) and not isinstance(_t, bool) else 0) if _t else None
                     if p.get('had_photos'):
                         nophoto_sent += 1  # фото были в объявлении, но не скачались
                 if mid is None:
-                    raise RuntimeError('send failed')
+                    raise RuntimeError(f'send failed: {send_err}' if send_err else 'send failed')
                 ms = subprocess.run([sys.executable, 'cycle.py', '--mark-sent',
                                      p['listing_key'], str(mid), '--desc-ru', summary[:900]],
                                     capture_output=True, text=True, cwd=HERE, timeout=120)
