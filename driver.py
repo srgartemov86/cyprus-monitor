@@ -149,7 +149,10 @@ def send_album(caption, photos):
         f.write(caption)
         cap_path = f.name
     try:
-        return run_json(['send_album.py', CHAT_ID, cap_path] + photos[:10], 120)
+        # 420 с: tg_bot ждёт ответ Telegram до 180 с на попытку. При 120 с обёртка
+        # убивала отправку, которую Telegram уже принял, лот считался неотправленным
+        # и уходил в чат второй раз следующим циклом (Кипр, 13–14.11.2026).
+        return run_json(['send_album.py', CHAT_ID, cap_path] + photos[:10], 420)
     finally:
         os.unlink(cap_path)
 
@@ -306,7 +309,14 @@ def main():
             try:
                 send_err = ''
                 if photos:
-                    res = send_album(caption, photos)
+                    try:
+                        res = send_album(caption, photos)
+                    except subprocess.TimeoutExpired:
+                        # Исход неизвестен: Telegram мог принять альбом. Повтор дал бы дубль,
+                        # поэтому считаем отправленным без message_id (лот есть в таблице).
+                        print(f"  SEND TIMEOUT {p.get('listing_key')}: assume delivered, no resend",
+                              file=sys.stderr)
+                        res = {'first_message_id': 0}
                     mid = res.get('first_message_id')
                     send_err = res.get('error') or ''
                 else:
