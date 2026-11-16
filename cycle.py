@@ -909,7 +909,10 @@ def dedupe_passes_same_cycle(s, passes, duplicates):
                          desc_prefix(p_['listing_key']) == desc_prefix(q['listing_key']))
             # то же правило, что в find_active_duplicate: точный метраж + точная
             # цена + тот же район = кросс-пост, даже когда координат ещё нет
-            exact = (p_.get('area') == q.get('area') and p_.get('price') == q.get('price')
+            # a1/a2/p1/p2 — числа из state. Раньше сравнивались поля карточек, а там
+            # у OLX строки ('95'), у Storia числа (95): равенство не срабатывало, и
+            # кросс-пост уходил двумя карточками (Клуж, 16.11.2026, Centru 95 м² 3500 €).
+            exact = (float(a1) == float(a2) and float(p1) == float(p2)
                      and (p_.get('district') or '').split('(')[0].strip().lower()
                      == (q.get('district') or '').split('(')[0].strip().lower()
                      and bool(p_.get('district')))
