@@ -153,10 +153,27 @@ def _centroid(el):
     return None
 
 
+PROCESS_BUDGET_SEC = 420       # общий потолок Overpass на процесс
+_proc = {'spent': 0.0}
+
+
 def fetch_osm(lat, lon, timeout=180):
     """Один Overpass-запрос: здания + POI + транспорт в радиусе FETCH_RADIUS.
     timeout 180 и 2 круга по зеркалам
     (в плотной застройке запрос идёт >85с, разовый затык зеркала ронял score=None)."""
+    # Общий бюджет Overpass на ВЕСЬ процесс. Лимит на лот не спасает: при зависших
+    # зеркалах 20 лотов по 240 с выбивают таймаут process-фазы (Клуж лежал 11-16.11.2026).
+    # Бюджет исчерпан: score=None, лот уходит без скоринга и досчитывается позже.
+    if _proc['spent'] >= PROCESS_BUDGET_SEC:
+        return None
+    _t0 = time.time()
+    try:
+        return _fetch_osm_inner(lat, lon, timeout)
+    finally:
+        _proc['spent'] += time.time() - _t0
+
+
+def _fetch_osm_inner(lat, lon, timeout=180):
     q = (f"[out:json][timeout:170];("
          f'way["building"](around:{FETCH_RADIUS},{lat},{lon});'
          f'relation["building"](around:{FETCH_RADIUS},{lat},{lon});'
