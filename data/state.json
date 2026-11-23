@@ -23738,55 +23738,15 @@
         "type=offices",
         "uncertain_floor"
       ],
-      "description": "A whole floor luxury office , just completely renovated to a high standard available for rent .It comprises of a conference room,4 big offices, a kitchen ,3 WCs, emergency exit and 2 storage rooms. Parking available Also available furnished",
       "geo_lat": 34.71863953683953,
       "geo_lon": 33.01760827999999,
       "geo_source": "detail",
       "published_at": "2026-11-20T08:26:01.519362+00:00",
       "photo_url": "https://cdn1.bazaraki.com/media/cache1/5d/da/5ddabf065678ed49b1203be14af1f42e.webp",
-      "photo_urls": [
-        "https://cdn1.bazaraki.com/media/cache1/5d/da/5ddabf065678ed49b1203be14af1f42e.webp",
-        "https://cdn1.bazaraki.com/media/cache1/89/aa/89aa49edf67299729a2908b25608b66d.webp",
-        "https://cdn1.bazaraki.com/media/cache1/10/4e/104e0bf04128dda68308d94f0b6317d6.webp",
-        "https://cdn1.bazaraki.com/media/cache1/98/ac/98ac4a18e5fc1bbee342641d9a9ce717.webp",
-        "https://cdn1.bazaraki.com/media/cache1/19/68/1968abd7a6cd0c8c1c75392e479c5e9f.webp",
-        "https://cdn1.bazaraki.com/media/cache1/94/26/94269b1f939cd92afa1561e4697015a0.webp",
-        "https://cdn1.bazaraki.com/media/cache1/86/ff/86ff0f8b9a7113540598bd007e87d06e.webp",
-        "https://cdn1.bazaraki.com/media/cache1/f6/3e/f63e1a00af0bebd80eb0b3e97a5f36da.webp",
-        "https://cdn1.bazaraki.com/media/cache1/33/66/33663544bf6427d85c19d8c35885a043.webp",
-        "https://cdn1.bazaraki.com/media/cache1/b7/9f/b79fa4efc4969fb8063625712c29750c.webp"
-      ],
       "rejected": true,
       "score": 7,
-      "score_data": {
-        "score": 7,
-        "formula": "cy-v1",
-        "residents_500": 347,
-        "residents_1000": 2130,
-        "transit_300": 6,
-        "shops_300": 0,
-        "food_400": 0,
-        "offices_500": 0,
-        "edu_500": 1,
-        "competitors_200": 0,
-        "sea_500": false,
-        "nearest_dodo_km": 5.3,
-        "breakdown": {
-          "catchment": 0.04,
-          "secondary": 0.07,
-          "transit": 1.0,
-          "retail": 0.0,
-          "food": 0.0,
-          "daytime": 0.1,
-          "sea": 0.0,
-          "comp_penalty": 0.0,
-          "cannib_penalty": 0.0
-        },
-        "pop_source": "hybrid",
-        "residents_500_kontur": null,
-        "residents_500_osm_raw": 347
-      },
-      "scored_at": "2026-11-20T09:00:24.079861+00:00"
+      "scored_at": "2026-11-20T09:00:24.079861+00:00",
+      "compacted": true
     },
     "bazaraki_6857682": {
       "source": "bazaraki.com",
@@ -23807,53 +23767,15 @@
         "suburb",
         "uncertain_floor"
       ],
-      "description": "Spacious office space available for lease in Limassol city center",
       "geo_lat": 34.68637320000001,
       "geo_lon": 33.057313300000004,
       "geo_source": "detail",
       "published_at": "2026-11-20T08:01:01.521113+00:00",
       "photo_url": "https://cdn1.bazaraki.com/media/cache1/4c/89/4c89d67b05a4720bec1cbf705f9819a5.webp",
-      "photo_urls": [
-        "https://cdn1.bazaraki.com/media/cache1/4c/89/4c89d67b05a4720bec1cbf705f9819a5.webp",
-        "https://cdn1.bazaraki.com/media/cache1/f0/2c/f02c831d5539e9cb16b08545af4d67d8.webp",
-        "https://cdn1.bazaraki.com/media/cache1/a4/16/a4169429c4cca110c7df8e932042cb59.webp",
-        "https://cdn1.bazaraki.com/media/cache1/1c/e1/1ce17dc624b76721a67d3d4c7418e82c.webp",
-        "https://cdn1.bazaraki.com/media/cache1/1c/d7/1cd7b208a2886acaf43299444be62fbb.webp",
-        "https://cdn1.bazaraki.com/media/cache1/90/fd/90fd15620d6b5836df66d74c09791cbf.webp",
-        "https://cdn1.bazaraki.com/media/cache1/b5/ea/b5ea64898bc376d7e2ce7e1c56e16183.webp",
-        "https://cdn1.bazaraki.com/media/cache1/d3/5e/d35ee58ef0d1835369d331c6542fa065.webp"
-      ],
       "rejected": true,
       "score": 89,
-      "score_data": {
-        "score": 89,
-        "formula": "cy-v1",
-        "residents_500": 10687,
-        "residents_1000": 30831,
-        "transit_300": 5,
-        "shops_300": 80,
-        "food_400": 40,
-        "offices_500": 29,
-        "edu_500": 0,
-        "competitors_200": 9,
-        "sea_500": true,
-        "nearest_dodo_km": 0.33,
-        "breakdown": {
-          "catchment": 1.0,
-          "secondary": 1.0,
-          "transit": 0.83,
-          "retail": 1.0,
-          "food": 1.0,
-          "daytime": 0.72,
-          "sea": 1.0,
-          "comp_penalty": 0.45,
-          "cannib_penalty": 0.44
-        },
-        "pop_source": "hybrid",
-        "residents_500_kontur": null,
-        "residents_500_osm_raw": 10687
-      },
-      "scored_at": "2026-11-20T08:59:46.718280+00:00"
+      "scored_at": "2026-11-20T08:59:46.718280+00:00",
+      "compacted": true
     },
     "bazaraki_6857726": {
       "source": "bazaraki.com",
@@ -24488,16 +24410,16 @@
   "pending_candidates": [],
   "source_cooldown": {
     "bazaraki": {
-      "fails": 2,
-      "until": 0
+      "fails": 0,
+      "until": 1795449227.8016062
     },
     "zyprus": {
-      "fails": 2,
-      "until": 0
+      "fails": 0,
+      "until": 1795449227.8016062
     }
   },
   "last_sweep_health": {
-    "at": "2026-11-23T08:54:07.645326+00:00",
+    "at": "2026-11-23T09:53:57.118568+00:00",
     "by_source": {},
     "down": [
       "bazaraki",
@@ -24507,10 +24429,10 @@
   "send_defers": {
     "bazaraki_6690535": 1
   },
-  "last_cycle_at": "2026-11-23T08:54:07.655621+00:00",
+  "last_cycle_at": "2026-11-23T09:53:57.127061+00:00",
   "daily_stats": {
     "date": "2026-11-23",
-    "runs": 3,
+    "runs": 4,
     "sweep_last": 0,
     "new": 0,
     "checked": 0,
@@ -24519,7 +24441,7 @@
     "duplicates": 0
   },
   "last_cycle_stats": {
-    "at": "2026-11-23T08:54:07.669708+00:00",
+    "at": "2026-11-23T09:53:57.135498+00:00",
     "sweep_raw": 0,
     "new": 0,
     "passes": 0,
@@ -24934,7 +24856,7 @@
   "feedback_aggregates": {
     "by_district": {},
     "source": "sheet_col_K",
-    "updated_at": "2026-11-23T08:55:53.573222+00:00"
+    "updated_at": "2026-11-23T09:55:45.303353+00:00"
   },
   "canary": {
     "date": "2026-11-23",
