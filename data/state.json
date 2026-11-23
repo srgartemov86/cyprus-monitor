@@ -23709,55 +23709,15 @@
       "flags": [
         "type=offices"
       ],
-      "description": "Fully refurbished ground-floor office in central Limassol, offering bright, open-plan workspace with brand-new electrical installations and 3-metre ceilings throughout. The flexible layout can be adapted to suit the tenant's requirements and currently includes two private offices alongside generous open workspace. Key features: - 114 sq.m. ground-floor office - 3-metre ceiling height - Fully refurbished with new electrical installations - Bright, open-plan space - 2 private offices - Flexible layout to suit tenant requirements - Parking for up to 6 vehicles - Central Limassol location Rent: €2,500 per month (negotiable)",
       "geo_lat": 34.6851842,
       "geo_lon": 33.04416,
       "geo_source": "detail",
       "published_at": "2026-11-20T06:16:58.186270+00:00",
       "photo_url": "https://cdn1.bazaraki.com/media/cache1/82/c7/82c7c9716de1895609119efb48008947.webp",
-      "photo_urls": [
-        "https://cdn1.bazaraki.com/media/cache1/82/c7/82c7c9716de1895609119efb48008947.webp",
-        "https://cdn1.bazaraki.com/media/cache1/30/8c/308ca8b5cd521250f6432e8c12e1e953.webp",
-        "https://cdn1.bazaraki.com/media/cache1/3b/04/3b046de19363f6f6bf38d5888fda5010.webp",
-        "https://cdn1.bazaraki.com/media/cache1/13/b3/13b3d11f886ecc7b25a749a6f7308095.webp",
-        "https://cdn1.bazaraki.com/media/cache1/8f/c8/8fc8847507d18a610a5facbfccc3dc89.webp",
-        "https://cdn1.bazaraki.com/media/cache1/95/41/9541e222a7f0dadc8fb7a954ad02a2be.webp",
-        "https://cdn1.bazaraki.com/media/cache1/1c/c8/1cc8bfc289ade1defc51541c8ca9fbcb.webp",
-        "https://cdn1.bazaraki.com/media/cache1/ca/35/ca359db6b27c7ef7e2e40ec5289270db.webp",
-        "https://cdn1.bazaraki.com/media/cache1/20/54/2054d87fe9d9b705579107b44801d68c.webp",
-        "https://cdn1.bazaraki.com/media/cache1/ce/69/ce69472971f1dce9d72ec48e37a676dc.webp"
-      ],
       "rejected": true,
       "score": 89,
-      "score_data": {
-        "score": 89,
-        "formula": "cy-v1",
-        "residents_500": 9898,
-        "residents_1000": 33819,
-        "transit_300": 1,
-        "shops_300": 33,
-        "food_400": 23,
-        "offices_500": 21,
-        "edu_500": 6,
-        "competitors_200": 4,
-        "sea_500": false,
-        "nearest_dodo_km": 1.48,
-        "breakdown": {
-          "catchment": 1.0,
-          "secondary": 1.0,
-          "transit": 0.17,
-          "retail": 1.0,
-          "food": 1.0,
-          "daytime": 1.0,
-          "sea": 0.0,
-          "comp_penalty": 0.2,
-          "cannib_penalty": 0.0
-        },
-        "pop_source": "hybrid",
-        "residents_500_kontur": null,
-        "residents_500_osm_raw": 9898
-      },
-      "scored_at": "2026-11-20T07:03:23.891242+00:00"
+      "scored_at": "2026-11-20T07:03:23.891242+00:00",
+      "compacted": true
     },
     "bazaraki_6857706": {
       "source": "bazaraki.com",
@@ -24526,29 +24486,32 @@
     }
   },
   "pending_candidates": [],
-  "source_cooldown": {},
-  "last_sweep_health": {
-    "at": "2026-11-23T06:56:14.896245+00:00",
-    "by_source": {
-      "bazaraki": {
-        "cards": 547,
-        "parsed": 547
-      },
-      "zyprus": {
-        "cards": 29,
-        "parsed": 29
-      }
+  "source_cooldown": {
+    "bazaraki": {
+      "fails": 1,
+      "until": 0
     },
-    "down": []
+    "zyprus": {
+      "fails": 1,
+      "until": 0
+    }
+  },
+  "last_sweep_health": {
+    "at": "2026-11-23T07:53:49.573093+00:00",
+    "by_source": {},
+    "down": [
+      "bazaraki",
+      "zyprus"
+    ]
   },
   "send_defers": {
     "bazaraki_6690535": 1
   },
-  "last_cycle_at": "2026-11-23T06:56:14.903950+00:00",
+  "last_cycle_at": "2026-11-23T07:53:49.583255+00:00",
   "daily_stats": {
     "date": "2026-11-23",
-    "runs": 1,
-    "sweep_last": 576,
+    "runs": 2,
+    "sweep_last": 0,
     "new": 0,
     "checked": 0,
     "rejects": 0,
@@ -24556,12 +24519,15 @@
     "duplicates": 0
   },
   "last_cycle_stats": {
-    "at": "2026-11-23T06:56:14.911004+00:00",
-    "sweep_raw": 576,
+    "at": "2026-11-23T07:53:49.592332+00:00",
+    "sweep_raw": 0,
     "new": 0,
     "passes": 0,
     "rejects": 0,
-    "sources_down": []
+    "sources_down": [
+      "bazaraki",
+      "zyprus"
+    ]
   },
   "sent_messages": {
     "86": {
@@ -24968,7 +24934,7 @@
   "feedback_aggregates": {
     "by_district": {},
     "source": "sheet_col_K",
-    "updated_at": "2026-11-23T06:58:04.315742+00:00"
+    "updated_at": "2026-11-23T07:55:36.197034+00:00"
   },
   "canary": {
     "date": "2026-11-23",
