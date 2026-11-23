@@ -23815,51 +23815,15 @@
         "type=offices",
         "uncertain_floor"
       ],
-      "description": "$2c",
       "geo_lat": 34.6789,
       "geo_lon": 33.0323,
       "geo_source": "detail",
       "published_at": "2026-11-20T13:26:26.105019+00:00",
       "photo_url": "https://cdn1.bazaraki.com/media/cache1/5a/ea/5aeab40cf48bd13e2708dba1ef10be5f.webp",
-      "photo_urls": [
-        "https://cdn1.bazaraki.com/media/cache1/5a/ea/5aeab40cf48bd13e2708dba1ef10be5f.webp",
-        "https://cdn1.bazaraki.com/media/cache1/1b/21/1b21efe3296f184ac31d5f31e7aa3e8a.webp",
-        "https://cdn1.bazaraki.com/media/cache1/53/0e/530ec0320e8b8d0c74c72a89370967be.webp",
-        "https://cdn1.bazaraki.com/media/cache1/af/d1/afd19761cbfc59993f4268d6d7195edc.webp",
-        "https://cdn1.bazaraki.com/media/cache1/f8/38/f838e90d1d23f1114829ede235c442e1.webp",
-        "https://cdn1.bazaraki.com/media/cache1/fa/ba/faba0f15181462f482992603269ca38b.webp"
-      ],
       "rejected": true,
       "score": 49,
-      "score_data": {
-        "score": 49,
-        "formula": "cy-v1",
-        "residents_500": 4850,
-        "residents_1000": 19836,
-        "transit_300": 10,
-        "shops_300": 11,
-        "food_400": 4,
-        "offices_500": 7,
-        "edu_500": 5,
-        "competitors_200": 0,
-        "sea_500": false,
-        "nearest_dodo_km": 2.06,
-        "breakdown": {
-          "catchment": 0.61,
-          "secondary": 0.66,
-          "transit": 1.0,
-          "retail": 0.37,
-          "food": 0.2,
-          "daytime": 0.68,
-          "sea": 0.0,
-          "comp_penalty": 0.0,
-          "cannib_penalty": 0.0
-        },
-        "pop_source": "hybrid",
-        "residents_500_kontur": null,
-        "residents_500_osm_raw": 4850
-      },
-      "scored_at": "2026-11-20T13:57:01.379816+00:00"
+      "scored_at": "2026-11-20T13:57:01.379816+00:00",
+      "compacted": true
     },
     "bazaraki_6859965": {
       "source": "bazaraki.com",
@@ -24419,7 +24383,7 @@
     }
   },
   "last_sweep_health": {
-    "at": "2026-11-23T13:53:52.585147+00:00",
+    "at": "2026-11-23T14:54:02.248721+00:00",
     "by_source": {},
     "down": [
       "bazaraki",
@@ -24429,10 +24393,10 @@
   "send_defers": {
     "bazaraki_6690535": 1
   },
-  "last_cycle_at": "2026-11-23T13:53:52.595462+00:00",
+  "last_cycle_at": "2026-11-23T14:54:02.256518+00:00",
   "daily_stats": {
     "date": "2026-11-23",
-    "runs": 8,
+    "runs": 9,
     "sweep_last": 0,
     "new": 0,
     "checked": 0,
@@ -24441,7 +24405,7 @@
     "duplicates": 0
   },
   "last_cycle_stats": {
-    "at": "2026-11-23T13:53:52.609183+00:00",
+    "at": "2026-11-23T14:54:02.307089+00:00",
     "sweep_raw": 0,
     "new": 0,
     "passes": 0,
@@ -24856,7 +24820,7 @@
   "feedback_aggregates": {
     "by_district": {},
     "source": "sheet_col_K",
-    "updated_at": "2026-11-23T13:55:40.440093+00:00"
+    "updated_at": "2026-11-23T14:55:52.419823+00:00"
   },
   "canary": {
     "date": "2026-11-23",
