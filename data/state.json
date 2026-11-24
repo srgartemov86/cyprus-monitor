@@ -24374,16 +24374,16 @@
   "pending_candidates": [],
   "source_cooldown": {
     "bazaraki": {
-      "fails": 2,
-      "until": 1795449227.8016062
+      "fails": 0,
+      "until": 1795510891.5660982
     },
     "zyprus": {
-      "fails": 2,
-      "until": 1795449227.8016062
+      "fails": 0,
+      "until": 1795510891.5660982
     }
   },
   "last_sweep_health": {
-    "at": "2026-11-23T16:25:18.998859+00:00",
+    "at": "2026-11-24T03:01:40.636944+00:00",
     "by_source": {},
     "down": [
       "bazaraki",
@@ -24393,10 +24393,10 @@
   "send_defers": {
     "bazaraki_6690535": 1
   },
-  "last_cycle_at": "2026-11-23T16:25:19.009214+00:00",
+  "last_cycle_at": "2026-11-24T03:01:40.646965+00:00",
   "daily_stats": {
-    "date": "2026-11-23",
-    "runs": 11,
+    "date": "2026-11-24",
+    "runs": 1,
     "sweep_last": 0,
     "new": 0,
     "checked": 0,
@@ -24405,7 +24405,7 @@
     "duplicates": 0
   },
   "last_cycle_stats": {
-    "at": "2026-11-23T16:25:19.024943+00:00",
+    "at": "2026-11-24T03:01:40.663140+00:00",
     "sweep_raw": 0,
     "new": 0,
     "passes": 0,
@@ -24820,13 +24820,13 @@
   "feedback_aggregates": {
     "by_district": {},
     "source": "sheet_col_K",
-    "updated_at": "2026-11-23T16:27:06.842384+00:00"
+    "updated_at": "2026-11-24T03:03:27.123225+00:00"
   },
   "canary": {
-    "date": "2026-11-23",
+    "date": "2026-11-24",
     "results": {
-      "bazaraki_sweep": "ok",
-      "zyprus_sweep": "ok",
+      "bazaraki_sweep": "FAIL: source down in last sweep",
+      "zyprus_sweep": "FAIL: source down in last sweep",
       "bazaraki_detail": "FAIL x3: http=0",
       "zyprus_detail": "skip: no live listing"
     }
