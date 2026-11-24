@@ -20468,35 +20468,8 @@
         "price=950"
       ],
       "score": 52,
-      "score_data": {
-        "score": 52,
-        "formula": "cy-v1",
-        "residents_500": 6756,
-        "residents_1000": 25038,
-        "transit_300": 6,
-        "shops_300": 6,
-        "food_400": 4,
-        "offices_500": 0,
-        "edu_500": 4,
-        "competitors_200": 0,
-        "sea_500": false,
-        "nearest_dodo_km": 3.33,
-        "breakdown": {
-          "catchment": 0.84,
-          "secondary": 0.83,
-          "transit": 1.0,
-          "retail": 0.2,
-          "food": 0.2,
-          "daytime": 0.4,
-          "sea": 0.0,
-          "comp_penalty": 0.0,
-          "cannib_penalty": 0.0
-        },
-        "pop_source": "hybrid",
-        "residents_500_kontur": null,
-        "residents_500_osm_raw": 6756
-      },
-      "scored_at": "2026-11-11T16:27:17.279441+00:00"
+      "scored_at": "2026-11-11T16:27:17.279441+00:00",
+      "compacted": true
     },
     "bazaraki_6673576": {
       "source": "bazaraki.com",
@@ -24372,7 +24345,7 @@
     }
   },
   "last_sweep_health": {
-    "at": "2026-11-24T13:53:50.699503+00:00",
+    "at": "2026-11-24T14:53:53.482087+00:00",
     "by_source": {},
     "down": [
       "bazaraki",
@@ -24382,10 +24355,10 @@
   "send_defers": {
     "bazaraki_6690535": 1
   },
-  "last_cycle_at": "2026-11-24T13:53:50.705584+00:00",
+  "last_cycle_at": "2026-11-24T14:53:53.490002+00:00",
   "daily_stats": {
     "date": "2026-11-24",
-    "runs": 9,
+    "runs": 10,
     "sweep_last": 0,
     "new": 0,
     "checked": 0,
@@ -24394,7 +24367,7 @@
     "duplicates": 0
   },
   "last_cycle_stats": {
-    "at": "2026-11-24T13:53:50.712196+00:00",
+    "at": "2026-11-24T14:53:53.525147+00:00",
     "sweep_raw": 0,
     "new": 0,
     "passes": 0,
@@ -24809,7 +24782,7 @@
   "feedback_aggregates": {
     "by_district": {},
     "source": "sheet_col_K",
-    "updated_at": "2026-11-24T13:55:40.162939+00:00"
+    "updated_at": "2026-11-24T14:55:41.180839+00:00"
   },
   "canary": {
     "date": "2026-11-24",
