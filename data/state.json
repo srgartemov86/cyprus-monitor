@@ -23998,25 +23998,14 @@
         "uncertain_floor",
         "listed_as_office"
       ],
-      "description": "Office for rent Specious bright office for rent History Center of Limassol, Easy access to main road Anexartisias Street, 110 sqm, There are 4 rooms Total, 3 office rooms, 1 conference room, 1 Storage room 1 prevate toilet Fast fibre - optic Internet Ready Cafes and restaurant nearby, view Available upon appointment .",
       "geo_lat": 34.67658821126196,
       "geo_lon": 33.04552669292534,
       "geo_source": "detail",
       "published_at": "2026-11-21T13:35:37.034541+00:00",
       "photo_url": "https://cdn1.bazaraki.com/media/cache1/dd/b2/ddb254c6647587f7e457d1fdde28040d.webp",
-      "photo_urls": [
-        "https://cdn1.bazaraki.com/media/cache1/dd/b2/ddb254c6647587f7e457d1fdde28040d.webp",
-        "https://cdn1.bazaraki.com/media/cache1/a0/d9/a0d993f35c2c0ff24e39afdce5ef73e2.webp",
-        "https://cdn1.bazaraki.com/media/cache1/eb/25/eb250c80a7b95c2e88753c471cb70b26.webp",
-        "https://cdn1.bazaraki.com/media/cache1/9b/a8/9ba81ff62b951e08381b2e67de658cf6.webp",
-        "https://cdn1.bazaraki.com/media/cache1/cb/80/cb804e8b9b05141027a52b9d66d0dcb2.webp",
-        "https://cdn1.bazaraki.com/media/cache1/29/a8/29a8cfad5fc73811f482d318f7595d62.webp",
-        "https://cdn1.bazaraki.com/media/cache1/91/17/9117349eb310ccb98c116581f5e7eccd.webp",
-        "https://cdn1.bazaraki.com/media/cache1/e8/a1/e8a1302eb877f5102dc5d19667bafef2.webp",
-        "https://cdn1.bazaraki.com/media/cache1/48/88/4888e1fe9f02a8e1921e99714aef1d41.webp"
-      ],
       "rejected": true,
-      "duplicate_of": "bazaraki_6712586"
+      "duplicate_of": "bazaraki_6712586",
+      "compacted": true
     },
     "bazaraki_6860921": {
       "source": "bazaraki.com",
@@ -24383,7 +24372,7 @@
     }
   },
   "last_sweep_health": {
-    "at": "2026-11-24T12:54:06.861678+00:00",
+    "at": "2026-11-24T13:53:50.699503+00:00",
     "by_source": {},
     "down": [
       "bazaraki",
@@ -24393,10 +24382,10 @@
   "send_defers": {
     "bazaraki_6690535": 1
   },
-  "last_cycle_at": "2026-11-24T12:54:06.867919+00:00",
+  "last_cycle_at": "2026-11-24T13:53:50.705584+00:00",
   "daily_stats": {
     "date": "2026-11-24",
-    "runs": 8,
+    "runs": 9,
     "sweep_last": 0,
     "new": 0,
     "checked": 0,
@@ -24405,7 +24394,7 @@
     "duplicates": 0
   },
   "last_cycle_stats": {
-    "at": "2026-11-24T12:54:06.878678+00:00",
+    "at": "2026-11-24T13:53:50.712196+00:00",
     "sweep_raw": 0,
     "new": 0,
     "passes": 0,
@@ -24820,7 +24809,7 @@
   "feedback_aggregates": {
     "by_district": {},
     "source": "sheet_col_K",
-    "updated_at": "2026-11-24T12:55:56.957400+00:00"
+    "updated_at": "2026-11-24T13:55:40.162939+00:00"
   },
   "canary": {
     "date": "2026-11-24",
