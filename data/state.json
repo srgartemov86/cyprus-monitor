@@ -24345,7 +24345,7 @@
     }
   },
   "last_sweep_health": {
-    "at": "2026-11-24T15:53:53.970970+00:00",
+    "at": "2026-11-24T16:18:53.828998+00:00",
     "by_source": {},
     "down": [
       "bazaraki",
@@ -24355,10 +24355,10 @@
   "send_defers": {
     "bazaraki_6690535": 1
   },
-  "last_cycle_at": "2026-11-24T15:53:53.979417+00:00",
+  "last_cycle_at": "2026-11-24T16:18:53.836772+00:00",
   "daily_stats": {
     "date": "2026-11-24",
-    "runs": 11,
+    "runs": 12,
     "sweep_last": 0,
     "new": 0,
     "checked": 0,
@@ -24367,7 +24367,7 @@
     "duplicates": 0
   },
   "last_cycle_stats": {
-    "at": "2026-11-24T15:53:53.999072+00:00",
+    "at": "2026-11-24T16:18:53.843708+00:00",
     "sweep_raw": 0,
     "new": 0,
     "passes": 0,
@@ -24782,7 +24782,7 @@
   "feedback_aggregates": {
     "by_district": {},
     "source": "sheet_col_K",
-    "updated_at": "2026-11-24T15:55:41.032414+00:00"
+    "updated_at": "2026-11-24T16:20:40.639627+00:00"
   },
   "canary": {
     "date": "2026-11-24",
@@ -24793,6 +24793,6 @@
       "zyprus_detail": "skip: no live listing"
     }
   },
-  "daily_digest_sent": "2026-11-23",
+  "daily_digest_sent": "2026-11-24",
   "version": 18
 }
