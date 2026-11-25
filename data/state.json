@@ -7553,7 +7553,8 @@
       "flags": [
         "floor=floor 6",
         "price=950"
-      ]
+      ],
+      "compacted": true
     },
     "bazaraki_6722075": {
       "source": "bazaraki.com",
@@ -14882,7 +14883,8 @@
       "flags": [
         "type=offices",
         "price=1100"
-      ]
+      ],
+      "compacted": true
     },
     "bazaraki_6821116": {
       "source": "bazaraki.com",
@@ -23998,55 +24000,15 @@
       "flags": [
         "floor=floor 3"
       ],
-      "description": "Office for rent in Agios Nikolaos, Larnaca. It is located on the 3rd floor of a 3-storey building. It has 3 separate rooms, a large common area at the entrance, a kitchenette, a toilet, as well as a spacious outdoor terrace. All rooms have air conditioning. Convenient location with quick access to the city center, as well as to the highway.",
       "geo_lat": 34.91846741387,
       "geo_lon": 33.611068912234,
       "geo_source": "detail",
       "published_at": "2026-11-21T19:40:00.071061+00:00",
       "photo_url": "https://cdn1.bazaraki.com/media/cache1/8e/56/8e5648f2fa7df94fe058ef0c4e08b486.webp",
-      "photo_urls": [
-        "https://cdn1.bazaraki.com/media/cache1/8e/56/8e5648f2fa7df94fe058ef0c4e08b486.webp",
-        "https://cdn1.bazaraki.com/media/cache1/b6/28/b628ecca7eaad3ad1c0b52a9428cb632.webp",
-        "https://cdn1.bazaraki.com/media/cache1/ac/21/ac21ccd8ac23607a9f91fb5e4935919c.webp",
-        "https://cdn1.bazaraki.com/media/cache1/fb/cb/fbcb79b8ecb65d88ec41150542e68f2c.webp",
-        "https://cdn1.bazaraki.com/media/cache1/48/d6/48d6f8eab52b88487919cf2eca4c0f89.webp",
-        "https://cdn1.bazaraki.com/media/cache1/cc/5c/cc5c3ea8139a7ad80b05413d3bda6b8c.webp",
-        "https://cdn1.bazaraki.com/media/cache1/76/10/761070ccd587620500bcb8d71b809a05.webp",
-        "https://cdn1.bazaraki.com/media/cache1/b8/17/b817f27550acb9a12ae2080508270148.webp",
-        "https://cdn1.bazaraki.com/media/cache1/52/82/52829fb7aa30f26d77f9911d1c8e09d4.webp",
-        "https://cdn1.bazaraki.com/media/cache1/94/cf/94cf135feaa2ba5848f058a53d07fe43.webp"
-      ],
       "rejected": true,
       "score": 40,
-      "score_data": {
-        "score": 40,
-        "formula": "cy-v1",
-        "residents_500": 4546,
-        "residents_1000": 18067,
-        "transit_300": 7,
-        "shops_300": 11,
-        "food_400": 0,
-        "offices_500": 10,
-        "edu_500": 1,
-        "competitors_200": 0,
-        "sea_500": false,
-        "nearest_dodo_km": 32.94,
-        "breakdown": {
-          "catchment": 0.57,
-          "secondary": 0.6,
-          "transit": 1.0,
-          "retail": 0.37,
-          "food": 0.0,
-          "daytime": 0.35,
-          "sea": 0.0,
-          "comp_penalty": 0.0,
-          "cannib_penalty": 0.0
-        },
-        "pop_source": "hybrid",
-        "residents_500_kontur": null,
-        "residents_500_osm_raw": 4546
-      },
-      "scored_at": "2026-11-21T20:44:36.106234+00:00"
+      "scored_at": "2026-11-21T20:44:36.106234+00:00",
+      "compacted": true
     },
     "bazaraki_6860782": {
       "source": "bazaraki.com",
@@ -24066,25 +24028,13 @@
       "flags": [
         "floor=floor 4"
       ],
-      "description": "Fully renovated office on the 4th floor of Helios Court offers 165 m² of premium space in the centre of the city. Prestigious building in a prime central location with a sea view. Furnitures are not included. Available from 1st January 2027.",
       "geo_lat": 34.67768420000003,
       "geo_lon": 33.050023100000004,
       "geo_source": "detail",
       "published_at": "2026-11-21T20:40:00.073039+00:00",
       "photo_url": "https://cdn1.bazaraki.com/media/cache1/14/c6/14c65012f06b79bd4596e23372e33807.webp",
-      "photo_urls": [
-        "https://cdn1.bazaraki.com/media/cache1/14/c6/14c65012f06b79bd4596e23372e33807.webp",
-        "https://cdn1.bazaraki.com/media/cache1/69/86/6986661feec970dad0c0a0ec3a4ebd69.webp",
-        "https://cdn1.bazaraki.com/media/cache1/9c/b5/9cb5f42852e9f4254c95b13168592db3.webp",
-        "https://cdn1.bazaraki.com/media/cache1/0d/b4/0db466d46515e67fc4c8ec165e429d9d.webp",
-        "https://cdn1.bazaraki.com/media/cache1/04/40/04407d5773230091659281c690b47244.webp",
-        "https://cdn1.bazaraki.com/media/cache1/ed/0a/ed0ac60aeaef6dee037ee46d8b892b9c.webp",
-        "https://cdn1.bazaraki.com/media/cache1/e2/bf/e2bf14d50040a3816d7e59eaad056e5a.webp",
-        "https://cdn1.bazaraki.com/media/cache1/52/b6/52b621e264adb146298035a0c7b3f2a5.webp",
-        "https://cdn1.bazaraki.com/media/cache1/44/9f/449f6bd3091ee8b5742738e11e3032f7.webp",
-        "https://cdn1.bazaraki.com/media/cache1/76/da/76da68b7259dead602175b6f1f07894a.webp"
-      ],
-      "rejected": true
+      "rejected": true,
+      "compacted": true
     },
     "bazaraki_6859107": {
       "source": "bazaraki.com",
@@ -24336,16 +24286,16 @@
   "pending_candidates": [],
   "source_cooldown": {
     "bazaraki": {
-      "fails": 0,
+      "fails": 1,
       "until": 1795542830.5234072
     },
     "zyprus": {
-      "fails": 0,
+      "fails": 1,
       "until": 1795542830.5234072
     }
   },
   "last_sweep_health": {
-    "at": "2026-11-24T16:18:53.828998+00:00",
+    "at": "2026-11-25T01:02:03.110982+00:00",
     "by_source": {},
     "down": [
       "bazaraki",
@@ -24355,10 +24305,10 @@
   "send_defers": {
     "bazaraki_6690535": 1
   },
-  "last_cycle_at": "2026-11-24T16:18:53.836772+00:00",
+  "last_cycle_at": "2026-11-25T01:02:03.121274+00:00",
   "daily_stats": {
-    "date": "2026-11-24",
-    "runs": 12,
+    "date": "2026-11-25",
+    "runs": 1,
     "sweep_last": 0,
     "new": 0,
     "checked": 0,
@@ -24367,7 +24317,7 @@
     "duplicates": 0
   },
   "last_cycle_stats": {
-    "at": "2026-11-24T16:18:53.843708+00:00",
+    "at": "2026-11-25T01:02:03.130392+00:00",
     "sweep_raw": 0,
     "new": 0,
     "passes": 0,
@@ -24782,10 +24732,10 @@
   "feedback_aggregates": {
     "by_district": {},
     "source": "sheet_col_K",
-    "updated_at": "2026-11-24T16:20:40.639627+00:00"
+    "updated_at": "2026-11-25T01:03:49.180257+00:00"
   },
   "canary": {
-    "date": "2026-11-24",
+    "date": "2026-11-25",
     "results": {
       "bazaraki_sweep": "FAIL: source down in last sweep",
       "zyprus_sweep": "FAIL: source down in last sweep",
