@@ -2930,48 +2930,13 @@
       "flags": [
         "uncertain_floor"
       ],
-      "description": "-",
       "geo_lat": 34.6966023090168,
       "geo_lon": 33.09039115905762,
       "geo_source": "detail",
       "published_at": "2026-10-23T08:49:29.217402+00:00",
       "photo_url": "https://cdn1.bazaraki.com/media/cache1/ab/01/ab014b1d7348b7df65234bafb6e45960.webp",
-      "photo_urls": [
-        "https://cdn1.bazaraki.com/media/cache1/ab/01/ab014b1d7348b7df65234bafb6e45960.webp",
-        "https://cdn1.bazaraki.com/media/cache1/21/42/2142546c8d3b6bf8c9ce9557b62f1515.webp",
-        "https://cdn1.bazaraki.com/media/cache1/32/10/32109fe53129afd56df42fb568678beb.webp"
-      ],
       "rejected": false,
       "score": 80,
-      "score_data": {
-        "score": 80,
-        "formula": "cy-v1",
-        "residents_500": 8158,
-        "residents_1000": 17444,
-        "transit_300": 5,
-        "shops_300": 41,
-        "food_400": 36,
-        "offices_500": 6,
-        "edu_500": 1,
-        "competitors_200": 14,
-        "sea_500": true,
-        "nearest_dodo_km": 3.05,
-        "breakdown": {
-          "catchment": 1.0,
-          "secondary": 0.58,
-          "transit": 0.83,
-          "retail": 1.0,
-          "food": 1.0,
-          "daytime": 0.25,
-          "sea": 1.0,
-          "comp_penalty": 0.7,
-          "cannib_penalty": 0.0
-        },
-        "pop_source": "hybrid",
-        "residents_500_kontur": null,
-        "residents_500_osm_raw": 8158,
-        "geo_source": "detail"
-      },
       "scored_at": "2026-10-23T10:50:12.878520+00:00",
       "telegram_message_id": 16,
       "sent_at": "2026-10-23T10:50:17.924778+00:00",
@@ -2979,7 +2944,8 @@
       "removed_from_sheet": true,
       "stale_marked_at": "2026-11-23T06:56:16.141718+00:00",
       "removed_human": "2026-11-23 06:56",
-      "dead_reason": "status_check title='2 big corner shops 150sqm tourist area - nautikos omilos kean €6.800  №6802704 i' size=266525 http=200"
+      "dead_reason": "status_check title='2 big corner shops 150sqm tourist area - nautikos omilos kean €6.800  №6802704 i' size=266525 http=200",
+      "compacted": true
     },
     "bazaraki_6767379": {
       "source": "bazaraki.com",
@@ -24084,55 +24050,15 @@
         "type=offices",
         "uncertain_floor"
       ],
-      "description": "🏢 ΕΝΟΙΚΙΑΖΕΤΑΙ ΕΠΑΓΓΕΛΜΑΤΙΚΟΣ ΧΩΡΟΣ – ΠΑΦΟΣ 📍 Περιοχή Δασούδι, Λεωφόρος Ελλάδος, απέναντι από το Supermarket Σκλαβενίτης. Επαγγελματικός χώρος 96 τ.μ. καλυμμένου χώρου, αποτελούμενος από 3 δωμάτια, σε εξαιρετικό σημείο με εύκολη πρόσβαση και προβολή. ✔️ Ιδανικός για γραφεία ή επαγγελματική χρήση ✔️ Κεντρική τοποθεσία ✔️ Εύκολη πρόσβαση 📞 Για πληροφορίες και ραντεβού, επικοινωνήστε τηλεφωνικά",
       "geo_lat": 34.787694165194566,
       "geo_lon": 32.430449989212285,
       "geo_source": "detail",
       "published_at": "2026-11-22T15:24:51.538126+00:00",
       "photo_url": "https://cdn1.bazaraki.com/media/cache1/e2/09/e209bf8799519979fa96b0a480b85dc1.webp",
-      "photo_urls": [
-        "https://cdn1.bazaraki.com/media/cache1/e2/09/e209bf8799519979fa96b0a480b85dc1.webp",
-        "https://cdn1.bazaraki.com/media/cache1/05/25/0525ec8bb8199c80e4685706a8e0274e.webp",
-        "https://cdn1.bazaraki.com/media/cache1/71/53/71534e42178a45204663ff24ccc46f81.webp",
-        "https://cdn1.bazaraki.com/media/cache1/95/04/95047a7cc20af9ba0efc639bb33b826f.webp",
-        "https://cdn1.bazaraki.com/media/cache1/59/54/5954e47f8ad24decae1aaa8cbeedc7eb.webp",
-        "https://cdn1.bazaraki.com/media/cache1/7b/12/7b121a8eaf89e91951fcb2e85fc58cbe.webp",
-        "https://cdn1.bazaraki.com/media/cache1/e5/7e/e57ec106d3e4247205f26724e3fa7fe6.webp",
-        "https://cdn1.bazaraki.com/media/cache1/e5/78/e5783c5c121abe3902107c0dbd938008.webp",
-        "https://cdn1.bazaraki.com/media/cache1/1f/e3/1fe3ea5b2bbeac632efefb9fb41e98aa.webp",
-        "https://cdn1.bazaraki.com/media/cache1/f1/db/f1db370b94a520eddb10f43a157acb7c.webp"
-      ],
       "rejected": true,
       "score": 36,
-      "score_data": {
-        "score": 36,
-        "formula": "cy-v1",
-        "residents_500": 2877,
-        "residents_1000": 8712,
-        "transit_300": 4,
-        "shops_300": 23,
-        "food_400": 4,
-        "offices_500": 1,
-        "edu_500": 1,
-        "competitors_200": 0,
-        "sea_500": false,
-        "nearest_dodo_km": 54.68,
-        "breakdown": {
-          "catchment": 0.36,
-          "secondary": 0.29,
-          "transit": 0.67,
-          "retail": 0.77,
-          "food": 0.2,
-          "daytime": 0.12,
-          "sea": 0.0,
-          "comp_penalty": 0.0,
-          "cannib_penalty": 0.0
-        },
-        "pop_source": "hybrid",
-        "residents_500_kontur": null,
-        "residents_500_osm_raw": 2877
-      },
-      "scored_at": "2026-11-22T15:55:56.520151+00:00"
+      "scored_at": "2026-11-22T15:55:56.520151+00:00",
+      "compacted": true
     },
     "bazaraki_6862025": {
       "source": "bazaraki.com",
@@ -24247,16 +24173,16 @@
   "pending_candidates": [],
   "source_cooldown": {
     "bazaraki": {
-      "fails": 2,
-      "until": 1795614855.4576483
+      "fails": 0,
+      "until": 1795643967.934737
     },
     "zyprus": {
-      "fails": 2,
-      "until": 1795614855.4576483
+      "fails": 0,
+      "until": 1795643967.934737
     }
   },
   "last_sweep_health": {
-    "at": "2026-11-25T14:54:29.211206+00:00",
+    "at": "2026-11-25T15:59:36.859159+00:00",
     "by_source": {},
     "down": [
       "bazaraki",
@@ -24266,10 +24192,10 @@
   "send_defers": {
     "bazaraki_6690535": 1
   },
-  "last_cycle_at": "2026-11-25T14:54:29.217558+00:00",
+  "last_cycle_at": "2026-11-25T15:59:36.869545+00:00",
   "daily_stats": {
     "date": "2026-11-25",
-    "runs": 10,
+    "runs": 11,
     "sweep_last": 0,
     "new": 0,
     "checked": 0,
@@ -24278,7 +24204,7 @@
     "duplicates": 0
   },
   "last_cycle_stats": {
-    "at": "2026-11-25T14:54:29.253179+00:00",
+    "at": "2026-11-25T15:59:36.891039+00:00",
     "sweep_raw": 0,
     "new": 0,
     "passes": 0,
@@ -24693,7 +24619,7 @@
   "feedback_aggregates": {
     "by_district": {},
     "source": "sheet_col_K",
-    "updated_at": "2026-11-25T14:56:21.869578+00:00"
+    "updated_at": "2026-11-25T16:01:25.114103+00:00"
   },
   "canary": {
     "date": "2026-11-25",
@@ -24704,6 +24630,6 @@
       "zyprus_detail": "skip: no live listing"
     }
   },
-  "daily_digest_sent": "2026-11-24",
+  "daily_digest_sent": "2026-11-25",
   "version": 18
 }
