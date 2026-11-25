@@ -15741,7 +15741,8 @@
       "flags": [
         "type=offices",
         "price_per_m2=9.7"
-      ]
+      ],
+      "compacted": true
     },
     "bazaraki_6766675": {
       "source": "bazaraki.com",
@@ -24054,55 +24055,15 @@
       "flags": [
         "type=offices"
       ],
-      "description": "A spacious and functional office space of 120 m², situated on the ground floor, offering a practical layout suitable for various business activities. The property comprises four separate rooms, one kitchen and one toilet. It also benefits from four to five dedicated parking spaces, providing convenience for staff and visitors. An ideal opportunity for businesses seeking comfortable office premises with easy accessibility and ample parking. Reg No: 864 License No. 272/E",
       "geo_lat": 34.67864,
       "geo_lon": 33.017902,
       "geo_source": "detail",
       "published_at": "2026-11-22T14:30:17.645174+00:00",
       "photo_url": "https://cdn1.bazaraki.com/media/cache1/8f/bb/8fbb7d5cff343c26bfbdfd1541ebf590.webp",
-      "photo_urls": [
-        "https://cdn1.bazaraki.com/media/cache1/8f/bb/8fbb7d5cff343c26bfbdfd1541ebf590.webp",
-        "https://cdn1.bazaraki.com/media/cache1/35/bf/35bf9897a9f8dc45acd09815853ba9e6.webp",
-        "https://cdn1.bazaraki.com/media/cache1/b5/3f/b53f237231b7d66a5fd6786f0b08715a.webp",
-        "https://cdn1.bazaraki.com/media/cache1/aa/c8/aac8a1ae71a63ec27f9043a96eac818e.webp",
-        "https://cdn1.bazaraki.com/media/cache1/06/dd/06ddb1832a55048069b1045e3d31d680.webp",
-        "https://cdn1.bazaraki.com/media/cache1/23/09/23093256bfdeeabd270b3afd72a9e1a9.webp",
-        "https://cdn1.bazaraki.com/media/cache1/fc/bd/fcbda6ddc6724a578ffc86b1a5fb9712.webp",
-        "https://cdn1.bazaraki.com/media/cache1/f2/c2/f2c26fff301988b299445bfee555a3fc.webp",
-        "https://cdn1.bazaraki.com/media/cache1/ed/f9/edf910af24fcd53aea4324371269c741.webp",
-        "https://cdn1.bazaraki.com/media/cache1/8d/7e/8d7ea2cfa0a6ba7d93af35db2fd7341a.webp"
-      ],
       "rejected": true,
       "score": 20,
-      "score_data": {
-        "score": 20,
-        "formula": "cy-v1",
-        "residents_500": 2282,
-        "residents_1000": 12371,
-        "transit_300": 4,
-        "shops_300": 1,
-        "food_400": 1,
-        "offices_500": 0,
-        "edu_500": 2,
-        "competitors_200": 0,
-        "sea_500": false,
-        "nearest_dodo_km": 1.0,
-        "breakdown": {
-          "catchment": 0.29,
-          "secondary": 0.41,
-          "transit": 0.67,
-          "retail": 0.03,
-          "food": 0.05,
-          "daytime": 0.2,
-          "sea": 0.0,
-          "comp_penalty": 0.0,
-          "cannib_penalty": 0.0
-        },
-        "pop_source": "hybrid",
-        "residents_500_kontur": null,
-        "residents_500_osm_raw": 2282
-      },
-      "scored_at": "2026-11-22T14:36:35.299727+00:00"
+      "scored_at": "2026-11-22T14:36:35.299727+00:00",
+      "compacted": true
     },
     "bazaraki_6861997": {
       "source": "bazaraki.com",
@@ -24286,16 +24247,16 @@
   "pending_candidates": [],
   "source_cooldown": {
     "bazaraki": {
-      "fails": 1,
+      "fails": 2,
       "until": 1795614855.4576483
     },
     "zyprus": {
-      "fails": 1,
+      "fails": 2,
       "until": 1795614855.4576483
     }
   },
   "last_sweep_health": {
-    "at": "2026-11-25T13:56:01.438612+00:00",
+    "at": "2026-11-25T14:54:29.211206+00:00",
     "by_source": {},
     "down": [
       "bazaraki",
@@ -24305,10 +24266,10 @@
   "send_defers": {
     "bazaraki_6690535": 1
   },
-  "last_cycle_at": "2026-11-25T13:56:01.446272+00:00",
+  "last_cycle_at": "2026-11-25T14:54:29.217558+00:00",
   "daily_stats": {
     "date": "2026-11-25",
-    "runs": 9,
+    "runs": 10,
     "sweep_last": 0,
     "new": 0,
     "checked": 0,
@@ -24317,7 +24278,7 @@
     "duplicates": 0
   },
   "last_cycle_stats": {
-    "at": "2026-11-25T13:56:01.489929+00:00",
+    "at": "2026-11-25T14:54:29.253179+00:00",
     "sweep_raw": 0,
     "new": 0,
     "passes": 0,
@@ -24732,7 +24693,7 @@
   "feedback_aggregates": {
     "by_district": {},
     "source": "sheet_col_K",
-    "updated_at": "2026-11-25T13:57:48.764055+00:00"
+    "updated_at": "2026-11-25T14:56:21.869578+00:00"
   },
   "canary": {
     "date": "2026-11-25",
