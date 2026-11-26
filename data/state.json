@@ -452,35 +452,8 @@
         "price_per_m2=9.3"
       ],
       "score": 51,
-      "score_data": {
-        "score": 51,
-        "formula": "cy-v1",
-        "residents_500": 6822,
-        "residents_1000": 24577,
-        "transit_300": 2,
-        "shops_300": 12,
-        "food_400": 4,
-        "offices_500": 1,
-        "edu_500": 3,
-        "competitors_200": 2,
-        "sea_500": false,
-        "nearest_dodo_km": 62.25,
-        "breakdown": {
-          "catchment": 0.85,
-          "secondary": 0.82,
-          "transit": 0.33,
-          "retail": 0.4,
-          "food": 0.2,
-          "daytime": 0.33,
-          "sea": 0.0,
-          "comp_penalty": 0.1,
-          "cannib_penalty": 0.0
-        },
-        "pop_source": "hybrid",
-        "residents_500_kontur": null,
-        "residents_500_osm_raw": 6822
-      },
-      "scored_at": "2026-10-17T10:53:29.738058+00:00"
+      "scored_at": "2026-10-17T10:53:29.738058+00:00",
+      "compacted": true
     },
     "bazaraki_6770175": {
       "source": "bazaraki.com",
@@ -520,7 +493,8 @@
       "flags": [
         "distance=8.2km",
         "price_per_m2=8.0"
-      ]
+      ],
+      "compacted": true
     },
     "bazaraki_6219145": {
       "source": "bazaraki.com",
@@ -1033,7 +1007,8 @@
       "flags": [
         "floor=floor 2",
         "price_per_m2=9.9"
-      ]
+      ],
+      "compacted": true
     },
     "bazaraki_6639913": {
       "source": "bazaraki.com",
@@ -2258,35 +2233,8 @@
         "price=7500"
       ],
       "score": 37,
-      "score_data": {
-        "score": 37,
-        "formula": "cy-v1",
-        "residents_500": 5215,
-        "residents_1000": 14652,
-        "transit_300": 5,
-        "shops_300": 2,
-        "food_400": 2,
-        "offices_500": 2,
-        "edu_500": 3,
-        "competitors_200": 0,
-        "sea_500": false,
-        "nearest_dodo_km": 2.01,
-        "breakdown": {
-          "catchment": 0.65,
-          "secondary": 0.49,
-          "transit": 0.83,
-          "retail": 0.07,
-          "food": 0.1,
-          "daytime": 0.35,
-          "sea": 0.0,
-          "comp_penalty": 0.0,
-          "cannib_penalty": 0.0
-        },
-        "pop_source": "hybrid",
-        "residents_500_kontur": null,
-        "residents_500_osm_raw": 5215
-      },
-      "scored_at": "2026-10-17T18:20:28.651665+00:00"
+      "scored_at": "2026-10-17T18:20:28.651665+00:00",
+      "compacted": true
     },
     "zyprus_39163": {
       "source": "zyprus.com",
@@ -2304,7 +2252,8 @@
       "rejected": true,
       "flags": [
         "price=7950"
-      ]
+      ],
+      "compacted": true
     },
     "zyprus_38255": {
       "source": "zyprus.com",
@@ -2322,7 +2271,8 @@
       "rejected": true,
       "flags": [
         "price=8000"
-      ]
+      ],
+      "compacted": true
     },
     "zyprus_41052": {
       "source": "zyprus.com",
@@ -2854,7 +2804,8 @@
       "flags": [
         "floor=floor 2",
         "price=1000"
-      ]
+      ],
+      "compacted": true
     },
     "bazaraki_6802176": {
       "source": "bazaraki.com",
@@ -3370,7 +3321,8 @@
       "flags": [
         "office:office\\s+(?:building|bloc",
         "price_per_m2=9.2"
-      ]
+      ],
+      "compacted": true
     },
     "bazaraki_6227070": {
       "source": "bazaraki.com",
@@ -3431,35 +3383,8 @@
         "price=1000"
       ],
       "score": 62,
-      "score_data": {
-        "score": 62,
-        "formula": "cy-v1",
-        "residents_500": 6841,
-        "residents_1000": 28070,
-        "transit_300": 4,
-        "shops_300": 28,
-        "food_400": 7,
-        "offices_500": 3,
-        "edu_500": 0,
-        "competitors_200": 3,
-        "sea_500": false,
-        "nearest_dodo_km": 2.9,
-        "breakdown": {
-          "catchment": 0.86,
-          "secondary": 0.94,
-          "transit": 0.67,
-          "retail": 0.93,
-          "food": 0.35,
-          "daytime": 0.07,
-          "sea": 0.0,
-          "comp_penalty": 0.15,
-          "cannib_penalty": 0.0
-        },
-        "pop_source": "hybrid",
-        "residents_500_kontur": null,
-        "residents_500_osm_raw": 6841
-      },
-      "scored_at": "2026-10-24T06:07:39.810875+00:00"
+      "scored_at": "2026-10-24T06:07:39.810875+00:00",
+      "compacted": true
     },
     "bazaraki_6730544": {
       "source": "bazaraki.com",
@@ -3479,35 +3404,8 @@
         "price=950"
       ],
       "score": 63,
-      "score_data": {
-        "score": 63,
-        "formula": "cy-v1",
-        "residents_500": 6712,
-        "residents_1000": 28218,
-        "transit_300": 4,
-        "shops_300": 28,
-        "food_400": 6,
-        "offices_500": 3,
-        "edu_500": 2,
-        "competitors_200": 3,
-        "sea_500": false,
-        "nearest_dodo_km": 2.94,
-        "breakdown": {
-          "catchment": 0.84,
-          "secondary": 0.94,
-          "transit": 0.67,
-          "retail": 0.93,
-          "food": 0.3,
-          "daytime": 0.28,
-          "sea": 0.0,
-          "comp_penalty": 0.15,
-          "cannib_penalty": 0.0
-        },
-        "pop_source": "hybrid",
-        "residents_500_kontur": null,
-        "residents_500_osm_raw": 6712
-      },
-      "scored_at": "2026-10-24T06:06:17.975461+00:00"
+      "scored_at": "2026-10-24T06:06:17.975461+00:00",
+      "compacted": true
     },
     "bazaraki_6770849": {
       "source": "bazaraki.com",
@@ -3589,35 +3487,8 @@
         "price_per_m2=7.0"
       ],
       "score": 31,
-      "score_data": {
-        "score": 31,
-        "formula": "cy-v1",
-        "residents_500": 2391,
-        "residents_1000": 8813,
-        "transit_300": 6,
-        "shops_300": 15,
-        "food_400": 3,
-        "offices_500": 3,
-        "edu_500": 2,
-        "competitors_200": 1,
-        "sea_500": false,
-        "nearest_dodo_km": 54.49,
-        "breakdown": {
-          "catchment": 0.3,
-          "secondary": 0.29,
-          "transit": 1.0,
-          "retail": 0.5,
-          "food": 0.15,
-          "daytime": 0.28,
-          "sea": 0.0,
-          "comp_penalty": 0.05,
-          "cannib_penalty": 0.0
-        },
-        "pop_source": "hybrid",
-        "residents_500_kontur": null,
-        "residents_500_osm_raw": 2391
-      },
-      "scored_at": "2026-10-24T06:06:52.306772+00:00"
+      "scored_at": "2026-10-24T06:06:52.306772+00:00",
+      "compacted": true
     },
     "bazaraki_6692724": {
       "source": "bazaraki.com",
@@ -6258,7 +6129,8 @@
       "flags": [
         "distance=13.0km",
         "price=950"
-      ]
+      ],
+      "compacted": true
     },
     "bazaraki_6736587": {
       "source": "bazaraki.com",
@@ -12344,7 +12216,8 @@
       "flags": [
         "far_muni",
         "price_per_m2=6.7"
-      ]
+      ],
+      "compacted": true
     },
     "bazaraki_6753225": {
       "source": "bazaraki.com",
@@ -15419,35 +15292,8 @@
         "price_per_m2=7.5"
       ],
       "score": 1,
-      "score_data": {
-        "score": 1,
-        "formula": "cy-v1",
-        "residents_500": 69,
-        "residents_1000": 1268,
-        "transit_300": 0,
-        "shops_300": 0,
-        "food_400": 0,
-        "offices_500": 1,
-        "edu_500": 0,
-        "competitors_200": 0,
-        "sea_500": false,
-        "nearest_dodo_km": 54.35,
-        "breakdown": {
-          "catchment": 0.01,
-          "secondary": 0.04,
-          "transit": 0.0,
-          "retail": 0.0,
-          "food": 0.0,
-          "daytime": 0.03,
-          "sea": 0.0,
-          "comp_penalty": 0.0,
-          "cannib_penalty": 0.0
-        },
-        "pop_source": "hybrid",
-        "residents_500_kontur": null,
-        "residents_500_osm_raw": 69
-      },
-      "scored_at": "2026-11-03T17:05:40.269112+00:00"
+      "scored_at": "2026-11-03T17:05:40.269112+00:00",
+      "compacted": true
     },
     "bazaraki_6823063": {
       "source": "bazaraki.com",
@@ -19749,35 +19595,8 @@
         "price=1150"
       ],
       "score": 46,
-      "score_data": {
-        "score": 46,
-        "formula": "cy-v1",
-        "residents_500": 4427,
-        "residents_1000": 14850,
-        "transit_300": 4,
-        "shops_300": 19,
-        "food_400": 1,
-        "offices_500": 19,
-        "edu_500": 1,
-        "competitors_200": 0,
-        "sea_500": false,
-        "nearest_dodo_km": 32.6,
-        "breakdown": {
-          "catchment": 0.55,
-          "secondary": 0.49,
-          "transit": 0.67,
-          "retail": 0.63,
-          "food": 0.05,
-          "daytime": 0.57,
-          "sea": 0.0,
-          "comp_penalty": 0.0,
-          "cannib_penalty": 0.0
-        },
-        "pop_source": "hybrid",
-        "residents_500_kontur": null,
-        "residents_500_osm_raw": 4427
-      },
-      "scored_at": "2026-11-10T09:58:43.486794+00:00"
+      "scored_at": "2026-11-10T09:58:43.486794+00:00",
+      "compacted": true
     },
     "bazaraki_6779311": {
       "source": "bazaraki.com",
@@ -22014,7 +21833,8 @@
       "flags": [
         "type=offices",
         "price_per_m2=9.2"
-      ]
+      ],
+      "compacted": true
     },
     "bazaraki_6847936": {
       "source": "bazaraki.com",
@@ -22245,7 +22065,8 @@
       "flags": [
         "type=offices",
         "price_per_m2=7.0"
-      ]
+      ],
+      "compacted": true
     },
     "bazaraki_6848240": {
       "source": "bazaraki.com",
@@ -22680,35 +22501,8 @@
         "price=1100"
       ],
       "score": 72,
-      "score_data": {
-        "score": 72,
-        "formula": "cy-v1",
-        "residents_500": 5699,
-        "residents_1000": 26913,
-        "transit_300": 6,
-        "shops_300": 33,
-        "food_400": 9,
-        "offices_500": 36,
-        "edu_500": 2,
-        "competitors_200": 0,
-        "sea_500": false,
-        "nearest_dodo_km": 0.41,
-        "breakdown": {
-          "catchment": 0.71,
-          "secondary": 0.9,
-          "transit": 1.0,
-          "retail": 1.0,
-          "food": 0.45,
-          "daytime": 1.0,
-          "sea": 0.0,
-          "comp_penalty": 0.0,
-          "cannib_penalty": 0.32
-        },
-        "pop_source": "hybrid",
-        "residents_500_kontur": null,
-        "residents_500_osm_raw": 5699
-      },
-      "scored_at": "2026-11-17T16:57:39.314500+00:00"
+      "scored_at": "2026-11-17T16:57:39.314500+00:00",
+      "compacted": true
     },
     "bazaraki_6852560": {
       "source": "bazaraki.com",
@@ -23238,7 +23032,8 @@
       "flags": [
         "type=offices",
         "price_per_m2=9.6"
-      ]
+      ],
+      "compacted": true
     },
     "bazaraki_6854291": {
       "source": "bazaraki.com",
@@ -23556,7 +23351,8 @@
       "flags": [
         "type=offices",
         "price_per_m2=9.4"
-      ]
+      ],
+      "compacted": true
     },
     "bazaraki_6857368": {
       "source": "bazaraki.com",
@@ -23605,35 +23401,8 @@
         "price=900"
       ],
       "score": 23,
-      "score_data": {
-        "score": 23,
-        "formula": "cy-v1",
-        "residents_500": 1869,
-        "residents_1000": 5561,
-        "transit_300": 6,
-        "shops_300": 9,
-        "food_400": 5,
-        "offices_500": 1,
-        "edu_500": 1,
-        "competitors_200": 4,
-        "sea_500": false,
-        "nearest_dodo_km": 31.34,
-        "breakdown": {
-          "catchment": 0.23,
-          "secondary": 0.19,
-          "transit": 1.0,
-          "retail": 0.3,
-          "food": 0.25,
-          "daytime": 0.12,
-          "sea": 0.0,
-          "comp_penalty": 0.2,
-          "cannib_penalty": 0.0
-        },
-        "pop_source": "hybrid",
-        "residents_500_kontur": null,
-        "residents_500_osm_raw": 1869
-      },
-      "scored_at": "2026-11-19T22:30:07.080115+00:00"
+      "scored_at": "2026-11-19T22:30:07.080115+00:00",
+      "compacted": true
     },
     "bazaraki_6857487": {
       "source": "bazaraki.com",
@@ -23738,7 +23507,8 @@
       "flags": [
         "type=offices",
         "price_per_m2=6.5"
-      ]
+      ],
+      "compacted": true
     },
     "bazaraki_6858621": {
       "source": "bazaraki.com",
@@ -23920,7 +23690,8 @@
       "flags": [
         "floor=floor 3",
         "price=950"
-      ]
+      ],
+      "compacted": true
     },
     "bazaraki_6704997": {
       "source": "bazaraki.com",
@@ -24080,35 +23851,8 @@
         "price=1000"
       ],
       "score": 37,
-      "score_data": {
-        "score": 37,
-        "formula": "cy-v1",
-        "residents_500": 4506,
-        "residents_1000": 14757,
-        "transit_300": 9,
-        "shops_300": 1,
-        "food_400": 5,
-        "offices_500": 3,
-        "edu_500": 3,
-        "competitors_200": 0,
-        "sea_500": false,
-        "nearest_dodo_km": 2.24,
-        "breakdown": {
-          "catchment": 0.56,
-          "secondary": 0.49,
-          "transit": 1.0,
-          "retail": 0.03,
-          "food": 0.25,
-          "daytime": 0.38,
-          "sea": 0.0,
-          "comp_penalty": 0.0,
-          "cannib_penalty": 0.0
-        },
-        "pop_source": "hybrid",
-        "residents_500_kontur": null,
-        "residents_500_osm_raw": 4506
-      },
-      "scored_at": "2026-11-22T15:56:24.147006+00:00"
+      "scored_at": "2026-11-22T15:56:24.147006+00:00",
+      "compacted": true
     },
     "bazaraki_6862216": {
       "source": "bazaraki.com",
@@ -24175,16 +23919,16 @@
   "pending_candidates": [],
   "source_cooldown": {
     "bazaraki": {
-      "fails": 2,
-      "until": 1795643967.934737
+      "fails": 0,
+      "until": 1795701241.0176675
     },
     "zyprus": {
-      "fails": 2,
-      "until": 1795643967.934737
+      "fails": 0,
+      "until": 1795701241.0176675
     }
   },
   "last_sweep_health": {
-    "at": "2026-11-26T06:54:10.386215+00:00",
+    "at": "2026-11-26T07:54:10.512128+00:00",
     "by_source": {},
     "down": [
       "bazaraki",
@@ -24194,10 +23938,10 @@
   "send_defers": {
     "bazaraki_6690535": 1
   },
-  "last_cycle_at": "2026-11-26T06:54:10.394546+00:00",
+  "last_cycle_at": "2026-11-26T07:54:10.522741+00:00",
   "daily_stats": {
     "date": "2026-11-26",
-    "runs": 2,
+    "runs": 3,
     "sweep_last": 0,
     "new": 0,
     "checked": 0,
@@ -24206,7 +23950,7 @@
     "duplicates": 0
   },
   "last_cycle_stats": {
-    "at": "2026-11-26T06:54:10.430714+00:00",
+    "at": "2026-11-26T07:54:10.563053+00:00",
     "sweep_raw": 0,
     "new": 0,
     "passes": 0,
@@ -24621,7 +24365,7 @@
   "feedback_aggregates": {
     "by_district": {},
     "source": "sheet_col_K",
-    "updated_at": "2026-11-26T06:55:57.147974+00:00"
+    "updated_at": "2026-11-26T07:55:59.629816+00:00"
   },
   "canary": {
     "date": "2026-11-26",
