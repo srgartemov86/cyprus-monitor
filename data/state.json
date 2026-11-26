@@ -21490,7 +21490,8 @@
       "flags": [
         "type=offices",
         "price=900"
-      ]
+      ],
+      "compacted": true
     },
     "bazaraki_6842312": {
       "source": "bazaraki.com",
@@ -21710,7 +21711,8 @@
       "flags": [
         "floor=floor 2",
         "price_per_m2=8.1"
-      ]
+      ],
+      "compacted": true
     },
     "bazaraki_6843134": {
       "source": "bazaraki.com",
@@ -24173,16 +24175,16 @@
   "pending_candidates": [],
   "source_cooldown": {
     "bazaraki": {
-      "fails": 0,
+      "fails": 1,
       "until": 1795643967.934737
     },
     "zyprus": {
-      "fails": 0,
+      "fails": 1,
       "until": 1795643967.934737
     }
   },
   "last_sweep_health": {
-    "at": "2026-11-25T16:54:28.800065+00:00",
+    "at": "2026-11-26T00:38:16.114399+00:00",
     "by_source": {},
     "down": [
       "bazaraki",
@@ -24192,10 +24194,10 @@
   "send_defers": {
     "bazaraki_6690535": 1
   },
-  "last_cycle_at": "2026-11-25T16:54:28.806742+00:00",
+  "last_cycle_at": "2026-11-26T00:38:16.124568+00:00",
   "daily_stats": {
-    "date": "2026-11-25",
-    "runs": 12,
+    "date": "2026-11-26",
+    "runs": 1,
     "sweep_last": 0,
     "new": 0,
     "checked": 0,
@@ -24204,7 +24206,7 @@
     "duplicates": 0
   },
   "last_cycle_stats": {
-    "at": "2026-11-25T16:54:28.852706+00:00",
+    "at": "2026-11-26T00:38:16.141903+00:00",
     "sweep_raw": 0,
     "new": 0,
     "passes": 0,
@@ -24619,10 +24621,10 @@
   "feedback_aggregates": {
     "by_district": {},
     "source": "sheet_col_K",
-    "updated_at": "2026-11-25T16:56:16.948221+00:00"
+    "updated_at": "2026-11-26T00:40:04.827559+00:00"
   },
   "canary": {
-    "date": "2026-11-25",
+    "date": "2026-11-26",
     "results": {
       "bazaraki_sweep": "FAIL: source down in last sweep",
       "zyprus_sweep": "FAIL: source down in last sweep",
