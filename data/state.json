@@ -23928,7 +23928,7 @@
     }
   },
   "last_sweep_health": {
-    "at": "2026-11-27T11:53:47.866286+00:00",
+    "at": "2026-11-27T12:55:42.268471+00:00",
     "by_source": {},
     "down": [
       "bazaraki",
@@ -23938,10 +23938,10 @@
   "send_defers": {
     "bazaraki_6690535": 1
   },
-  "last_cycle_at": "2026-11-27T11:53:47.873806+00:00",
+  "last_cycle_at": "2026-11-27T12:55:42.278331+00:00",
   "daily_stats": {
     "date": "2026-11-27",
-    "runs": 7,
+    "runs": 8,
     "sweep_last": 0,
     "new": 0,
     "checked": 0,
@@ -23950,7 +23950,7 @@
     "duplicates": 0
   },
   "last_cycle_stats": {
-    "at": "2026-11-27T11:53:47.888650+00:00",
+    "at": "2026-11-27T12:55:42.332555+00:00",
     "sweep_raw": 0,
     "new": 0,
     "passes": 0,
@@ -24365,7 +24365,7 @@
   "feedback_aggregates": {
     "by_district": {},
     "source": "sheet_col_K",
-    "updated_at": "2026-11-27T11:55:35.830895+00:00"
+    "updated_at": "2026-11-27T12:57:31.638860+00:00"
   },
   "canary": {
     "date": "2026-11-27",
